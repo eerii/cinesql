@@ -6,11 +6,13 @@
 import java.sql.*;
 import java.io.FileInputStream;
 import java.util.Properties;
+import GUI.*;
 
 public class Cine {
 
     public static void main(String[] args) {
 
+        /*
         //Primero hay  que crear una base de datos en DBeaver llamada "Cine"
         //En la ventana de la derecha del Netbeans hace falta anhadir el driver, entonces
         // si no esta se hace click derecho en "Libraries", "Add Library", y se anhade la PostgreSQL
@@ -36,7 +38,9 @@ public class Cine {
                                             prop.getProperty("clave"));
 
             System.out.println("Se abrió la conexión");
+            System.out.println(prop);
 
+            
             //Se crea un "statement" para comprobar que funciona
             //Este crea una tabla, y se puede eliminar desde el DBeaver
             Statement stmt = c.createStatement();
@@ -58,12 +62,20 @@ public class Cine {
             //Para solucionarlo en en DBeaver se hace click derecho encima del usuario
             // "postgres", se hace click en "Editar Connection", en la pestaña que se abre en
             //la mitad izquierda se abre "PostgreSQL", y se marca la casilla de "Show all databases".
+            
 
             //Si hay algun problema se imprime en la consola. Por ejemplo si se crea la tabla dos veces
         }catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
-        }
+        }*/
+        
+        
+        //Se crea y abre la ventana de iniciar sesion
+        GUI_IniciarSesion inicio= new GUI_IniciarSesion();
+        inicio.setVisible(true);
+        
+        
     }
 }
