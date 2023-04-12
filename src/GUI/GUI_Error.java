@@ -20,6 +20,9 @@ public class GUI_Error extends javax.swing.JDialog {
         this.msg=msg;
         
         initComponents();
+        
+        //Se centra
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -38,6 +41,7 @@ public class GUI_Error extends javax.swing.JDialog {
         cerrarDialog = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jScrollPane2.setBackground(getBackground());
         jScrollPane2.setBorder(null);

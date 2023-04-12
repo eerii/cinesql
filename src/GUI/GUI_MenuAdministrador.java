@@ -16,6 +16,8 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
     public GUI_MenuAdministrador(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        this.setLocationRelativeTo(null);
     }
 
     /**

@@ -16,6 +16,9 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     public GUI_MenuDependiente(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        //Se centra
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -31,6 +34,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jTextPane1 = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jTextPane1.setText("dependiente");
         jScrollPane1.setViewportView(jTextPane1);
