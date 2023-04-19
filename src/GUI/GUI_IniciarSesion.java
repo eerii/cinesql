@@ -41,7 +41,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextPane4 = new javax.swing.JTextPane();
         botonInicio = new javax.swing.JButton();
-        campoContraseña = new javax.swing.JPasswordField();
+        campoContrasena = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
@@ -136,7 +136,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(campoNombre)
-                            .addComponent(campoContraseña, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                            .addComponent(campoContrasena, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(botonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(11, 11, 11)))))
@@ -156,7 +156,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                                     .addComponent(campoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(30, 30, 30)
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(campoContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(campoContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(161, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -226,10 +226,10 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         //Se leen el nombre y contraseña escritos
-        String nombre, contraseña;
+        String nombre, contrasena;
         
         nombre=campoNombre.getText();
-        contraseña=campoContraseña.getText();
+        contrasena=campoContrasena.getText();
         
         
         //Se intenta la conexion
@@ -251,52 +251,14 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                                             ":" + prop.getProperty("puerto") +
                                             "/" + prop.getProperty("baseDatos"),
                                             nombre, 
-                                            contraseña);
+                                            contrasena);
             
-            System.out.println(nombre+" se ha conectado a la base de datos "+
-                                            "jdbc:" + prop.getProperty("gestor") +
-                                            "://" + prop.getProperty("servidor") + 
-                                            ":" + prop.getProperty("puerto") +
-                                            "/" + prop.getProperty("baseDatos"));
-            
-            
-            //Se obtiene el rol del usuario, el cual esta guardado en la base de datos de Usuarios
-            String sql= "SELECT rol FROM Usuarios WHERE nombre=?";
-            PreparedStatement s=c.prepareStatement(sql);
-           
-            s.setString(1,nombre);
-            
-            ResultSet resultado=s.executeQuery();
-            
-            resultado.next();
-            String rol=resultado.getString("rol");
-            
-            //Se abre un menu diferente segun su rol
-            JDialog menu=null;       
-            switch(rol){
-            
-                case "Superusuario":
-                    menu=new GUI_MenuSuperusuario(this,true);
-                    break;
-                    
-                case "Administrador":
-                    menu=new GUI_MenuAdministrador(this,true);
-                    break;
-                    
-                case "Dependiente":
-                    menu=new GUI_MenuDependiente(this,true);
-                    break;
-                    
-                case "Cliente":
-                    menu=new GUI_MenuCliente(this,true);
-                    break;
-                    
-                default:
-                    throw new Exception("No se ha encontrado el rol del usuario");
-            }
-            
+            //Se crea el menú adecuado
+            JDialog menu=crearMenu(c,nombre);
+
             this.setVisible(false);
             menu.setVisible(true);
+            
             
         //Si no hubo exito, se muestra un popup de error
         }catch(Exception e){
@@ -353,7 +315,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonInicio;
-    private javax.swing.JPasswordField campoContraseña;
+    private javax.swing.JPasswordField campoContrasena;
     private javax.swing.JTextField campoNombre;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
@@ -367,4 +329,48 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPane3;
     private javax.swing.JTextPane jTextPane4;
     // End of variables declaration//GEN-END:variables
+
+    public JDialog crearMenu(Connection c, String nombre) throws Exception{
+    
+        //Se obtiene el rol del usuario, el cual esta guardado en la base de datos de Usuarios
+        String sql= "SELECT rol FROM Usuarios WHERE nombre=?";
+        PreparedStatement s=c.prepareStatement(sql);
+
+        s.setString(1,nombre);
+
+        ResultSet resultado=s.executeQuery();
+        
+        JDialog menu=null;
+
+        if(resultado.next()){
+            
+            String rol=resultado.getString("rol");
+  
+            switch(rol){
+
+                case "Superusuario":
+                    menu=new GUI_MenuSuperusuario(this,true);
+                    break;
+
+                case "Administrador":
+                    menu=new GUI_MenuAdministrador(this,true);
+                    break;
+
+                case "Dependiente":
+                    menu=new GUI_MenuDependiente(this,true);
+                    break;
+
+                case "Cliente":
+                    menu=new GUI_MenuCliente(this,true);
+                    break;
+
+                default:
+                    throw new Exception("No se ha encontrado el rol del usuario");
+            }
+        }else{
+                throw new Exception("No se ha encontrado el nombre de usuario en la tabla.");
+        }
+            
+        return menu;
+    }
 }

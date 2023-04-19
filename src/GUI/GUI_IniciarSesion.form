@@ -109,7 +109,7 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="campoNombre" max="32767" attributes="0"/>
-                              <Component id="campoContraseña" pref="435" max="32767" attributes="0"/>
+                              <Component id="campoContrasena" pref="435" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="botonInicio" min="-2" pref="102" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
@@ -137,7 +137,7 @@
                                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                                   <Component id="jScrollPane4" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="campoContraseña" min="-2" max="-2" attributes="0"/>
+                              <Component id="campoContrasena" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="161" max="32767" attributes="0"/>
                       </Group>
@@ -285,7 +285,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonInicioActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JPasswordField" name="campoContrase&#xf1;a">
+        <Component class="javax.swing.JPasswordField" name="campoContrasena">
         </Component>
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
