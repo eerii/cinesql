@@ -351,11 +351,11 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             switch(rol){
 
                 case "Superusuario":
-                    menu=new GUI_MenuAdministrador(this,true);
+                    menu=new GUI_MenuAdministrador(this,true,c);
                     break;
 
                 case "Administrador":
-                    menu=new GUI_MenuAdministrador(this,true);
+                    menu=new GUI_MenuAdministrador(this,true,c);
                     break;
 
                 case "Dependiente":
