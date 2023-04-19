@@ -342,14 +342,16 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         
         JDialog menu=null;
 
+        //Si el resultado no es vacío
         if(resultado.next()){
             
             String rol=resultado.getString("rol");
   
+            //Según el rol
             switch(rol){
 
                 case "Superusuario":
-                    menu=new GUI_MenuSuperusuario(this,true);
+                    menu=new GUI_MenuAdministrador(this,true);
                     break;
 
                 case "Administrador":
