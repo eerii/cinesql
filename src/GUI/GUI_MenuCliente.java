@@ -4,6 +4,33 @@
  */
 package GUI;
 
+import java.awt.Component;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractCellEditor;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+
 /**
  *
  * @author alumnogreibd
@@ -16,7 +43,14 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     public GUI_MenuCliente(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+        try {
+            //Poblamos de datos el desplegable de cines
+            populateComboBox();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
         //Se centra
         this.setLocationRelativeTo(null);
     }
@@ -30,9 +64,24 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel2 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        campofecha = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        cines = new javax.swing.JComboBox<>();
+        check3D = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        campopelicula = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+
+        jLabel2.setText("jLabel2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -46,33 +95,123 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jTabbedPane1.setToolTipText("");
         jTabbedPane1.setOpaque(true);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 684, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 411, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Consultar películas", jPanel1);
-
         jPanel2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 678, Short.MAX_VALUE)
+            .addGap(0, 736, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 405, Short.MAX_VALUE)
+            .addGap(0, 435, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Consultar comida", jPanel2);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jLabel1.setText("Cine");
+
+        jLabel3.setText("Fecha");
+
+        jButton1.setText("Buscar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        cines.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cines.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cinesActionPerformed(evt);
+            }
+        });
+
+        check3D.setText("Proyección 3D");
+        check3D.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                check3DActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Película");
+
+        campopelicula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campopeliculaActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(122, 122, 122)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(62, 62, 62)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(cines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52)
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(campopelicula, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(campofecha, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(check3D))))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(campopelicula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(campofecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(check3D)
+                .addGap(35, 35, 35))
+        );
+
+        jTabbedPane1.addTab("Cartelera", jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -85,9 +224,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(61, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -101,6 +240,47 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         this.getParent().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
+
+    
+    
+    //Aquí determinamos qué ocurrirá cuando un usuario le de al botón Buscar
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // Obtenemos los valores almacenados en los campos de búsqueda
+        String searchpeli = campopelicula.getText(); //La pelicula
+        String searchfechaold = campofecha.getText();    //El día
+        
+        //Comprobamos el formato de la fecha antes de continuar
+        if (!searchfechaold.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            // Display error message to user
+            JOptionPane.showMessageDialog(null, "Please enter date in the format yyyy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        //Hay que pasar el día de tipo de dato string a date
+        java.sql.Date searchfecha = java.sql.Date.valueOf(searchfechaold);
+        String searchcine = cines.getSelectedItem().toString();   //El cine
+        boolean is3D=check3D.isSelected();  //Si se seleccionó la opción de proyección 3D o no
+        try {
+            // En el siguiente método más abajo se realizará la operación con los datos obtenidos
+            searchPeliculas(searchpeli, searchfecha, searchcine, is3D);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cinesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cinesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cinesActionPerformed
+
+    private void check3DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check3DActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_check3DActionPerformed
+
+    private void campopeliculaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campopeliculaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campopeliculaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -145,8 +325,240 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField campofecha;
+    private javax.swing.JTextField campopelicula;
+    private javax.swing.JCheckBox check3D;
+    private javax.swing.JComboBox<String> cines;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
+
+    /*
+    *
+    *   METODO PARA POBLAR DE CINES EL DESPLEGABLE
+    *
+    */
+    
+    private void populateComboBox() throws SQLException, FileNotFoundException, IOException {
+        
+         //Se intenta la conexion
+        Connection c= null;
+        Properties prop = new Properties();
+        FileInputStream file_prop;
+    
+        try {
+             //Abrimos el archivo
+            file_prop = new FileInputStream("baseDatos.properties");
+            prop.load(file_prop);
+            file_prop.close();
+
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
+                                            "://" + prop.getProperty("servidor") + 
+                                            ":" + prop.getProperty("puerto") +
+                                            "/" + prop.getProperty("baseDatos"),
+                                            "alumnogreibd", 
+                                            "greibd2021");
+            
+        
+            // Creamos un statement para ejecutar la consulta de sql
+            Statement statement = c.createStatement();
+        
+            // Query para obtener los nombres de los cines
+            String query = "SELECT nombre FROM Cine";
+            //Guardamos el resultado en resultSet
+            ResultSet resultSet = statement.executeQuery(query);
+        
+            // lista para almacenar el resultado
+            List<String> listaCines = new ArrayList<>();
+        
+        // Iteramos en el resultset y guardamos cada coincidencia en la lista
+        while (resultSet.next()) {
+            String nombre = resultSet.getString("nombre");
+            listaCines.add(nombre);
+        }
+        
+        // Cerramos todo antes de acabar
+        resultSet.close();
+        statement.close();
+        c.close();
+        
+        // Poblamos el desplegable con los nombres de la lista
+        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(listaCines.toArray(new String[0]));
+        cines.setModel(comboBoxModel);
+        
+    } catch (ClassNotFoundException | SQLException ex) {
+        ex.printStackTrace();
+    }
+}
+    
+     /*
+    *
+    *   METODO PARA MOSTRAR LAS COINCIDENCIAS DE LA BÚSQUEDA
+    *
+    */
+    
+    
+//Clases para la gestión del botón oculot de comprar, que aparecerá al lado de cada coincidencia
+public class ButtonRenderer extends DefaultTableCellRenderer {
+    private JButton button;
+
+    public ButtonRenderer(JButton button) {
+        this.button = button;
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        return button;
+    }
+}
+
+
+
+public class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+    private JButton button;
+
+    public ButtonEditor() {
+        button = new JButton("botonoculto"); // Replace "Button Text" with your desired button text
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        
+        //Creamos la acción de cuando se seleccione el botón oculto
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonActionPerformed(evt);
+            }
+        });
+    }
+
+        private ButtonEditor(JButton button) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        return button;
+    }
+
+    @Override
+    public Object getCellEditorValue() {
+        return null;
+    }
+    }
+
+
+
+
+    //Gestión de las coincidencias de búsqueda
+    
+    private void searchPeliculas(String searchpeli, Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
+    // Preparamos la conexión a la base de datos
+    Connection c = null;
+    PreparedStatement stmt = null;
+    Properties prop = new Properties();
+    FileInputStream file_prop;
+    ResultSet rs = null;
+    try {
+          //Abrimos el archivo
+            file_prop = new FileInputStream("baseDatos.properties");
+            prop.load(file_prop);
+            file_prop.close();
+
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
+                                            "://" + prop.getProperty("servidor") + 
+                                            ":" + prop.getProperty("puerto") +
+                                            "/" + prop.getProperty("baseDatos"),
+                                            "alumnogreibd", 
+                                            "greibd2021");
+            
+        // Preparamos la consulta en función de lo elegido en el campo cine
+        String sql = "";
+        if ("As Cancelas".equals(searchcine)) { //Introdujo el primer cine
+            sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora " +
+                    "from public.pelicula " +
+                    "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
+                    "join public.cine ON proyectar.id_cine = cine.id_cine " +
+                    "join public.sala ON proyectar.id_cine = sala.id_cine " +
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'As Cancelas' and sala.proyeccion3d = ?::boolean;" ;
+
+        } else if ("Vialia".equals(searchcine)) {  //Introdujo el segundo cine
+             sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora " +
+                    "from public.pelicula " +
+                    "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
+                    "join public.cine ON proyectar.id_cine = cine.id_cine " +
+                    "join public.sala ON proyectar.id_cine = sala.id_cine " +
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'Vialia' and sala.proyeccion3d = ?::boolean;" ;
+        }
+        
+        // Prepare the statement and set the parameters for the query
+        stmt = c.prepareStatement(sql);
+        stmt.setString(1, "%"+searchpeli+"%");
+        stmt.setDate(2, (java.sql.Date) searchfecha);
+        stmt.setBoolean(3,is3D);
+        
+        // Execute the query and get the results
+        rs = stmt.executeQuery();
+       
+        //Actualizamos la tabla con los resultados
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new Object[]{"Título", "Fecha", "Hora", "  "/* ... */});
+        while (rs.next()) { //Recorremos las columnas
+            //Insertamos los datos recogidos de la sentencia
+            Object[] rowData = new Object[]{rs.getString("titulo"), rs.getString("fecha"), rs.getString("hora"), /* ... */};
+            model.addRow(rowData);
+        }
+        jTable1.setModel(model);
+        
+       // Create your JTable and set data model and other properties
+
+// Create a JButton instance
+JButton button = new JButton("Comprar"); // Replace "Button Text" with your desired button text
+
+// Set custom TableCellRenderer for button column
+int buttonColumnIndex = 3; // Replace 3 with the index of the column where you want to add the button
+jTable1.getColumnModel().getColumn(buttonColumnIndex).setCellRenderer(new ButtonRenderer(button));
+
+// Set custom TableCellEditor for button column
+jTable1.getColumnModel().getColumn(buttonColumnIndex).setCellEditor(new ButtonEditor(button));
+
+
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    } finally {
+        // Close the database resources
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (c != null) c.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+
+
+// Función en la que se desarrollan las acciones del botón oculto
+private void buttonActionPerformed(java.awt.event.ActionEvent evt) {      
+    /*
+    *
+    *En desarrollo
+    *
+    */
+}
+
+
+    
 }
