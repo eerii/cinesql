@@ -4,7 +4,10 @@
  */
 package GUI;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import static java.time.Clock.system;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,13 +27,19 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractCellEditor;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -80,6 +90,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         campopelicula = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        buttonPanel = new javax.swing.JPanel();
+        botoncomprar = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
 
@@ -101,11 +114,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 736, Short.MAX_VALUE)
+            .addGap(0, 869, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 435, Short.MAX_VALUE)
+            .addGap(0, 440, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Consultar comida", jPanel2);
@@ -160,6 +173,13 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         ));
         jScrollPane2.setViewportView(jTable1);
 
+        botoncomprar.setText("Comprar");
+        botoncomprar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botoncomprarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -170,31 +190,44 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                         .addGap(122, 122, 122)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(62, 62, 62)
+                        .addGap(33, 33, 33)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(check3D)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(cines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(45, 45, 45)
+                                        .addComponent(jLabel4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(campopelicula, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(33, 33, 33)
+                                        .addComponent(jLabel3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(campofecha, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton1))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(cines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(52, 52, 52)
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(campopelicula, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(campofecha, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton1))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(check3D))))
-                .addContainerGap(17, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botoncomprar))))))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(7, 7, 7)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(botoncomprar)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
@@ -206,12 +239,18 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(campofecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(check3D)
-                .addGap(35, 35, 35))
+                .addGap(50, 50, 50))
         );
 
         jTabbedPane1.addTab("Cartelera", jPanel1);
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
+        jLabel5.setAlignmentX(0.5F);
+        jLabel5.setAlignmentY(0.0F);
+        jLabel5.setMinimumSize(new java.awt.Dimension(71, 63));
+        jLabel5.setPreferredSize(new java.awt.Dimension(80, 80));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -219,14 +258,20 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(61, Short.MAX_VALUE)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
 
@@ -282,6 +327,25 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_campopeliculaActionPerformed
 
+    //Qué hace el boton comprar cuando lo pulsamos?
+    private void botoncomprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botoncomprarActionPerformed
+        //Le pasamos la info de la fila seleccionada
+        int selectedRowIndex = jTable1.getSelectedRow();
+
+        // Get the data from the selected row
+        String titulo = jTable1.getValueAt(selectedRowIndex, 0).toString();
+        String fecha = jTable1.getValueAt(selectedRowIndex, 1).toString();
+        String hora = jTable1.getValueAt(selectedRowIndex, 2).toString();
+        String sala = jTable1.getValueAt(selectedRowIndex, 3).toString();
+        
+        //Escondemos la ventana actual
+        this.setVisible(false);
+        // Pass the data to the GUI_compraentradas constructor
+        GUI_compraentradas compraEntradas = new GUI_compraentradas(titulo, fecha, hora, sala);
+        compraEntradas.setVisible(true);
+   
+    }//GEN-LAST:event_botoncomprarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -325,6 +389,8 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton botoncomprar;
+    private javax.swing.JPanel buttonPanel;
     private javax.swing.JTextField campofecha;
     private javax.swing.JTextField campopelicula;
     private javax.swing.JCheckBox check3D;
@@ -334,6 +400,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -408,59 +475,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     *
     */
     
-    
-//Clases para la gestión del botón oculot de comprar, que aparecerá al lado de cada coincidencia
-public class ButtonRenderer extends DefaultTableCellRenderer {
-    private JButton button;
-
-    public ButtonRenderer(JButton button) {
-        this.button = button;
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        return button;
-    }
-}
-
-
-
-public class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
-    private JButton button;
-
-    public ButtonEditor() {
-        button = new JButton("botonoculto"); // Replace "Button Text" with your desired button text
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        
-        //Creamos la acción de cuando se seleccione el botón oculto
-        button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonActionPerformed(evt);
-            }
-        });
-    }
-
-        private ButtonEditor(JButton button) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        return button;
-    }
-
-    @Override
-    public Object getCellEditorValue() {
-        return null;
-    }
-    }
-
-
-
-
     //Gestión de las coincidencias de búsqueda
     
     private void searchPeliculas(String searchpeli, Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -487,19 +501,19 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
         // Preparamos la consulta en función de lo elegido en el campo cine
         String sql = "";
         if ("As Cancelas".equals(searchcine)) { //Introdujo el primer cine
-            sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora " +
+            sql = "select distinct pelicula.titulo, proyectar.fecha, proyectar.hora, sala.numsala " +
                     "from public.pelicula " +
                     "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
                     "join public.cine ON proyectar.id_cine = cine.id_cine " +
-                    "join public.sala ON proyectar.id_cine = sala.id_cine " +
+                    "join public.sala ON proyectar.sala = sala.numsala " +
                     "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'As Cancelas' and sala.proyeccion3d = ?::boolean;" ;
 
         } else if ("Vialia".equals(searchcine)) {  //Introdujo el segundo cine
-             sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora " +
+             sql = "select distinct pelicula.titulo, proyectar.fecha, proyectar.hora, sala.numsala " +
                     "from public.pelicula " +
                     "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
                     "join public.cine ON proyectar.id_cine = cine.id_cine " +
-                    "join public.sala ON proyectar.id_cine = sala.id_cine " +
+                       "join public.sala ON proyectar.sala = sala.numsala " +
                     "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'Vialia' and sala.proyeccion3d = ?::boolean;" ;
         }
         
@@ -514,27 +528,36 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
        
         //Actualizamos la tabla con los resultados
         DefaultTableModel model = new DefaultTableModel();
-        model.setColumnIdentifiers(new Object[]{"Título", "Fecha", "Hora", "  "/* ... */});
+        model.setColumnIdentifiers(new Object[]{"Título", "Fecha", "Hora", "Sala",/* ... */});
         while (rs.next()) { //Recorremos las columnas
             //Insertamos los datos recogidos de la sentencia
-            Object[] rowData = new Object[]{rs.getString("titulo"), rs.getString("fecha"), rs.getString("hora"), /* ... */};
+            Object[] rowData = new Object[]{rs.getString("titulo"), rs.getString("fecha"), rs.getString("hora"), rs.getString("numsala") /* ... */};
             model.addRow(rowData);
         }
         jTable1.setModel(model);
         
-       // Create your JTable and set data model and other properties
+        //Para destacar el elemento marcado
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        // Get the number of rows selected
+        int selectedRowCount = jTable1.getSelectedRowCount();
+        // If only one row is selected
+        if (selectedRowCount == 1) {
+            // Update the "Comprar" button's visibility to true
+            botoncomprar.setVisible(true);
+            // Highlight the selected row
+            jTable1.setSelectionBackground(Color.YELLOW);
+        } else {
+            // Update the "Comprar" button's visibility to false
+            botoncomprar.setVisible(false);
+            // Reset the row selection background color
+            jTable1.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+        }
+    }   
+});
 
-// Create a JButton instance
-JButton button = new JButton("Comprar"); // Replace "Button Text" with your desired button text
-
-// Set custom TableCellRenderer for button column
-int buttonColumnIndex = 3; // Replace 3 with the index of the column where you want to add the button
-jTable1.getColumnModel().getColumn(buttonColumnIndex).setCellRenderer(new ButtonRenderer(button));
-
-// Set custom TableCellEditor for button column
-jTable1.getColumnModel().getColumn(buttonColumnIndex).setCellEditor(new ButtonEditor(button));
-
-
+         
     } catch (SQLException ex) {
         ex.printStackTrace();
     } finally {
@@ -550,15 +573,7 @@ jTable1.getColumnModel().getColumn(buttonColumnIndex).setCellEditor(new ButtonEd
 }
 
 
-// Función en la que se desarrollan las acciones del botón oculto
-private void buttonActionPerformed(java.awt.event.ActionEvent evt) {      
-    /*
-    *
-    *En desarrollo
-    *
-    */
-}
 
-
+    
     
 }
