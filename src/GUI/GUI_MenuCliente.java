@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -340,9 +343,20 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         //Escondemos la ventana actual
         this.setVisible(false);
-        // Pass the data to the GUI_compraentradas constructor
+        
+        // Create a new instance of GUI_compraentradas as a JFrame with the selected data
         GUI_compraentradas compraEntradas = new GUI_compraentradas(titulo, fecha, hora, sala);
+        compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
+
+        // Add a WindowListener to the GUI_compraentradas window
+        compraEntradas.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent e) {
+            // Show the previous window again when the GUI_compraentradas window is closed
+            setVisible(true);
+        }
+    });
    
     }//GEN-LAST:event_botoncomprarActionPerformed
 

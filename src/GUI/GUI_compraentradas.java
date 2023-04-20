@@ -6,6 +6,8 @@
 package GUI;
 
 import java.awt.FlowLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -20,6 +22,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     private JLabel comprahora;
     private JLabel comprasala;
     
+    
     /**
      * Creates new form GUI_compraentradas
      */
@@ -30,7 +33,8 @@ public class GUI_compraentradas extends javax.swing.JDialog {
 
     
 
-    GUI_compraentradas(String titulo, String fecha, String hora, String numsala) {
+    public GUI_compraentradas(String titulo, String fecha, String hora, String numsala) {
+       
         // Set the layout manager for the window
         setLayout(new FlowLayout());
 
