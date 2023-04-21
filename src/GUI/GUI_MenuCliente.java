@@ -56,6 +56,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     public GUI_MenuCliente(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        botoncomprar.setVisible(false);
         try {
             //Poblamos de datos el desplegable de cines
             populateComboBox();
@@ -177,6 +178,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jScrollPane2.setViewportView(jTable1);
 
         botoncomprar.setText("Comprar");
+        botoncomprar.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                botoncomprarStateChanged(evt);
+            }
+        });
         botoncomprar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botoncomprarActionPerformed(evt);
@@ -360,6 +366,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
    
     }//GEN-LAST:event_botoncomprarActionPerformed
 
+    private void botoncomprarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_botoncomprarStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botoncomprarStateChanged
+
     /**
      * @param args the command line arguments
      */
@@ -541,7 +551,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         rs = stmt.executeQuery();
        
         //Actualizamos la tabla con los resultados
-        DefaultTableModel model = new DefaultTableModel();
+        //Indicamos que la tabla va a ser de solo lectura
+        ReadOnlyTableModel model = new ReadOnlyTableModel();
+        
+        
         model.setColumnIdentifiers(new Object[]{"Título", "Fecha", "Hora", "Sala",/* ... */});
         while (rs.next()) { //Recorremos las columnas
             //Insertamos los datos recogidos de la sentencia
@@ -585,9 +598,16 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         }
     }
 }
+//Para hacer la tabla de resultados de solo lectura
+public class ReadOnlyTableModel extends DefaultTableModel {
 
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false; // Make all cells read-only
+    }
 
+    // Override other methods as needed for your specific use case
+}
 
-    
     
 }
