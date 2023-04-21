@@ -340,8 +340,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private void botoncomprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botoncomprarActionPerformed
         //Le pasamos la info de la fila seleccionada
         int selectedRowIndex = jTable1.getSelectedRow();
-
-        // Get the data from the selected row
+        
+        // Obtenemos los datos
+        String cine = cines.getSelectedItem().toString();   //El cine
         String titulo = jTable1.getValueAt(selectedRowIndex, 0).toString();
         String fecha = jTable1.getValueAt(selectedRowIndex, 1).toString();
         String hora = jTable1.getValueAt(selectedRowIndex, 2).toString();
@@ -351,7 +352,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         this.setVisible(false);
         
         // Create a new instance of GUI_compraentradas as a JFrame with the selected data
-        GUI_compraentradas compraEntradas = new GUI_compraentradas(titulo, fecha, hora, sala);
+        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala);
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
 
