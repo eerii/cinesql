@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import java.awt.Frame;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -362,12 +363,14 @@ public class GUI_Registrarse extends javax.swing.JDialog {
     private void BotonVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonVolverActionPerformed
         // TODO add your handling code here:
         this.getParent().setVisible(true);
+        ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
     }//GEN-LAST:event_BotonVolverActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         this.getParent().setVisible(true);
+        ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
     }//GEN-LAST:event_formWindowClosing
 

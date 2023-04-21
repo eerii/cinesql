@@ -2,6 +2,7 @@
 
 package GUI;
 
+import java.awt.Frame;
 import java.sql.*;
 import java.io.FileInputStream;
 import java.util.Properties;
@@ -256,7 +257,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             //Se crea el menú adecuado
             JDialog menu=crearMenu(c,nombre);
 
-            this.setVisible(false);
+            this.setState(Frame.ICONIFIED);
             menu.setVisible(true);
             
             
@@ -276,7 +277,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         GUI_Registrarse registro=new GUI_Registrarse(this,true);
         
         //Se abre la pestaña de registro y se esconde esta
-        this.setVisible(false);
+        this.setState(Frame.ICONIFIED);
         registro.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 

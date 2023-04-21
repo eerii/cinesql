@@ -4,6 +4,9 @@
  */
 package GUI;
 
+import java.awt.Frame;
+import javax.swing.JFrame;
+
 /**
  *
  * @author alumnogreibd
@@ -71,6 +74,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
         this.getParent().setVisible(true);
+        ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
 

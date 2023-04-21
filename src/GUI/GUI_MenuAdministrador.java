@@ -4,14 +4,13 @@
  */
 package GUI;
 
+import java.awt.Frame;
 import java.sql.*;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -50,7 +49,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             idCines.add(p);
         }
         
-        }catch(Exception e){
+        }catch(SQLException e){
             GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
             
             popup.setVisible(true);
@@ -223,6 +222,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
         this.getParent().setVisible(true);
+        ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
 
@@ -268,7 +268,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
 
             }
             
-        }catch(Exception e){
+        }catch(SQLException e){
             GUI_Error popup= new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
             popup.setVisible(true);
         }
@@ -306,17 +306,15 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                GUI_MenuAdministrador dialog = new GUI_MenuAdministrador(new javax.swing.JFrame(), true,null);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            GUI_MenuAdministrador dialog = new GUI_MenuAdministrador(new javax.swing.JFrame(), true,null);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
