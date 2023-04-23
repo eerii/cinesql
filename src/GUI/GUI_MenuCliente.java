@@ -54,7 +54,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     /**
      * Creates new form GUI_MenuCliente
      */
-    public GUI_MenuCliente(java.awt.Frame parent, boolean modal) {
+    public GUI_MenuCliente(java.awt.Frame parent, boolean modal ) {
         super(parent, modal);
         initComponents();
         botoncomprar.setVisible(false);
@@ -289,17 +289,15 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+//Que ocurre cuando se cierra la ventana
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
         this.getParent().setVisible(true);
         ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
-
-    
-    
-    //Aquí determinamos qué ocurrirá cuando un usuario le de al botón Buscar
+     
+    //Qué ocurre cuando se selecciona el botón buscar?
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // Obtenemos los valores almacenados en los campos de búsqueda
         String searchpeli = campopelicula.getText(); //La pelicula
@@ -308,11 +306,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         //Comprobamos el formato de la fecha antes de continuar
         if (!searchfechaold.matches("\\d{4}-\\d{2}-\\d{2}")) {
             // Display error message to user
-            JOptionPane.showMessageDialog(null, "Please enter date in the format yyyy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Por favor, introduzca la fecha con el formato yyyy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
             return;
-        }
-        
-        //Hay que pasar el día de tipo de dato string a date
+        } 
+        //Hay que pasar el día de tipo de dato string a date para poder buscar en la base
         java.sql.Date searchfecha = java.sql.Date.valueOf(searchfechaold);
         String searchcine = cines.getSelectedItem().toString();   //El cine
         boolean is3D=check3D.isSelected();  //Si se seleccionó la opción de proyección 3D o no
@@ -344,7 +341,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         int selectedRowIndex = jTable1.getSelectedRow();
         
         // Obtenemos los datos
-        String cine = cines.getSelectedItem().toString();   //El cine
+        String cine = cines.getSelectedItem().toString();
         String titulo = jTable1.getValueAt(selectedRowIndex, 0).toString();
         String fecha = jTable1.getValueAt(selectedRowIndex, 1).toString();
         String hora = jTable1.getValueAt(selectedRowIndex, 2).toString();
@@ -353,7 +350,8 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         //Escondemos la ventana actual
         this.setVisible(false);
         
-        // Create a new instance of GUI_compraentradas as a JFrame with the selected data
+        //Creamos una nueva instancia de la ventana de compra de entradas
+        //Le pasamos al constructor los datos que necesitaremos dentro de ella
         GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala);
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
@@ -376,6 +374,8 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
+    
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -528,66 +528,64 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // Preparamos la consulta en función de lo elegido en el campo cine
         String sql = "";
         if ("As Cancelas".equals(searchcine)) { //Introdujo el primer cine
-            sql = "select distinct pelicula.titulo, proyectar.fecha, proyectar.hora, sala.numsala " +
+            sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
                     "from public.pelicula " +
-                    "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
-                    "join public.cine ON proyectar.id_cine = cine.id_cine " +
-                    "join public.sala ON proyectar.sala = sala.numsala " +
-                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'As Cancelas' and sala.proyeccion3d = ?::boolean;" ;
+                    "join public.proyectar ON pelicula.id = proyectar.id_pelicula " +
+                    "join public.cine ON proyectar.id_cine = cine.id " +
+                    "join public.sala ON proyectar.num_sala = sala.num_sala " +
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'As Cancelas' and sala.es_3d = ?::boolean;" ;
 
         } else if ("Vialia".equals(searchcine)) {  //Introdujo el segundo cine
-             sql = "select distinct pelicula.titulo, proyectar.fecha, proyectar.hora, sala.numsala " +
+             sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
                     "from public.pelicula " +
-                    "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
-                    "join public.cine ON proyectar.id_cine = cine.id_cine " +
-                       "join public.sala ON proyectar.sala = sala.numsala " +
-                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'Vialia' and sala.proyeccion3d = ?::boolean;" ;
+                    "join public.proyectar ON pelicula.id = proyectar.id_pelicula " +
+                    "join public.cine ON proyectar.id_cine = cine.id " +
+                    "join public.sala ON proyectar.num_sala = sala.num_sala " +
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'Vialia' and sala.es_3d = ?::boolean;" ;
         }
         
-        // Prepare the statement and set the parameters for the query
+        
         stmt = c.prepareStatement(sql);
-        stmt.setString(1, "%"+searchpeli+"%");
+        stmt.setString(1, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/no sea correctamente escrito
         stmt.setDate(2, (java.sql.Date) searchfecha);
         stmt.setBoolean(3,is3D);
         
-        // Execute the query and get the results
         rs = stmt.executeQuery();
        
         //Actualizamos la tabla con los resultados
         //Indicamos que la tabla va a ser de solo lectura
         ReadOnlyTableModel model = new ReadOnlyTableModel();
-        
-        
+        //Titulamos cada columna
         model.setColumnIdentifiers(new Object[]{"Título", "Fecha", "Hora", "Sala",/* ... */});
-        while (rs.next()) { //Recorremos las columnas
-            //Insertamos los datos recogidos de la sentencia
-            Object[] rowData = new Object[]{rs.getString("titulo"), rs.getString("fecha"), rs.getString("hora"), rs.getString("numsala") /* ... */};
+        while (rs.next()) { //Recorremos las proyecciones obtenidas en el query
+            //Y los insertamos en cada fila
+            Object[] rowData = new Object[]{rs.getString("titulo"), rs.getString("fecha"), rs.getString("hora"), rs.getString("num_sala") /* ... */};
             model.addRow(rowData);
         }
         jTable1.setModel(model);
         
-        //Para destacar el elemento marcado
-        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        
+        //Con el siguiente fragmento, permitimos que cuando un usuario seleccione una fila (osea una proyección)
+        //Esta se marque de botón amarillo y a la vez se habilite el botón de comprar para dicha sesión
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
     @Override
-    public void valueChanged(ListSelectionEvent e) {
-        // Get the number of rows selected
+    public void valueChanged(ListSelectionEvent e) {    //Método que se encarga de ello
+        //Contamos el número de filas seleccionadas
         int selectedRowCount = jTable1.getSelectedRowCount();
-        // If only one row is selected
-        if (selectedRowCount == 1) {
-            // Update the "Comprar" button's visibility to true
+        //Solamente permitimos que se seleccione una
+        if (selectedRowCount == 1) {//Cuando se selecciona
+            //Marcamos como visible el botón comprar
             botoncomprar.setVisible(true);
-            // Highlight the selected row
+            //Marcamos de amarillo la fila seleccionada
             jTable1.setSelectionBackground(Color.YELLOW);
         } else {
-            // Update the "Comprar" button's visibility to false
+            //Si se deselecciona una fila se esconde el botón
+            //Y se devuelve a su color por defecto
             botoncomprar.setVisible(false);
-            // Reset the row selection background color
             jTable1.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         }
     }   
-});
-
-         
+});      
     } catch (SQLException ex) {
         ex.printStackTrace();
     } finally {

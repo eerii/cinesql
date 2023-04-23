@@ -1,10 +1,10 @@
-
-
 package GUI;
-
 import java.awt.Frame;
 import java.sql.*;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 import javax.swing.*;
 
@@ -251,8 +251,9 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                                             "://" + prop.getProperty("servidor") + 
                                             ":" + prop.getProperty("puerto") +
                                             "/" + prop.getProperty("baseDatos"),
-                                            nombre, 
-                                            contrasena);
+                                            /*nombre, //Modifico momentaneamente la conexion para poder probar los cambios
+                                            contrasena);*/"alumnogreibd",
+                                            "greibd2021");
             
             //Se crea el menú adecuado
             JDialog menu=crearMenu(c,nombre);
@@ -341,6 +342,36 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
 
         ResultSet resultado=s.executeQuery();
         
+        //Como los usuarios se loguean como correo, podemos usarlo para obtener su id de usuario
+        //Esta se la pasaremos a las siguientes guis para que puedan realizar algunas operaciones
+        
+        String sql_idu= "SELECT id FROM public.socio WHERE correo_electronico=?";
+        PreparedStatement s_id=c.prepareStatement(sql_idu);
+
+        s_id.setString(1,nombre);
+        int id_user=0;
+        ResultSet resultado_id=s_id.executeQuery();
+        if(resultado_id.next()){
+            id_user = resultado_id.getInt("id"); //Almacenamos el resultado obtenido
+        }
+        
+        
+        // Cargamos el usuario en el fichero de propiedades, para que las demás guis lo puedan usar
+        Properties props = new Properties();
+        props.setProperty("id_user", Integer.toString(id_user));
+        try (OutputStream fis = new FileOutputStream("sesioniniciada.properties")) {
+            props.store(fis,null);  //Almacenamos en .properties
+            System.out.println("Insertado");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        // Guardamos la actualización del fichero
+        try (FileOutputStream fos = new FileOutputStream("sesioniniciada.properties")) {
+            props.store(fos, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         JDialog menu=null;
 
         //Si el resultado no es vacío
@@ -362,7 +393,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                 case "Dependiente":
                     menu=new GUI_MenuDependiente(this,true);
                     break;
-
+                
                 case "Cliente":
                     menu=new GUI_MenuCliente(this,true);
                     break;
