@@ -251,9 +251,9 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                                             "://" + prop.getProperty("servidor") + 
                                             ":" + prop.getProperty("puerto") +
                                             "/" + prop.getProperty("baseDatos"),
-                                            /*nombre, //Modifico momentaneamente la conexion para poder probar los cambios
-                                            contrasena);*/"alumnogreibd",
-                                            "greibd2021");
+                                            /*No se deshizo el cambio antes de subirlo*/
+                                        nombre,
+                                            contrasena);
             
             //Se crea el menú adecuado
             JDialog menu=crearMenu(c,nombre);
@@ -334,13 +334,6 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
 
     public JDialog crearMenu(Connection c, String nombre) throws Exception{
     
-        //Se obtiene el rol del usuario, el cual esta guardado en la base de datos de Usuarios
-        String sql= "SELECT rol FROM Usuarios WHERE nombre=?";
-        PreparedStatement s=c.prepareStatement(sql);
-
-        s.setString(1,nombre);
-
-        ResultSet resultado=s.executeQuery();
         
         //Como los usuarios se loguean como correo, podemos usarlo para obtener su id de usuario
         //Esta se la pasaremos a las siguientes guis para que puedan realizar algunas operaciones
@@ -373,6 +366,14 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             e.printStackTrace();
         }
         JDialog menu=null;
+        
+        //Se obtiene el rol del usuario, el cual esta guardado en la base de datos de Usuarios
+        String sql= "SELECT rol FROM Usuarios WHERE nombre=?";
+        PreparedStatement s=c.prepareStatement(sql);
+
+        s.setString(1,nombre);
+
+        ResultSet resultado=s.executeQuery();
 
         //Si el resultado no es vacío
         if(resultado.next()){
@@ -391,11 +392,11 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                     break;
 
                 case "Dependiente":
-                    menu=new GUI_MenuDependiente(this,true);
+                    menu=new GUI_MenuDependiente(this,true,c);
                     break;
                 
                 case "Cliente":
-                    menu=new GUI_MenuCliente(this,true);
+                    menu=new GUI_MenuCliente(this,true,c);
                     break;
 
                 default:

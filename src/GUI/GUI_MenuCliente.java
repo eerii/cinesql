@@ -51,10 +51,12 @@ import javax.swing.table.TableColumnModel;
  */
 public class GUI_MenuCliente extends javax.swing.JDialog {
 
+    private Connection conexion;
+    
     /**
      * Creates new form GUI_MenuCliente
      */
-    public GUI_MenuCliente(java.awt.Frame parent, boolean modal ) {
+    public GUI_MenuCliente(java.awt.Frame parent, boolean modal, Connection c) {
         super(parent, modal);
         initComponents();
         botoncomprar.setVisible(false);
@@ -403,7 +405,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(), true);
+                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(), true,null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -446,24 +448,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private void populateComboBox() throws SQLException, FileNotFoundException, IOException {
         
          //Se intenta la conexion
-        Connection c= null;
-        Properties prop = new Properties();
-        FileInputStream file_prop;
+        Connection c= this.conexion;
     
         try {
-             //Abrimos el archivo
-            file_prop = new FileInputStream("baseDatos.properties");
-            prop.load(file_prop);
-            file_prop.close();
-
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                                            "://" + prop.getProperty("servidor") + 
-                                            ":" + prop.getProperty("puerto") +
-                                            "/" + prop.getProperty("baseDatos"),
-                                            "alumnogreibd", 
-                                            "greibd2021");
-            
         
             // Creamos un statement para ejecutar la consulta de sql
             Statement statement = c.createStatement();
@@ -491,7 +478,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(listaCines.toArray(new String[0]));
         cines.setModel(comboBoxModel);
         
-    } catch (ClassNotFoundException | SQLException ex) {
+    } catch (SQLException ex) {
         ex.printStackTrace();
     }
 }
@@ -506,25 +493,12 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     
     private void searchPeliculas(String searchpeli, Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
     // Preparamos la conexión a la base de datos
-    Connection c = null;
+    Connection c = this.conexion;
     PreparedStatement stmt = null;
-    Properties prop = new Properties();
-    FileInputStream file_prop;
     ResultSet rs = null;
     try {
-          //Abrimos el archivo
-            file_prop = new FileInputStream("baseDatos.properties");
-            prop.load(file_prop);
-            file_prop.close();
-
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                                            "://" + prop.getProperty("servidor") + 
-                                            ":" + prop.getProperty("puerto") +
-                                            "/" + prop.getProperty("baseDatos"),
-                                            "alumnogreibd", 
-                                            "greibd2021");
-            
+        
+//////////¡Cuidado!:Podría haber más cines o diferentes, esto hay que cambiarlo
         // Preparamos la consulta en función de lo elegido en el campo cine
         String sql = "";
         if ("As Cancelas".equals(searchcine)) { //Introdujo el primer cine

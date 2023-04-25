@@ -5,6 +5,7 @@
 package GUI;
 
 import java.awt.Frame;
+import java.sql.Connection;
 import javax.swing.JFrame;
 
 /**
@@ -13,12 +14,16 @@ import javax.swing.JFrame;
  */
 public class GUI_MenuDependiente extends javax.swing.JDialog {
 
+    private Connection conexion;
+    
     /**
      * Creates new form GUI_MenuDependiente
      */
-    public GUI_MenuDependiente(java.awt.Frame parent, boolean modal) {
+    public GUI_MenuDependiente(java.awt.Frame parent, boolean modal,Connection c) {
         super(parent, modal);
         initComponents();
+        
+        this.conexion=c;
         
         //Se centra
         this.setLocationRelativeTo(null);
@@ -106,17 +111,15 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                GUI_MenuDependiente dialog = new GUI_MenuDependiente(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            GUI_MenuDependiente dialog = new GUI_MenuDependiente(new javax.swing.JFrame(), true,null);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 

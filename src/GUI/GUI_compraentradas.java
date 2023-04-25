@@ -5,9 +5,6 @@
  */
 package GUI;
 
-import java.awt.FlowLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,7 +13,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -24,12 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 
@@ -38,34 +28,25 @@ import javax.swing.JOptionPane;
  * @author migue
  */
 public class GUI_compraentradas extends javax.swing.JDialog {
+    
+    private Connection conexion;
 
-    public GUI_compraentradas(java.awt.Frame parent, boolean modal) {
+    public GUI_compraentradas(java.awt.Frame parent, boolean modal, Connection c) {
         super(parent, modal);
         initComponents();
+        
+        this.conexion=c;
     }
 
     
     //Método para buscar la capacidad de la sala en la base de datos
     private String buscarCap(int numsala, String cine) throws IOException {
         //Se intenta la conexion
-         Connection c = null;
+         Connection c = this.conexion;
         PreparedStatement statement = null;
-        Properties prop = new Properties();
-        FileInputStream file_prop;
         ResultSet rs = null;
+        
         try {
-             //Abrimos el archivo
-            file_prop = new FileInputStream("baseDatos.properties");
-            prop.load(file_prop);
-            file_prop.close();
-
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                                            "://" + prop.getProperty("servidor") + 
-                                            ":" + prop.getProperty("puerto") +
-                                            "/" + prop.getProperty("baseDatos"),
-                                            "alumnogreibd", 
-                                            "greibd2021");
         
             // Query para obtener el número disponible de butacas
             String query = "SELECT sala.num_butacas FROM public.sala "+
@@ -96,11 +77,8 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             c.close();
             return salaCapString;
                
-    } catch (ClassNotFoundException | SQLException ex) {
-        ex.printStackTrace();
-        return "";
-    }   catch (FileNotFoundException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return "";
         }
     }
@@ -110,27 +88,13 @@ public class GUI_compraentradas extends javax.swing.JDialog {
          
         
         //Se intenta la conexion
-         Connection c = null;
+         Connection c = this.conexion;
         PreparedStatement statement = null;
         PreparedStatement statement2 = null;
-        Properties prop = new Properties();
-        FileInputStream file_prop;
         ResultSet rs = null;
         ResultSet rs2 = null;
     
         try {
-             //Abrimos el archivo
-            file_prop = new FileInputStream("baseDatos.properties");
-            prop.load(file_prop);
-            file_prop.close();
-
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                                            "://" + prop.getProperty("servidor") + 
-                                            ":" + prop.getProperty("puerto") +
-                                            "/" + prop.getProperty("baseDatos"),
-                                            "alumnogreibd", 
-                                            "greibd2021");
         
             // Query para obtener las entradas que se emitieron para la película
             String query = "SELECT count(entrada.num_asiento) " +
@@ -198,14 +162,8 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             return numEntdisponibles;
        
         
-    } catch (ClassNotFoundException | SQLException ex) {
-        ex.printStackTrace();
-        return "";
-    }   catch (FileNotFoundException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-            return "";
-        } catch (IOException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return "";
         }
     }
@@ -213,25 +171,11 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     //Función que busca en la base de datos y devuelve el precio de la entrada
     private String buscarPrecio(String cine, String titulo, String fecha, String hora, int numsala){
         //Se intenta la conexion
-        Connection c = null;
+        Connection c = this.conexion;
         PreparedStatement statement = null;
-        Properties prop = new Properties();
-        FileInputStream file_prop;
         ResultSet rs = null;
     
         try {
-             //Abrimos el archivo
-            file_prop = new FileInputStream("baseDatos.properties");
-            prop.load(file_prop);
-            file_prop.close();
-
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                                            "://" + prop.getProperty("servidor") + 
-                                            ":" + prop.getProperty("puerto") +
-                                            "/" + prop.getProperty("baseDatos"),
-                                            "alumnogreibd", 
-                                            "greibd2021");
         
             // Query para obtener las entradas
             String query = "SELECT producto.precio " +
@@ -273,14 +217,8 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             return ePrecio;
        
         
-    } catch (ClassNotFoundException | SQLException ex) {
-        ex.printStackTrace();
-        return "";
-    }   catch (FileNotFoundException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-            return "";
-        } catch (IOException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return "";
         }
     }
@@ -636,33 +574,15 @@ public class GUI_compraentradas extends javax.swing.JDialog {
 //Función que se encarga de guardar la compra en la base de datos, actualizando las tablas pertinentes
 public void actualizarCompras(int numentradas, String cine, String fecha, String hora, int sala, String titulo, int coste) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException{
     //Se intenta la conexion
-        Connection c = null;
+        Connection c = this.conexion;
         PreparedStatement statement_entradas = null;
         PreparedStatement statement_lp= null;
         PreparedStatement statement_vender= null;
         PreparedStatement last_lp_s= null;
-        Properties prop = new Properties();
-        FileInputStream file_prop;
         ResultSet rs = null;
         ResultSet rs2 = null;
     
-        //Abrimos el archivo
-        file_prop = new FileInputStream("baseDatos.properties");        
-        prop.load(file_prop); 
-        file_prop.close();
-
-        Class.forName("org.postgresql.Driver");
-        try {
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                    "://" + prop.getProperty("servidor") +
-                    ":" + prop.getProperty("puerto") +
-                    "/" + prop.getProperty("baseDatos"),
-                    "alumnogreibd",
-                    "greibd2021");
-       /* } catch (SQLException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        
+        try {        
         
         //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
         //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto
@@ -813,21 +733,17 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 if (numentradas> entradasdisponibles) { //Numero incorrecto. Se gestiona el error
                     JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                else{   try {
+                else{      try {
                     //Número correcto. Actualizamos el número de butacas libres y volvemos a la ventana principal
                     actualizarCompras(numentradas,cine,fecha,hora,sala,titulo,coste);
-                    } catch (IOException ex) {
-                        Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (SQLException ex) {
+                    } catch (IOException | ClassNotFoundException | SQLException ex) {
                         Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     int newedisponibles = entradasdisponibles - numentradas;
                     entradaslibres.setText(Integer.toString(newedisponibles));
                     setVisible(false);
                     dispose();
-                    GUI_MenuCliente gui = new GUI_MenuCliente(null,true);
+                    GUI_MenuCliente gui = new GUI_MenuCliente(null,true,this.conexion);
                     gui.setVisible(true);
                 }
             } catch (NumberFormatException ex) {
@@ -865,7 +781,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI_compraentradas dialog = new GUI_compraentradas(new javax.swing.JFrame(), true);
+                GUI_compraentradas dialog = new GUI_compraentradas(new javax.swing.JFrame(), true,null);
                 
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
