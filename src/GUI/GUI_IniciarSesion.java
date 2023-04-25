@@ -334,7 +334,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
 
     public JDialog crearMenu(Connection c, String nombre) throws Exception{
     
-        
+        /*
         //Como los usuarios se loguean como correo, podemos usarlo para obtener su id de usuario
         //Esta se la pasaremos a las siguientes guis para que puedan realizar algunas operaciones
         
@@ -364,7 +364,9 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             props.store(fos, null);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+
         JDialog menu=null;
         
         //Se obtiene el rol del usuario, el cual esta guardado en la base de datos de Usuarios

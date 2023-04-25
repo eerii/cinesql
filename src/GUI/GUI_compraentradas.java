@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -584,6 +583,8 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
     
         try {        
         
+        //Se cambió el script, ahora el cliente puede ver productos y lineas, y si tuve tiempo una funcion
+            
         //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
         //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto
         String queryentradas = "SELECT e.id " +
@@ -620,7 +621,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
             
         //Guardamos el resultado en resultSet
         rs = statement_entradas.executeQuery();
-        List<Integer> idProductos = new ArrayList<>();  //Lista en la que almacenaremos las ids de entrada obtenidas
+        //List<Integer> idProductos = new ArrayList<>();  //Lista en la que almacenaremos las ids de entrada obtenidas
             
         int numencontrado=0;    //Valor con el que comprobaremos si se encontraron suficientes entradas
         try {
@@ -639,19 +640,33 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 
                 rs.beforeFirst(); // Reseteamos el puntero del result set para volver a recorrerlo
                 try {
-                    //antes de nada tenemos que generar una nueva id para esta nueva linea de producto
-                    //Primero buscamos la id numéricamente más grande que haya (porque las ids son secuenciales)
-                    String last_lp = "SELECT MAX(id) as id_linea FROM public.lineaproducto";
-                    last_lp_s=c.prepareStatement(last_lp);
-                    rs2 = last_lp_s.executeQuery();
-                    int new_last_lp_s=0;
-                    if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
-                        new_last_lp_s = rs2.getInt("id_linea");
-                        new_last_lp_s = new_last_lp_s + 1; //creamos la nueva id. Más tarde se insertará en la tabla de lineas
-                    }
+
+                //antes de nada tenemos que generar una nueva id para esta nueva linea de producto
+                //Primero buscamos la id numéricamente más grande que haya (porque las ids son secuenciales)
+                String last_lp = "SELECT MAX(id) as id_linea FROM public.lineaproducto";
+                last_lp_s=c.prepareStatement(last_lp);
+                rs2 = last_lp_s.executeQuery();
+                int new_last_lp_s=0;
+                if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
+                    new_last_lp_s = rs2.getInt("id_linea");
+                    new_last_lp_s = new_last_lp_s + 1; //creamos la nueva id. Más tarde se insertará en la tabla de lineas
+                }
                         
                 //Recorremos el bucle del result set
                 while (rs.next()) {
+                    
+                //El cliente no tiene permiso de insertar
+                //Hay que hacer función en el DBeaver para hacer las inserciones
+                
+                //Se obtiene el id del producto
+                int newidproducto=rs.getInt("id");
+                
+                //Se obtiene el id del espectador
+                String nombreUsuario=this.conexion.getMetaData().getUserName();
+                //...
+                
+                
+                    /*
                     c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
                     
                     // Almacenamos la id de la entrada actual en esta variable
@@ -691,8 +706,9 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                         statement_vender.setFloat(4,(float) coste);       //costetotal
                         statement_vender.execute();
                         c.commit(); 
+                        */
                 }
-                    c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
+                    //c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
                     } catch (SQLException e) {
                         
                         System.err.println("Error al obtener el id_producto: " + e.getMessage());
