@@ -1,5 +1,6 @@
 package GUI;
 import java.awt.Frame;
+import java.awt.Image;
 import java.sql.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,6 +20,9 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
      */
     public GUI_IniciarSesion() {
         initComponents();
+        
+        //Se asigna un titulo
+        this.setTitle("Cinetse");
         
         //Se  centra en la pantalla
         this.setLocationRelativeTo(null);
@@ -53,6 +57,11 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         setIconImage(getIconImage());
         setLocation(new java.awt.Point(0, 0));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -251,9 +260,8 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                                             "://" + prop.getProperty("servidor") + 
                                             ":" + prop.getProperty("puerto") +
                                             "/" + prop.getProperty("baseDatos"),
-                                            /*No se deshizo el cambio antes de subirlo*/
                                         nombre,
-                                            contrasena);
+                                     contrasena);
             
             //Se crea el menú adecuado
             JDialog menu=crearMenu(c,nombre);
@@ -281,6 +289,10 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         this.setState(Frame.ICONIFIED);
         registro.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

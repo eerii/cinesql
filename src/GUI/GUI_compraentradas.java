@@ -5,16 +5,11 @@
  */
 package GUI;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -73,7 +68,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             // Cerramos todo antes de acabar
             rs.close();
             statement.close();
-            c.close();
             return salaCapString;
                
         } catch (SQLException ex) {
@@ -156,7 +150,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             rs2.close();
             statement.close();
             statement2.close();
-            c.close();
             
             return numEntdisponibles;
        
@@ -211,7 +204,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             // Cerramos todo antes de acabar
             rs.close();
             statement.close();
-            c.close();
             
             return ePrecio;
        
@@ -224,8 +216,11 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     
     
 //Constructor principal de la ventana de compra de entradas
-    public GUI_compraentradas(String cine, String titulo, String fecha, String hora, String numsala1) {
+    public GUI_compraentradas(String cine, String titulo, String fecha, String hora, String numsala1, Connection c) {
         initComponents(); // Inicializamos la vista       
+        
+        this.conexion=c;//Se guarda la conexion que se esta usando
+        
         //Pasamos el valor del numero de sala recibido a int
         int numsala = Integer.parseInt(numsala1);
         //Inicializamos los cuadros de texto con los elementos recibidos
@@ -583,7 +578,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
     
         try {        
         
-        //Se cambió el script, ahora el cliente puede ver productos y lineas, y si tuve tiempo una funcion
+        //Se cambió el script, ahora el cliente puede ver productos y lineas, y usar una funcion
             
         //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
         //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto
@@ -658,12 +653,19 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 //El cliente no tiene permiso de insertar
                 //Hay que hacer función en el DBeaver para hacer las inserciones
                 
-                //Se obtiene el id del producto
+                //Se obtienen las variables necesarias
                 int newidproducto=rs.getInt("id");
+                String correoUsuario=this.conexion.getMetaData().getUserName();
                 
-                //Se obtiene el id del espectador
-                String nombreUsuario=this.conexion.getMetaData().getUserName();
-                //...
+                //Se ejecuta la funcion con estos parametros
+                PreparedStatement guardarCompra=this.conexion.prepareStatement(
+                        "select guardar_compra(?,?,?,?)");
+                guardarCompra.setInt(1, new_last_lp_s);
+                guardarCompra.setInt(2, newidproducto);
+                guardarCompra.setString(3,correoUsuario);
+                guardarCompra.setFloat(4, coste);
+                
+                guardarCompra.execute();
                 
                 
                     /*
@@ -725,7 +727,6 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                         last_lp_s.close();
                         statement_entradas.close();
                         statement_vender.close();
-                        c.close();
          } catch (SQLException ex) {
             Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -42,6 +42,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     public GUI_MenuCliente(java.awt.Frame parent, boolean modal, Connection c) {
         super(parent, modal);
         initComponents();
+        
+        this.conexion=c;
+        
         botoncomprar.setVisible(false);
         try {
             //Poblamos de datos el desplegable de cines
@@ -277,6 +280,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 //Que ocurre cuando se cierra la ventana
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
+        try{
+        this.conexion.close();
+        }catch(Exception e){}
         this.getParent().setVisible(true);
         ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
@@ -337,7 +343,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         //Creamos una nueva instancia de la ventana de compra de entradas
         //Le pasamos al constructor los datos que necesitaremos dentro de ella
-        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala);
+        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala,this.conexion);
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
 
@@ -455,7 +461,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // Cerramos todo antes de acabar
         resultSet.close();
         statement.close();
-        c.close();
         
         // Poblamos el desplegable con los nombres de la lista
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(listaCines.toArray(new String[0]));
@@ -481,31 +486,20 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     ResultSet rs = null;
     try {
         
-//////////¡Cuidado!:Podría haber más cines o diferentes, esto hay que cambiarlo
-        // Preparamos la consulta en función de lo elegido en el campo cine
-        String sql = "";
-        if ("As Cancelas".equals(searchcine)) { //Introdujo el primer cine
-            sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
+        // Preparamos la consulta
+        String sql ="select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
                     "from public.pelicula " +
                     "join public.proyectar ON pelicula.id = proyectar.id_pelicula " +
                     "join public.cine ON proyectar.id_cine = cine.id " +
                     "join public.sala ON proyectar.num_sala = sala.num_sala " +
-                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'As Cancelas' and sala.es_3d = ?::boolean;" ;
-
-        } else if ("Vialia".equals(searchcine)) {  //Introdujo el segundo cine
-             sql = "select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
-                    "from public.pelicula " +
-                    "join public.proyectar ON pelicula.id = proyectar.id_pelicula " +
-                    "join public.cine ON proyectar.id_cine = cine.id " +
-                    "join public.sala ON proyectar.num_sala = sala.num_sala " +
-                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = 'Vialia' and sala.es_3d = ?::boolean;" ;
-        }
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = ? and sala.es_3d = ?::boolean;" ;
         
         
         stmt = c.prepareStatement(sql);
-        stmt.setString(1, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/no sea correctamente escrito
-        stmt.setDate(2, (java.sql.Date) searchfecha);
-        stmt.setBoolean(3,is3D);
+        stmt.setString(1,searchcine);
+        stmt.setString(2, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/no sea correctamente escrito
+        stmt.setDate(3, (java.sql.Date) searchfecha);
+        stmt.setBoolean(4,is3D);
         
         rs = stmt.executeQuery();
        
@@ -550,7 +544,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         try {
             if (rs != null) rs.close();
             if (stmt != null) stmt.close();
-            if (c != null) c.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
