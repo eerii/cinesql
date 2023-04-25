@@ -10,8 +10,6 @@ import java.sql.*;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
@@ -45,7 +43,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         
         //Se crean atributos auxiliares
         this.conexion=c;
-        this.idCines=new ArrayList();
+        this.idCines=new ArrayList<Entry<Integer,String>>();
         
         //Se muestran unos datos predeterminados
         try{
@@ -56,7 +54,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         while(cines.next()){
             jComboBox3.addItem(cines.getString(1)+", "+cines.getString(2));
             //Se almacenan los pares de id y nombre mostrado para acelerar las consultas siguientes
-            Entry p= new SimpleEntry(cines.getInt(3),cines.getString(1)+", "+cines.getString(2));
+            Entry<Integer,String> p= new SimpleEntry<Integer,String>(cines.getInt(3),cines.getString(1)+", "+cines.getString(2));
             idCines.add(p);
         }
         
@@ -530,7 +528,8 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         try{
 
             //Se cargan los datos
-            String nombre,apellido1,apellido2,correo,dni,telefono,contrasena;
+            String nombre,apellido1,apellido2,correo,dni,telefono;
+            char[] clave;
             Integer numIdiomas;
             Boolean experiencia, esDependiente;
 
@@ -547,10 +546,10 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
                 numIdiomas=Integer.valueOf(jTextField5.getText());
             }
             correo=jTextField6.getText();
-            contrasena=jPasswordField1.getText();
+            clave=jPasswordField1.getPassword();
 
             //Se comprueba si algun campo importante es null
-            if(nombre.isEmpty()||apellido1.isEmpty()||correo.isEmpty()||contrasena.isEmpty()){
+            if(nombre.isEmpty()||apellido1.isEmpty()||correo.isEmpty()||clave.length==0){
                 throw new Exception("Hay campos importantes sin cumplir.");
             }
 
@@ -575,7 +574,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             s.setString(6,telefono);
             s.setString(7,correo);
             s.setBoolean(8, experiencia);
-            s.setString(9,contrasena);
+            s.setString(9, new String(clave));
 
             s.execute();
 
@@ -592,7 +591,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             }
 
             //Se le crea una conexion
-            String sql="CREATE USER \""+correo+"\" IN ROLE Dependiente PASSWORD '"+contrasena+"'";
+            String sql="CREATE USER \""+correo+"\" IN ROLE Dependiente PASSWORD '"+new String(clave)+"'";
             s=this.conexion.prepareStatement(sql);
             
             s.execute();            
