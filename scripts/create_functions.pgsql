@@ -1,17 +1,14 @@
 CREATE OR REPLACE FUNCTION registrar_socio(nombre text, apellido1 text, apellido2 text, dni text, correo text, telefono text, fecha_nac text, clave text)
     RETURNS void
-    SECURITY DEFINER
+    SECURITY INVOKER
     AS $$
 DECLARE
     id integer;
 BEGIN
     SELECT
-        max(e.id) INTO id
-    FROM
-        espectador e;
-    id = id + 1;
+        nextval(pg_get_serial_sequence('espectador', 'id')) INTO id;
     EXECUTE format('INSERT INTO Usuarios VALUES(%L,%L)', correo, 'Cliente');
-    EXECUTE format('INSERT INTO Espectador Values(%L)', id);
+    EXECUTE format('INSERT INTO Espectador VALUES(%L)', id);
     EXECUTE format('INSERT INTO Socio VALUES(%L,%L,%L,%L,%L,%L,%L,%L,%L)', id, dni, nombre, apellido1, apellido2, correo, telefono, fecha_nac, clave);
     EXECUTE format('CREATE USER %I IN ROLE Cliente PASSWORD %L', correo, clave);
 END;
@@ -20,7 +17,7 @@ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION guardar_compra(id_linea integer, id_producto integer, correo text, coste float8)
     RETURNS void
-    SECURITY DEFINER
+    SECURITY INVOKER
     AS $$
 DECLARE
     id_usuario integer;

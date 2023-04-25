@@ -343,7 +343,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         //Creamos una nueva instancia de la ventana de compra de entradas
         //Le pasamos al constructor los datos que necesitaremos dentro de ella
-        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala,this.conexion);
+        GUI_CompraEntradas compraEntradas = new GUI_CompraEntradas(cine,titulo, fecha, hora, sala,this.conexion);
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
 

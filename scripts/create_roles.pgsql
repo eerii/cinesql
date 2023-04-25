@@ -15,4 +15,3 @@ GRANT INSERT, UPDATE, DELETE ON Vender, LineaProducto, Producto, Comida, Entrada
 GRANT SELECT ON Comida, Entrada, Producto, LineaProducto, Proyectar, Pelicula, Sala, Cine, Usuarios TO Cliente;
 
 GRANT EXECUTE ON FUNCTION registrar_socio(text, text, text, text, text, text, text, text), guardar_compra(integer, integer, text, float8) TO Cliente;
-

@@ -32,10 +32,10 @@ public class Socio {
         }
     }
 
-    public PreparedStatement crearConsulta() throws Exception {
+    public PreparedStatement crearConsulta(BaseDatos bd) throws Exception {
         PreparedStatement ps = null;
         
-        ps = BaseDatos.getInstance().getConnection().prepareStatement("SELECT registrar_socio(?, ?, ?, ?, ?, ?, ?, ?)");
+        ps = bd.getConnection().prepareStatement("SELECT registrar_socio(?, ?, ?, ?, ?, ?, ?, ?)");
         ps.setString(1, nombre);
         ps.setString(2, apellido1);
         ps.setString(3, apellido2);

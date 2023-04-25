@@ -21,11 +21,11 @@ import javax.swing.JOptionPane;
  *
  * @author migue
  */
-public class GUI_compraentradas extends javax.swing.JDialog {
+public class GUI_CompraEntradas extends javax.swing.JDialog {
     
     private Connection conexion;
 
-    public GUI_compraentradas(java.awt.Frame parent, boolean modal, Connection c) {
+    public GUI_CompraEntradas(java.awt.Frame parent, boolean modal, Connection c) {
         super(parent, modal);
         initComponents();
         
@@ -216,7 +216,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     
     
 //Constructor principal de la ventana de compra de entradas
-    public GUI_compraentradas(String cine, String titulo, String fecha, String hora, String numsala1, Connection c) {
+    public GUI_CompraEntradas(String cine, String titulo, String fecha, String hora, String numsala1, Connection c) {
         initComponents(); // Inicializamos la vista       
         
         this.conexion=c;//Se guarda la conexion que se esta usando
@@ -233,7 +233,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             //Como la capacidad de la sala se busca en un query hay que controlar el caso en que no funcione
             capacidadsala.setText(buscarCap(numsala,cine));
         } catch (IOException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GUI_CompraEntradas.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         //Llenamos de valores el desplegable de número de entradas
@@ -472,7 +472,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
                         .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(37, 37, 37)
@@ -728,7 +728,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                         statement_entradas.close();
                         statement_vender.close();
          } catch (SQLException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GUI_CompraEntradas.class.getName()).log(Level.SEVERE, null, ex);
         }
 }
         
@@ -748,13 +748,13 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 String titulo=panelPeli.getText();
                 int coste=Integer.parseInt(precioentrada.getText());
                 if (numentradas> entradasdisponibles) { //Numero incorrecto. Se gestiona el error
-                    JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(GUI_CompraEntradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 else{      try {
                     //Número correcto. Actualizamos el número de butacas libres y volvemos a la ventana principal
                     actualizarCompras(numentradas,cine,fecha,hora,sala,titulo,coste);
                     } catch (IOException | ClassNotFoundException | SQLException ex) {
-                        Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(GUI_CompraEntradas.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     int newedisponibles = entradasdisponibles - numentradas;
                     entradaslibres.setText(Integer.toString(newedisponibles));
@@ -764,7 +764,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                     gui.setVisible(true);
                 }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(GUI_CompraEntradas.this, "Error: Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
             }
     }//GEN-LAST:event_finalizarcompraActionPerformed
 
@@ -785,20 +785,21 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_CompraEntradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_CompraEntradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_CompraEntradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_CompraEntradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI_compraentradas dialog = new GUI_compraentradas(new javax.swing.JFrame(), true,null);
+                GUI_CompraEntradas dialog = new GUI_CompraEntradas(new javax.swing.JFrame(), true,null);
                 
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override

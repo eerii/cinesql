@@ -7,6 +7,7 @@ package GUI;
 import java.awt.Frame;
 import javax.swing.JFrame;
 
+import DB.BaseDatos;
 import DB.Socio;
 
 /**
@@ -319,7 +320,8 @@ public class GUI_Registrarse extends javax.swing.JDialog {
         // TODO add your handling code here:
 
         try{
-            this.registrarSocio();
+            BaseDatos bd = new BaseDatos();
+            this.registrarSocio(bd);
 
             //Se hace visible el texto de "todo fue bien"
             jLabel14.setVisible(true);
@@ -434,7 +436,7 @@ public class GUI_Registrarse extends javax.swing.JDialog {
     private javax.swing.JTextPane jTextPane6;
     // End of variables declaration//GEN-END:variables
 
-    public void registrarSocio() throws Exception{
+    public void registrarSocio(BaseDatos bd) throws Exception{
         String nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho;
         char[] clave;
 
@@ -450,6 +452,6 @@ public class GUI_Registrarse extends javax.swing.JDialog {
         clave=jPasswordField2.getPassword();
 
         Socio s = new Socio(nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho, clave);
-        s.crearConsulta().execute();
+        s.crearConsulta(bd).execute();
     }
 }

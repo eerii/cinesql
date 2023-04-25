@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.Properties;
 import javax.swing.*;
 
+import DB.BaseDatos;
+
 /**
  *
  * @author alumnogreibd
@@ -236,32 +238,15 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         //Se leen el nombre y contraseña escritos
-        String nombre, contrasena;
+        String nombre;
+        char[] clave;
         
         nombre=campoNombre.getText();
-        contrasena=campoContrasena.getText();
-        
-        
-        //Se intenta la conexion
-        Connection c= null;
-        Properties prop = new Properties();
-        FileInputStream file_prop;
+        clave=campoContrasena.getPassword();
         
         try{
-            
-            //Abrimos el archivo
-            file_prop = new FileInputStream("baseDatos.properties");
-            prop.load(file_prop);
-            file_prop.close();
-
-            //Se hace la conexión
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                                            "://" + prop.getProperty("servidor") + 
-                                            ":" + prop.getProperty("puerto") +
-                                            "/" + prop.getProperty("baseDatos"),
-                                        nombre,
-                                     contrasena);
+            BaseDatos bd = new BaseDatos(nombre, clave);
+            Connection c = bd.getConnection();
             
             //Se crea el menú adecuado
             JDialog menu=crearMenu(c,nombre);

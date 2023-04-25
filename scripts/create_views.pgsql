@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW SociosSinClave AS (
     SELECT
-        s.id_espectador,
+        s.id,
         s.dni,
         s.nombre,
         s.apellido1,
