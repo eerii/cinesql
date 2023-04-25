@@ -5,12 +5,9 @@
 package GUI;
 
 import java.awt.Frame;
-import java.io.FileInputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.util.Properties;
 import javax.swing.JFrame;
+
+import DB.Socio;
 
 /**
  *
@@ -322,35 +319,16 @@ public class GUI_Registrarse extends javax.swing.JDialog {
         // TODO add your handling code here:
 
         try{
-            
-            //Se intenta la conexion
-            Connection c= null;
-            Properties prop = new Properties();
-            FileInputStream file_prop;
-
-            //Abrimos el archivo
-            file_prop = new FileInputStream("baseDatos.properties");
-            prop.load(file_prop);
-            file_prop.close();
-
-            //Se hace la conexión
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager.getConnection("jdbc:" + prop.getProperty("gestor") +
-                "://" + prop.getProperty("servidor") +
-                ":" + prop.getProperty("puerto") +
-                "/" + prop.getProperty("baseDatos"),
-                "publico1",
-                "publico1");
-            
-            this.registrarSocio(c);
+            this.registrarSocio();
 
             //Se hace visible el texto de "todo fue bien"
             jLabel14.setVisible(true);
             BotonVolver.setVisible(true);
             
             BotonRegistro.setVisible(false);
-
         }catch(Exception e){
+            // Imprimir el error en consola
+            e.printStackTrace();
 
             jLabel14.setVisible(false);
             BotonVolver.setVisible(false);
@@ -456,9 +434,9 @@ public class GUI_Registrarse extends javax.swing.JDialog {
     private javax.swing.JTextPane jTextPane6;
     // End of variables declaration//GEN-END:variables
 
-    public void registrarSocio(Connection c) throws Exception{
-    
-        String nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho,contrasena;
+    public void registrarSocio() throws Exception{
+        String nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho;
+        char[] clave;
 
         nombre=jTextPane1.getText();
         apellido1=jTextPane2.getText();
@@ -469,30 +447,9 @@ public class GUI_Registrarse extends javax.swing.JDialog {
         dia=jTextPane11.getText();
         mes=jTextPane12.getText();
         anho=jTextPane13.getText();
-        contrasena=jPasswordField2.getText();
+        clave=jPasswordField2.getPassword();
 
-        //Se hace una pequeña comprobación de que todos los campos que se necesiten tengan texto
-        if(nombre.isEmpty()||apellido1.isEmpty()||apellido2.isEmpty()||dni.isEmpty()||correo.isEmpty()||contrasena.isEmpty()){
-            throw new Exception("Hay campos necesarios sin cubrir.");
-        }
-
-        //Se obtiene la fecha de nacimiento en formato texto
-        String fecha=dia+'-'+mes+'-'+anho;
-
-        //Se hace el statement
-        String sql="SELECT registrar_socio(?,?,?,?,?,?,?,?)";
-        PreparedStatement s= c.prepareStatement(sql);
-
-        s.setString(1,nombre);
-        s.setString(2,apellido1);
-        s.setString(3,apellido2);
-        s.setString(4,dni);
-        s.setString(5,correo);
-        s.setString(6,telefono);
-        s.setString(7,fecha);
-        s.setString(8,contrasena);
-
-        //Se ejecuta el statement
-        s.execute();
+        Socio s = new Socio(nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho, clave);
+        s.crearConsulta().execute();
     }
 }
