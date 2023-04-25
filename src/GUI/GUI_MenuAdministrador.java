@@ -49,7 +49,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         try{
             
         //Se obtienen todos los cines
-        PreparedStatement s1=c.prepareStatement("SELECT nombre, ciudad, id_cine FROM cine");        
+        PreparedStatement s1=c.prepareStatement("SELECT nombre, ciudad, id FROM cine");        
         ResultSet cines=s1.executeQuery();        
         while(cines.next()){
             jComboBox3.addItem(cines.getString(1)+", "+cines.getString(2));
@@ -453,10 +453,10 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             if(jComboBox2.getSelectedItem() == "Trabajador"){
 
                 PreparedStatement s=this.conexion.prepareStatement("SELECT "
-                        + "nombre, apellido1, apellido2, correocorporativo, "
+                        + "nombre, apellido1, apellido2, correo_electronico, "
                         + "experiencia, telefono " 
                         +"FROM trabajador t, trabajar t2 " 
-                        +"WHERE t.id_trabajador = t2.id_trabajador and t2.id_cine = ?");
+                        +"WHERE t.id = t2.id_trabajador and t2.id_cine = ?");
                 
                 //Se busca el id del cine seleccionado
                 int id = 0,i;
@@ -483,10 +483,10 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             }else{
 
                 PreparedStatement s=this.conexion.prepareStatement("SELECT nombre,"
-                        + " apellido1, apellido2, correocorporativo, experiencia, d.numidiomas, telefono "
+                        + " apellido1, apellido2, correo_electronico, experiencia, d.idiomas, telefono "
                         +"FROM trabajador t, trabajar t2, dependiente d " 
-                        +"WHERE t.id_trabajador = t2.id_trabajador and t2.id_cine = ? " 
-                        +"and t.id_trabajador =d.id_trabajador ");
+                        +"WHERE t.id = t2.id_trabajador and t2.id_cine = ? " 
+                        +"and t.id =d.id ");
                 
                 //Se busca el id del cine seleccionado
                 int id = 0,i;
@@ -554,7 +554,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             }
 
             //Se le asigna un id
-            PreparedStatement s=this.conexion.prepareStatement("SELECT max(id_trabajador) "
+            PreparedStatement s=this.conexion.prepareStatement("SELECT max(id) "
                 + "FROM trabajador");
 
             ResultSet maxId=s.executeQuery();
@@ -590,6 +590,12 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
                 s.execute();
             }
 
+            //Se le inserta en la tabla de usuarios
+            s=this.conexion.prepareStatement("INSERT INTO usuarios VALUES(?,?)");
+            s.setString(1, correo);
+            s.setString(2, "Dependiente");
+            s.execute();
+            
             //Se le crea una conexion
             String sql="CREATE USER \""+correo+"\" IN ROLE Dependiente PASSWORD '"+new String(clave)+"'";
             s=this.conexion.prepareStatement(sql);
