@@ -25,11 +25,26 @@ public class Socio {
         this.telefono = telefono;
         this.clave = clave;
 
-        if (!d.isEmpty() && !m.isEmpty() && !y.isEmpty()) {
-            this.fecha_nacimiento = Date.valueOf(y + "-" + m + "-" + d);
-        } else {
-            this.fecha_nacimiento = Date.valueOf("0001-01-01");
+        //Se les da el formato adecuado a los elementos de la fecha si no lo tienen
+        if(d.length()==1){
+            d="0"+d;
         }
+        if(m.length()==1){
+            m="0"+m;
+        }
+        if(y.length()<=4){
+            while(y.length()<4){
+                y="0"+y;
+            }
+        }
+        
+        try{
+            if (!d.isEmpty() && !m.isEmpty() && !y.isEmpty()) {
+                this.fecha_nacimiento = Date.valueOf(y + "-" + m + "-" + d);
+            } else {
+                this.fecha_nacimiento = Date.valueOf("0001-01-01");
+            }
+        }catch(Exception e){throw new IllegalArgumentException("El formato de la fecha es incorrecto.");}
     }
 
     public PreparedStatement crearConsulta(BaseDatos bd) throws Exception {
