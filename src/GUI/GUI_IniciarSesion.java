@@ -191,22 +191,19 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         nombre=campoNombre.getText();
         clave=campoContrasena.getPassword();
         
-        try{
+        try
+        {
             BaseDatos bd = new BaseDatos(nombre, clave);
             Connection c = bd.getConnection();
             
-            //Se crea el menú adecuado
             JDialog menu=crearMenu(c,nombre);
 
             this.setState(Frame.ICONIFIED);
             menu.setVisible(true);
-            
-            
-        //Si no hubo exito, se muestra un popup de error
-        }catch(Exception e){
-            
+        }
+        catch(Exception e)
+        {    
             GUI_Error popup=new GUI_Error(this,true,e.getMessage());
-            
             popup.setVisible(true);
         }
         
@@ -327,11 +324,11 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             switch(rol){
 
                 case "Superusuario":
-                    menu=new GUI_MenuAdministrador(this,true,c);
+                    menu=new GUI_MenuAdministrador(this,true);
                     break;
 
                 case "Administrador":
-                    menu=new GUI_MenuAdministrador(this,true,c);
+                    menu=new GUI_MenuAdministrador(this,true);
                     break;
 
                 case "Dependiente":

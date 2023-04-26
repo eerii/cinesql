@@ -321,17 +321,30 @@ public class GUI_Registrarse extends javax.swing.JDialog {
 
         try{
             BaseDatos bd = new BaseDatos();
-            this.registrarSocio(bd);
+            
+            String nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho;
+            char[] clave;
 
-            //Se hace visible el texto de "todo fue bien"
+            nombre=jTextPane1.getText();
+            apellido1=jTextPane2.getText();
+            apellido2=jTextPane3.getText();
+            dni=jTextPane6.getText();
+            correo=jTextPane4.getText();
+            telefono=jTextPane5.getText();
+            dia=jTextPane11.getText();
+            mes=jTextPane12.getText();
+            anho=jTextPane13.getText();
+            clave=jPasswordField2.getPassword();
+
+            Socio s = new Socio(nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho, clave);
+            s.crearConsulta(bd).execute();
+
             jLabel14.setVisible(true);
             BotonVolver.setVisible(true);
-            
-            BotonRegistro.setVisible(false);
-        }catch(Exception e){
-            // Imprimir el error en consola
-            e.printStackTrace();
-
+            BotonRegistro.setVisible(false); 
+        }
+        catch(Exception e)
+        {
             jLabel14.setVisible(false);
             BotonVolver.setVisible(false);
 
@@ -436,22 +449,4 @@ public class GUI_Registrarse extends javax.swing.JDialog {
     private javax.swing.JTextPane jTextPane6;
     // End of variables declaration//GEN-END:variables
 
-    public void registrarSocio(BaseDatos bd) throws Exception{
-        String nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho;
-        char[] clave;
-
-        nombre=jTextPane1.getText();
-        apellido1=jTextPane2.getText();
-        apellido2=jTextPane3.getText();
-        dni=jTextPane6.getText();
-        correo=jTextPane4.getText();
-        telefono=jTextPane5.getText();
-        dia=jTextPane11.getText();
-        mes=jTextPane12.getText();
-        anho=jTextPane13.getText();
-        clave=jPasswordField2.getPassword();
-
-        Socio s = new Socio(nombre, apellido1, apellido2, dni, correo, telefono, dia, mes, anho, clave);
-        s.crearConsulta(bd).execute();
-    }
 }

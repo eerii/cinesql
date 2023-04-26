@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import DB.BaseDatos;
 import java.awt.Frame;
 import java.awt.Image;
 import java.sql.*;
@@ -27,7 +28,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
     private ArrayList<Entry<Integer,String>> idCines;
     
     
-    public GUI_MenuAdministrador(java.awt.Frame parent, boolean modal, Connection c) {
+    public GUI_MenuAdministrador(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         
@@ -35,32 +36,33 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         ImageIcon imagenGrande = new ImageIcon(getClass().getResource("/GUI/logo.png"));
         jLabel1.setIcon(new ImageIcon(imagenGrande.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT)));
         
-        //se centra la ventana
+        //Se centra la ventana
         this.setLocationRelativeTo(null);
         
         //Se oculta el texto de todo fue bien
         jLabel15.setVisible(false);
         
         //Se crean atributos auxiliares
-        this.conexion=c;
         this.idCines=new ArrayList<Entry<Integer,String>>();
         
         //Se muestran unos datos predeterminados
-        try{
+        try
+        {
+            this.conexion = new BaseDatos().getConnection();
             
-        //Se obtienen todos los cines
-        PreparedStatement s1=c.prepareStatement("SELECT nombre, ciudad, id FROM cine");        
-        ResultSet cines=s1.executeQuery();        
-        while(cines.next()){
-            jComboBox3.addItem(cines.getString(1)+", "+cines.getString(2));
-            //Se almacenan los pares de id y nombre mostrado para acelerar las consultas siguientes
-            Entry<Integer,String> p= new SimpleEntry<Integer,String>(cines.getInt(3),cines.getString(1)+", "+cines.getString(2));
-            idCines.add(p);
+            //Se obtienen todos los cines
+            PreparedStatement s1=this.conexion.prepareStatement("SELECT nombre, ciudad, id FROM cine");        
+            ResultSet cines=s1.executeQuery();        
+            while(cines.next()){
+                jComboBox3.addItem(cines.getString(1)+", "+cines.getString(2));
+                //Se almacenan los pares de id y nombre mostrado para acelerar las consultas siguientes
+                Entry<Integer,String> p= new SimpleEntry<Integer,String>(cines.getInt(3),cines.getString(1)+", "+cines.getString(2));
+                idCines.add(p);
+            }
         }
-        
-        }catch(SQLException e){
+        catch(Exception e)
+        {
             GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
-            
             popup.setVisible(true);
         }
     }
@@ -664,7 +666,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(() -> {
-            GUI_MenuAdministrador dialog = new GUI_MenuAdministrador(new javax.swing.JFrame(), true,null);
+            GUI_MenuAdministrador dialog = new GUI_MenuAdministrador(new javax.swing.JFrame(), true);
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
