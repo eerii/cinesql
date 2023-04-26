@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import DB.Administrador;
 import DB.BaseDatos;
 import java.awt.Frame;
 import java.awt.Image;
@@ -24,8 +25,8 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
     /**
      * Creates new form GUI_MenuAdministrador
      */
-    private Connection conexion;
     private ArrayList<Entry<Integer,String>> idCines;
+    private Administrador admin;
     
     
     public GUI_MenuAdministrador(java.awt.Frame parent, boolean modal) {
@@ -48,15 +49,15 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         //Se muestran unos datos predeterminados
         try
         {
-            this.conexion = new BaseDatos().getConnection();
+            this.admin = new Administrador();
             
-            //Se obtienen todos los cines
-            PreparedStatement s1=this.conexion.prepareStatement("SELECT nombre, ciudad, id FROM cine");        
-            ResultSet cines=s1.executeQuery();        
+            //Se obtienen todos los cines      
+            ResultSet cines = admin.obtenerCines();
+
             while(cines.next()){
-                jComboBox3.addItem(cines.getString(1)+", "+cines.getString(2));
+                jComboBox3.addItem(cines.getString(1) + ", " + cines.getString(2));
                 //Se almacenan los pares de id y nombre mostrado para acelerar las consultas siguientes
-                Entry<Integer,String> p= new SimpleEntry<Integer,String>(cines.getInt(3),cines.getString(1)+", "+cines.getString(2));
+                Entry<Integer,String> p = new SimpleEntry<Integer,String>(cines.getInt(3),cines.getString(1)+", "+cines.getString(2));
                 idCines.add(p);
             }
         }
@@ -438,9 +439,6 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
-        try{
-        this.conexion.close();
-        }catch(Exception e){}
         this.getParent().setVisible(true);
         ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
@@ -451,29 +449,21 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
         modelo.setRowCount(0);
         
-        try{
-            if(jComboBox2.getSelectedItem() == "Trabajador"){
-
-                PreparedStatement s=this.conexion.prepareStatement("SELECT "
-                        + "nombre, apellido1, apellido2, correo_electronico, "
-                        + "experiencia, telefono " 
-                        +"FROM trabajador t, trabajar t2 " 
-                        +"WHERE t.id = t2.id_trabajador and t2.id_cine = ?");
-                
-                //Se busca el id del cine seleccionado
-                int id = 0,i;
-                for(i=0;i<idCines.size();i++){
-                    if(idCines.get(i).getValue().equals(jComboBox3.getSelectedItem())){
-                       id=idCines.get(i).getKey();
-                    }
+        try
+        {
+            //Se busca el id del cine seleccionado
+            int id = 0,i;
+            for(i=0;i<idCines.size();i++){
+                if(idCines.get(i).getValue().equals(jComboBox3.getSelectedItem())){
+                   id=idCines.get(i).getKey();
                 }
-                
-                s.setInt(1, id);
-                
-                ResultSet trabajadores= s.executeQuery();
+            }
+
+            if(jComboBox2.getSelectedItem() == "Trabajador"){
+                ResultSet trabajadores= admin.obtenerTrabajadores(id);
+
                 //Cada trabajador se anhade a la tabla
                 while(trabajadores.next()){
-                    
                     Object[] fila = {trabajadores.getString(1)+" "
                             +trabajadores.getString(2)+" "+trabajadores.getString(3),
                             trabajadores.getString(4), trabajadores.getBoolean(5),
@@ -483,27 +473,10 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
                 }
                 
             }else{
+                ResultSet dependientes= admin.obtenerDependientes(id);
 
-                PreparedStatement s=this.conexion.prepareStatement("SELECT nombre,"
-                        + " apellido1, apellido2, correo_electronico, experiencia, d.idiomas, telefono "
-                        +"FROM trabajador t, trabajar t2, dependiente d " 
-                        +"WHERE t.id = t2.id_trabajador and t2.id_cine = ? " 
-                        +"and t.id =d.id ");
-                
-                //Se busca el id del cine seleccionado
-                int id = 0,i;
-                for(i=0;i<idCines.size();i++){
-                    if(idCines.get(i).getValue().equals(jComboBox3.getSelectedItem())){
-                       id=idCines.get(i).getKey();
-                    }
-                }
-                
-                s.setInt(1, id);
-                
-                ResultSet dependientes= s.executeQuery();
                 //Cada dependiente se anhade a la tabla
                 while(dependientes.next()){
-                    
                     Object[] fila = {dependientes.getString(1)+" "
                             +dependientes.getString(2)+" "+dependientes.getString(3),
                             dependientes.getString(4), dependientes.getBoolean(5),
@@ -514,7 +487,9 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
 
             }
             
-        }catch(SQLException e){
+        }
+        catch(SQLException e)
+        {
             GUI_Error popup= new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
             popup.setVisible(true);
         }
@@ -527,8 +502,8 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
 
-        try{
-
+        try
+        {
             //Se cargan los datos
             String nombre,apellido1,apellido2,correo,dni,telefono;
             char[] clave;
@@ -550,59 +525,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             correo=jTextField6.getText();
             clave=jPasswordField1.getPassword();
 
-            //Se comprueba si algun campo importante es null
-            if(nombre.isEmpty()||apellido1.isEmpty()||correo.isEmpty()||clave.length==0){
-                throw new Exception("Hay campos importantes sin cumplir.");
-            }
-
-            //Se le asigna un id
-            PreparedStatement s=this.conexion.prepareStatement("SELECT max(id) "
-                + "FROM trabajador");
-
-            ResultSet maxId=s.executeQuery();
-            maxId.next();
-            Integer id=maxId.getInt(1);
-            id++;
-
-            //Se insertan los valores
-            s=this.conexion.prepareStatement("insert "
-                + "into trabajador values(?,?,?,?,?,?,?,?,?)");
-
-            s.setInt(1, id);
-            s.setString(2,dni);
-            s.setString(3,nombre);
-            s.setString(4,apellido1);
-            s.setString(5,apellido2);
-            s.setString(6,telefono);
-            s.setString(7,correo);
-            s.setBoolean(8, experiencia);
-            s.setString(9, new String(clave));
-
-            s.execute();
-
-            //Si tenemos un dependiente, tambien se inserta en Dependiente
-            if(esDependiente){
-
-                s=this.conexion.prepareStatement("insert "
-                    + "into dependiente values(?,?)");
-
-                s.setInt(1, id);
-                s.setInt(2, numIdiomas);
-
-                s.execute();
-            }
-
-            //Se le inserta en la tabla de usuarios
-            s=this.conexion.prepareStatement("INSERT INTO usuarios VALUES(?,?)");
-            s.setString(1, correo);
-            s.setString(2, "Dependiente");
-            s.execute();
-            
-            //Se le crea una conexion
-            String sql="CREATE USER \""+correo+"\" IN ROLE Dependiente PASSWORD '"+new String(clave)+"'";
-            s=this.conexion.prepareStatement(sql);
-            
-            s.execute();            
+            admin.nuevoTrabajador(nombre, apellido1, apellido2, correo, dni, telefono, clave, numIdiomas, experiencia, esDependiente);
             
             jLabel15.setVisible(true);
 
