@@ -172,7 +172,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         try {
         
             // Query para obtener las entradas
-            String query = "SELECT producto.precio " +
+            /*String query = "SELECT producto.precio " +
             "FROM public.producto " +
             "JOIN public.entrada ON entrada.id_producto=producto.id_producto " +
             "JOIN public.proyectar ON proyectar.fecha=entrada.fecha " +  
@@ -184,8 +184,8 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             "AND sala.num_sala=? " +
             "AND cine.nombre=? " +
             "AND pelicula.titulo=?";
-            
-         
+            */
+            String query = "SELECT getPrecio(?, ?, ?, ?, ?)";
             statement = c.prepareStatement(query);
             statement.setString(1,fecha);
             statement.setString(2, hora);
@@ -197,7 +197,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             rs = statement.executeQuery();
             String ePrecio;
             if (rs.next()) {
-                int numEnt = rs.getInt("precio");
+                int numEnt = rs.getInt(1);
                 //Casteamos a string
                 ePrecio = Integer.toString(numEnt);
             }else{
@@ -583,20 +583,22 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
             
         //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
         //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto
-        String queryentradas = "SELECT e.id " +
+        /*String queryentradas = "SELECT e.id_producto " +
                "FROM public.entrada e " +
-               "LEFT JOIN lineaproducto lp ON e.id = lp.id_producto " +
-               "JOIN public.cine ON cine.id = e.id_cine " +
-               "JOIN public.pelicula ON pelicula.id = e.id_pelicula " +
-               "WHERE lp.id_producto IS NULL " +    //Para que devuelva solo las entradas que no han sido compradas
+               "LEFT JOIN lineaventa lv ON e.id_producto = lv.id_producto " +
+               "JOIN public.cine ON cine.id_cine = e.id_cine " +
+               "JOIN public.pelicula ON pelicula.id_pelicula = e.id_pelicula " +
+               "join public.sala ON e.id_sala = sala.id_sala " +
+               "WHERE lv.id_producto IS NULL " +    //Para que devuelva solo las entradas que no han sido compradas
                "AND cine.nombre = ? " +             //Restringimos para que solo obtenga las entradas libres de la sesión seleccionada
                "AND e.fecha = TO_DATE(?, 'YYYY-MM-DD') " +
                "AND e.hora = CAST(? AS TIME) " +
-               "AND e.sala = ? " +
+               "AND sala.num_sala = ? " +
                "AND pelicula.titulo = ? " +
-               "ORDER BY e.id " +               //Ordenamos para que reciba las de ids consecutivas
+               "ORDER BY e.id_producto " +               //Ordenamos para que reciba las de ids consecutivas
                "LIMIT " + numentradas + ";";    //Con limit la consulta nos devolverá tantas entradas como se escogió en el desplegable previo
-
+        */
+        String queryentradas="select get_available_entries(?, ?, ?, ?, ?, ?)";
         try{
             //Este statement es un poco distinto, ya que lo vamos a recorrer dos veces
             //La primera para controlar que efectivamente hay un número de entradas disponibles suficientes
@@ -609,6 +611,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
             statement_entradas.setString(3, hora);
             statement_entradas.setInt(4, sala);
             statement_entradas.setString(5, titulo);
+            statement_entradas.setInt(6,numentradas);
         }catch (SQLException e) {
             
             System.err.println("Error al encontrar entradas: " + e.getMessage());
@@ -639,12 +642,13 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
 
                 //antes de nada tenemos que generar una nueva id para esta nueva linea de producto
                 //Primero buscamos la id numéricamente más grande que haya (porque las ids son secuenciales)
-                String last_lp = "SELECT MAX(id) as id_linea FROM public.lineaproducto";
+                //String last_lp = "SELECT MAX(id_venta) as id_linea FROM public.lineaventa";
+                String last_lp="select get_last_lp()";
                 last_lp_s=c.prepareStatement(last_lp);
                 rs2 = last_lp_s.executeQuery();
                 int new_last_lp_s=0;
                 if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
-                    new_last_lp_s = rs2.getInt("id_linea");
+                    new_last_lp_s = rs2.getInt(1);
                     new_last_lp_s = new_last_lp_s + 1; //creamos la nueva id. Más tarde se insertará en la tabla de lineas
                 }
                 c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
@@ -655,17 +659,17 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 //Hay que hacer función en el DBeaver para hacer las inserciones
                 
                 //Se obtienen las variables necesarias
-                int newidproducto=rs.getInt("id");
+                int newidproducto=rs.getInt(1);
                 String correoUsuario=this.conexion.getMetaData().getUserName();
                 
                 //Se ejecuta la funcion con estos parametros
                 PreparedStatement guardarCompra=this.conexion.prepareStatement(
-                        "select guardar_compra(?,?,?,?)");
+                        "select guardar_compra(?,?,?,?,?)");
                 guardarCompra.setInt(1, new_last_lp_s);
                 guardarCompra.setInt(2, newidproducto);
                 guardarCompra.setString(3,correoUsuario);
                 guardarCompra.setFloat(4, coste);
-                
+                guardarCompra.setInt(5,1);
                 guardarCompra.execute();
                 
                 
@@ -716,11 +720,10 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                         System.err.println("Error al obtener el id_producto: " + e.getMessage());
                         c.rollback(); 
                     
-                    c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
+                        c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
                 }
-                c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
             }
-        
+        c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
            // Cerramos todo antes de acabar
                         rs.close();
                         rs2.close();
