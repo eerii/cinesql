@@ -496,9 +496,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         
         stmt = c.prepareStatement(sql);
-        stmt.setString(1,searchcine);
-        stmt.setString(2, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/no sea correctamente escrito
-        stmt.setDate(3, (java.sql.Date) searchfecha);
+        stmt.setString(1, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/no sea correctamente escrito
+        stmt.setDate(2, (java.sql.Date) searchfecha);
+        stmt.setString(3,searchcine);
         stmt.setBoolean(4,is3D);
         
         rs = stmt.executeQuery();
