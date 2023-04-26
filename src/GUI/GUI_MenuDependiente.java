@@ -7,8 +7,10 @@ package GUI;
 import DB.BaseDatos;
 import java.awt.Frame;
 import java.awt.Image;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Time;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
@@ -35,6 +37,11 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         
         //Se centra
         this.setLocationRelativeTo(null);
+        
+        //Se esconden textos
+        jLabel10.setVisible(false);
+        jLabel12.setVisible(false);
+        jLabel13.setVisible(false);
         
         try{
             //Se guardan los cines
@@ -64,10 +71,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -81,6 +86,13 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -91,17 +103,9 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             }
         });
 
-        jLabel2.setText("Nombre:");
-
         jLabel3.setText("Fecha:");
 
         jLabel4.setText("Película:");
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
 
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,6 +114,16 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         });
 
         jLabel5.setText("Hora:");
+
+        jComboBox1.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jComboBox1PopupMenuWillBecomeVisible(evt);
+            }
+        });
 
         jComboBox2.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
@@ -120,14 +134,34 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 jComboBox2PopupMenuWillBecomeVisible(evt);
             }
         });
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Número de  entradas:");
 
         jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6" }));
+        jComboBox3.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                jComboBox3PopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
 
         jLabel7.setText("Cine:");
 
         jLabel8.setText("Precio Total:");
+
+        jTextField3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField3KeyReleased(evt);
+            }
+        });
 
         jButton1.setText("Aceptar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -141,6 +175,27 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jTextField4.setEditable(false);
         jTextField4.setToolTipText("");
 
+        jLabel10.setForeground(new java.awt.Color(153, 0, 51));
+        jLabel10.setText("El formato no es correcto");
+
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Socio:");
+
+        jLabel11.setText("Correo:");
+
+        jTextField1.setEditable(false);
+
+        jLabel12.setForeground(new java.awt.Color(153, 0, 0));
+        jLabel12.setText("No quedan entradas");
+
+        jLabel13.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel13.setText("La compra se hizo correctamente");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -148,43 +203,62 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(129, 129, 129)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel7))
-                        .addGap(16, 16, 16)
+                        .addGap(107, 107, 107)
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 202, Short.MAX_VALUE))
+                            .addComponent(jTextField3)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(152, 152, 152)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel11)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jCheckBox1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextField1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(153, 153, 153)
+                                .addComponent(jLabel7)
+                                .addGap(16, 16, 16))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField2)
                             .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(44, 44, 44)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(185, 185, 185))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addGap(22, 22, 22))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(58, 58, 58))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(107, 107, 107)
-                .addComponent(jLabel8)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField4)
-                        .addGap(294, 294, 294))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(77, 77, 77))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,41 +267,52 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jLabel2))
+                        .addGap(6, 6, 6)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel8)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel13)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(25, 25, 25))
         );
 
         jTabbedPane1.addTab("Vender entradas", jPanel1);
@@ -268,35 +353,217 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        //Cuando se acepta
+        
+        jLabel12.setVisible(false);
+        jLabel12.setVisible(false);
+        
+        String cine, pelicula, correo;
+        Date fecha;
+        Time hora;
+        Integer numEntradas;
+        Float precioTotal;
+        Boolean esSocio;
+        
+        cine=(String)jComboBox4.getSelectedItem();
+        fecha=Date.valueOf(jTextField2.getText());
+        pelicula=(String)jComboBox2.getSelectedItem();
+        hora=Time.valueOf((String)jComboBox1.getSelectedItem());
+        correo=jTextField1.getText();
+        numEntradas=Integer.valueOf((String)jComboBox3.getSelectedItem());
+        precioTotal=Float.valueOf(jTextField3.getText());
+        esSocio=jCheckBox1.isSelected();
+        
+        System.out.println(cine+" "+fecha+" "+pelicula+" "+hora+" "+correo+" "+numEntradas+" "+precioTotal+" "+esSocio);
+        
+        try{
+            
+            //Se obtienen las entradas ya vendidas
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
+                    "select count(*) " +
+                    "from proyectar p, cine c, entrada e, pelicula p2 " +
+                    "where p.id_cine =c.id_cine " +
+                    "and e.id_sala=p.id_sala and e.id_cine=p.id_cine "
+                    +"and e.id_pelicula =p.id_pelicula and e.fecha =p.fecha and e.hora =p.hora " +
+                    "and p.id_pelicula=p2.id_pelicula and p2.titulo = ? and c.nombre = ? "
+                    +"and p.fecha = ? and p.hora = ?");
+            s.setString(1, pelicula);
+            s.setString(2, cine);
+            s.setDate(3, fecha);
+            s.setTime(4, hora);
+            
+            ResultSet r=s.executeQuery();
+            r.next();
+            Integer entradasVendidas=r.getInt(1);
+            
+            //Se obtienen el maximo de entradas para la proyeccion
+            s=this.bd.getConnection().prepareStatement(
+            "select s.num_butacas, s.id_sala "
+            +"from proyectar p, cine c, pelicula p2, sala s "
+            +"where p.id_cine =c.id_cine "
+            +"and p.id_cine=c.id_cine and p.id_sala=s.id_sala and s.id_cine=c.id_cine "
+            +"and p.id_pelicula=p2.id_pelicula and p2.titulo = ? and c.nombre = ? "
+            +"and p.fecha = ? and p.hora = ?");            
+            s.setString(1,pelicula);
+            s.setString(2,cine);
+            s.setDate(3,fecha);
+            s.setTime(4,hora);
+            
+            r=s.executeQuery();
+            r.next();
+            Integer sitiosSala=r.getInt(1);
+            Integer sala=r.getInt(2);
+            
+            if(sitiosSala-entradasVendidas<=0){
+                //Si no hay entradas disponibles, mensaje de error
+                jLabel12.setVisible(true);
+            }else{
+                
+                /*//Se asigna un asiento
+                s=this.bd.getConnection().prepareStatement(
+                "SELECT FROM "
+                );
+            */
+            }            
+        
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jComboBox2PopupMenuWillBecomeVisible
         // TODO add your handling code here:
+        //Se obtienen los titulos de peliculas del desplegable
         
-        String cine, nombre, fecha;
+        String cine;
+        Date fecha;
         
-        cine=(String)jComboBox4.getSelectedItem();
-        System.out.println("OK: "+cine);
-        jComboBox2.addItem("Hola");
-        
+        jComboBox2.removeAllItems();   
+        jLabel10.setVisible(false);
+               
         try{
-            PreparedStatement s=this.bd.getConnection().prepareStatement(
-                    "SELECT FROM proyectar WHERE ");
             
+            cine=(String)jComboBox4.getSelectedItem();
+            fecha=Date.valueOf((String)jTextField2.getText());
+
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
+                    "select p.titulo from proyectar pr, pelicula p, cine c " +
+                    "where pr.id_pelicula =p.id_pelicula " +
+                    "and pr.id_cine =c.id_cine " +
+                    "and c.nombre = ? and pr.fecha = ? ");
+            
+            s.setString(1, cine);
+            s.setDate(2, fecha);
+            
+                    
+            ResultSet r=s.executeQuery();
+            
+            while(r.next()){
+                jComboBox2.addItem(r.getString(1));
+            }
+            
+            
+        }catch(IllegalArgumentException e){
+            //Si la fecha es incorrecta
+            jLabel10.setVisible(true);
         }catch(Exception e){
-            e.printStackTrace();
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
         }
     }//GEN-LAST:event_jComboBox2PopupMenuWillBecomeVisible
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBox1.isSelected()){
+            jTextField1.setEditable(true);
+        }else{
+            jTextField1.setEditable(false);
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jComboBox1PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jComboBox1PopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        //Se obtienen las horas de proyecciones del desplegable
+        
+        String cine, pelicula;
+        Date fecha;
+        
+        jComboBox1.removeAllItems();   
+        jLabel10.setVisible(false);
+               
+        try{
+            
+            cine=(String)jComboBox4.getSelectedItem();
+            pelicula=(String)jComboBox2.getSelectedItem();
+            fecha=Date.valueOf((String)jTextField2.getText());
+
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
+                    "select pr.hora from proyectar pr, pelicula p, cine c " +
+                    "where pr.id_pelicula =p.id_pelicula " +
+                    "and pr.id_cine =c.id_cine and p.titulo=?" +
+                    "and c.nombre = ? and pr.fecha = ? ");
+            
+            s.setString(1, pelicula);
+            s.setString(2, cine);
+            s.setDate(3, fecha);
+            
+            ResultSet r=s.executeQuery();
+            
+            while(r.next()){
+                jComboBox1.addItem(r.getString(1));
+            }
+            
+            
+        }catch(IllegalArgumentException e){
+            //Si la fecha es incorrecta
+            jLabel10.setVisible(true);
+        }catch(Exception e){
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
+        }
+    }//GEN-LAST:event_jComboBox1PopupMenuWillBecomeVisible
+
+    private void jComboBox3PopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jComboBox3PopupMenuWillBecomeInvisible
+        // TODO add your handling code here:
+        //Si se cambia el numero de entradas, se actualiza precio/entrada
+        boolean valido=true;
+        Float precioTotal= -1f;
+        Integer numEntradas=1;
+        
+        try{
+        numEntradas=Integer.valueOf((String)jComboBox3.getSelectedItem());
+        precioTotal=Float.valueOf((String)jTextField3.getText());
+        }catch(Exception e){valido=false;}
+        
+        if(valido)
+            jTextField4.setText((Float.valueOf(precioTotal/numEntradas)).toString());
+    }//GEN-LAST:event_jComboBox3PopupMenuWillBecomeInvisible
+
+    private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
+        // TODO add your handling code here:
+        //Si se cambia el precio de entradas, se actualiza precio/entrada
+        boolean valido=true;
+        Float precioTotal= -1f;
+        Integer numEntradas=1;
+        
+        try{
+        numEntradas=Integer.valueOf((String)jComboBox3.getSelectedItem());
+        precioTotal=Float.valueOf((String)jTextField3.getText());
+        }catch(Exception e){valido=false;}
+        
+        if(valido)
+            jTextField4.setText((Float.valueOf(precioTotal/numEntradas)).toString());
+    }//GEN-LAST:event_jTextField3KeyReleased
 
     /**
      * @param args the command line arguments
@@ -340,11 +607,16 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
