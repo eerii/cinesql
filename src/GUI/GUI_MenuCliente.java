@@ -760,10 +760,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // Preparamos la consulta
         String sql ="select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
                     "from public.pelicula " +
-                    "join public.proyectar ON pelicula.id = proyectar.id_pelicula " +
-                    "join public.cine ON proyectar.id_cine = cine.id " +
-                    "join public.sala ON proyectar.num_sala = sala.num_sala " +
-                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = ? and sala.es_3d = ?::boolean;" ;
+                    "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
+                    "join public.cine ON proyectar.id_cine = cine.id_cine " +
+                    "join public.sala ON proyectar.id_sala = sala.id_sala " +
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = ? and sala.proyeccion3d = ?::boolean;" ;
         
         
         stmt = c.prepareStatement(sql);

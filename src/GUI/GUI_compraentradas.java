@@ -45,7 +45,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             // Query para obtener el número disponible de butacas
             String query = "SELECT sala.num_butacas FROM public.sala "+
                     "join public.cine "+
-                    "on sala.id_cine = cine.id "+
+                    "on sala.id_cine = cine.id_cine "+
                     "where sala.num_sala = ? and cine.nombre = ?;";
             
             //Preparamos el statement con los datos recibidos
@@ -94,13 +94,14 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             "FROM public.entrada " +
             "JOIN public.proyectar ON proyectar.fecha=entrada.fecha " +
             "AND proyectar.hora=entrada.hora " +
-            "AND proyectar.num_sala=entrada.sala " +
+            "AND proyectar.id_sala=entrada.id_sala " +
             "AND proyectar.id_cine=entrada.id_cine " +
-            "JOIN public.pelicula ON proyectar.id_pelicula=pelicula.id " +
-            "JOIN public.cine ON cine.id=entrada.id_cine " +
+            "JOIN public.pelicula ON proyectar.id_pelicula=pelicula.id_pelicula " +
+            "JOIN public.cine ON cine.id_cine=entrada.id_cine " +
+            "JOIN public.sala ON sala.id_sala=entrada.id_sala " +
             "WHERE entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') " +
             "AND entrada.hora=CAST(? AS TIME) " +
-            "AND entrada.sala=? " +
+            "AND sala.num_sala=? " +
             "AND cine.nombre=? " +
             "AND pelicula.titulo=?";
             
@@ -120,15 +121,16 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             
             
             //Query con el que obtendremos el número de entradas que ya fueron vendidas
-            String query2 = "SELECT COUNT(vender.id_producto) " +
-                "FROM public.vender " +
-                "JOIN public.lineaproducto ON vender.id_producto=lineaproducto.id_producto " +
-                "JOIN public.producto ON lineaproducto.id_producto=producto.id " +
-                "JOIN public.entrada ON entrada.id=producto.id " +
-                "JOIN public.cine ON cine.id=entrada.id_cine " +
-                "JOIN public.pelicula ON pelicula.id=entrada.id_pelicula " +
-                "WHERE cine.nombre=? AND pelicula.titulo=? AND entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') AND entrada.hora=CAST(? AS TIME) AND entrada.sala=?";
-
+            /*String query2 = "SELECT COUNT(lineaventa.id_producto) " +
+                "FROM public.lineaventa " +
+                "JOIN public.producto ON lineaventa.id_producto=producto.id_producto " +
+                "JOIN public.entrada ON entrada.id_producto=producto.id_producto " +
+                "JOIN public.cine ON cine.id_cine=entrada.id_cine " +
+                "JOIN public.pelicula ON pelicula.id_pelicula=entrada.id_pelicula " +
+                "JOIN public.sala ON sala.id_sala=entrada.id_sala " +
+                "WHERE cine.nombre=? AND pelicula.titulo=? AND entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') AND entrada.hora=CAST(? AS TIME) AND sala.num_sala=?";
+*/
+            String query2= "SELECT entradas_vendidas(?, ?, ?, ?, ?)";
             statement2 = c.prepareStatement(query2);
             statement2.setString(1, cine);
             statement2.setString(2, titulo);
@@ -140,7 +142,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             rs2 = statement2.executeQuery();
             int numEntvendidas=0;
             if (rs2.next()) {
-                numEntvendidas = rs2.getInt("count");
+                numEntvendidas = rs2.getInt(1);
             }
             
             //Almacenamos en este string el número de entradas disponibles y lo devolvemos
@@ -172,13 +174,14 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             // Query para obtener las entradas
             String query = "SELECT producto.precio " +
             "FROM public.producto " +
-            "JOIN public.entrada ON entrada.id=producto.id " +
+            "JOIN public.entrada ON entrada.id_producto=producto.id_producto " +
             "JOIN public.proyectar ON proyectar.fecha=entrada.fecha " +  
-            "JOIN public.pelicula ON proyectar.id_pelicula=pelicula.id " +
-            "JOIN public.cine ON cine.id=entrada.id_cine " +
+            "JOIN public.pelicula ON proyectar.id_pelicula=pelicula.id_pelicula " +
+            "JOIN public.sala ON sala.id_sala=entrada.id_sala " +
+            "JOIN public.cine ON cine.id_cine=entrada.id_cine " +
             "WHERE entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') " +
             "AND entrada.hora=CAST(? AS TIME) " +
-            "AND entrada.sala=? " +
+            "AND sala.num_sala=? " +
             "AND cine.nombre=? " +
             "AND pelicula.titulo=?";
             
@@ -570,8 +573,6 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
     //Se intenta la conexion
         Connection c = this.conexion;
         PreparedStatement statement_entradas = null;
-        PreparedStatement statement_lp= null;
-        PreparedStatement statement_vender= null;
         PreparedStatement last_lp_s= null;
         ResultSet rs = null;
         ResultSet rs2 = null;
@@ -646,7 +647,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                     new_last_lp_s = rs2.getInt("id_linea");
                     new_last_lp_s = new_last_lp_s + 1; //creamos la nueva id. Más tarde se insertará en la tabla de lineas
                 }
-                        
+                c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
                 //Recorremos el bucle del result set
                 while (rs.next()) {
                     
@@ -710,7 +711,6 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                         c.commit(); 
                         */
                 }
-                    //c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
                     } catch (SQLException e) {
                         
                         System.err.println("Error al obtener el id_producto: " + e.getMessage());
@@ -718,15 +718,14 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                     
                     c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
                 }
+                c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
             }
         
            // Cerramos todo antes de acabar
                         rs.close();
                         rs2.close();
-                        statement_lp.close();
                         last_lp_s.close();
                         statement_entradas.close();
-                        statement_vender.close();
          } catch (SQLException ex) {
             Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
         }
