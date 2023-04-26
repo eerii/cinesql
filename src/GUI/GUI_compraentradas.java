@@ -759,8 +759,9 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                     entradaslibres.setText(Integer.toString(newedisponibles));
                     setVisible(false);
                     dispose();
-                    GUI_MenuCliente gui = new GUI_MenuCliente(null,true,this.conexion);
-                    gui.setVisible(true);
+                    //GUI_MenuCliente gui = new GUI_MenuCliente(null,this.conexion);
+                    //gui.setVisible(true);
+                    this.getParent().setVisible(true);
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Invalid input", "Error", JOptionPane.ERROR_MESSAGE);

@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import DB.BaseDatos;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
@@ -34,16 +35,16 @@ import javax.swing.table.DefaultTableModel;
  */
 public class GUI_MenuCliente extends javax.swing.JDialog {
 
-    private Connection conexion;
+    private BaseDatos bd;
     
     /**
      * Creates new form GUI_MenuCliente
      */
-    public GUI_MenuCliente(java.awt.Frame parent, boolean modal, Connection c) {
-        super(parent, modal);
+    public GUI_MenuCliente(java.awt.Frame parent, BaseDatos bd) {
+        super(parent, true);
         initComponents();
         
-        this.conexion=c;
+        this.bd=bd;
         
         botoncomprar.setVisible(false);
         try {
@@ -514,7 +515,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
         try{
-        this.conexion.close();
+        this.bd.getConnection().close();
         }catch(Exception e){}
         this.getParent().setVisible(true);
         ((JFrame)this.getParent()).setState(Frame.NORMAL);
@@ -576,7 +577,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         //Creamos una nueva instancia de la ventana de compra de entradas
         //Le pasamos al constructor los datos que necesitaremos dentro de ella
-        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala,this.conexion);
+        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala,this.bd.getConnection());
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
 
@@ -639,7 +640,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(), true,null);
+                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(),null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -708,7 +709,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private void populateComboBox() throws SQLException, FileNotFoundException, IOException {
         
          //Se intenta la conexion
-        Connection c= this.conexion;
+        Connection c= this.bd.getConnection();
     
         try {
         
@@ -752,7 +753,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     
     private void searchPeliculas(String searchpeli, Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
     // Preparamos la conexión a la base de datos
-    Connection c = this.conexion;
+    Connection c = this.bd.getConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {

@@ -11,18 +11,22 @@ public class Administrador {
     public Administrador() throws Exception {
         this.bd = new BaseDatos();
     }
+    
+    public Administrador(BaseDatos bd) throws Exception {
+        this.bd = bd;
+    }
 
     public ResultSet obtenerCines() throws SQLException {
-        PreparedStatement query = this.bd.getConnection().prepareStatement("SELECT nombre, ciudad, id FROM cine");
+        PreparedStatement query = this.bd.getConnection().prepareStatement("SELECT nombre, ciudad, id_cine FROM cine");
         return query.executeQuery();
     }
 
     public ResultSet obtenerTrabajadores(int cine) throws SQLException {
         PreparedStatement query = this.bd.getConnection().prepareStatement("SELECT "
-                + "nombre, apellido1, apellido2, correo_electronico, "
+                + "nombre, apellido1, apellido2, correo_corporativo, "
                 + "experiencia, telefono "
                 + "FROM trabajador t, trabajar t2 "
-                + "WHERE t.id = t2.id_trabajador and t2.id_cine = ?");
+                + "WHERE t.id_trabajador = t2.id_trabajador and t2.id_cine = ?");
 
         query.setInt(1, cine);
         return query.executeQuery();
@@ -30,10 +34,10 @@ public class Administrador {
 
     public ResultSet obtenerDependientes(int cine) throws SQLException {
         PreparedStatement query = this.bd.getConnection().prepareStatement("SELECT nombre,"
-                + " apellido1, apellido2, correo_electronico, experiencia, d.idiomas, telefono "
+                + " apellido1, apellido2, correo_corporativo, experiencia, d.idiomas, telefono "
                 + "FROM trabajador t, trabajar t2, dependiente d "
-                + "WHERE t.id = t2.id_trabajador and t2.id_cine = ? "
-                + "and t.id =d.id ");
+                + "WHERE t.id_trabajador = t2.id_trabajador and t2.id_cine = ? "
+                + "and t.id_trabajador =d.id_dependiente ");
 
         query.setInt(1, cine);
         return query.executeQuery();
@@ -50,7 +54,7 @@ public class Administrador {
         Connection c = this.bd.getConnection();
 
         // Se le asigna un id
-        PreparedStatement query_id = c.prepareStatement("SELECT max(id) FROM trabajador");
+        PreparedStatement query_id = c.prepareStatement("SELECT max(id_trabajador) FROM trabajador");
         ResultSet maxId = query_id.executeQuery();
         maxId.next();
         Integer id = maxId.getInt(1);

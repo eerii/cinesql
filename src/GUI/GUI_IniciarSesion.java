@@ -194,9 +194,8 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         try
         {
             BaseDatos bd = new BaseDatos(nombre, clave);
-            Connection c = bd.getConnection();
             
-            JDialog menu=crearMenu(c,nombre);
+            JDialog menu=crearMenu(bd,nombre);
 
             this.setState(Frame.ICONIFIED);
             menu.setVisible(true);
@@ -270,46 +269,13 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPane4;
     // End of variables declaration//GEN-END:variables
 
-    public JDialog crearMenu(Connection c, String nombre) throws Exception{
-    
-        /*
-        //Como los usuarios se loguean como correo, podemos usarlo para obtener su id de usuario
-        //Esta se la pasaremos a las siguientes guis para que puedan realizar algunas operaciones
-        
-        String sql_idu= "SELECT id FROM public.socio WHERE correo_electronico=?";
-        PreparedStatement s_id=c.prepareStatement(sql_idu);
-
-        s_id.setString(1,nombre);
-        int id_user=0;
-        ResultSet resultado_id=s_id.executeQuery();
-        if(resultado_id.next()){
-            id_user = resultado_id.getInt("id"); //Almacenamos el resultado obtenido
-        }
-        
-        
-        // Cargamos el usuario en el fichero de propiedades, para que las demás guis lo puedan usar
-        Properties props = new Properties();
-        props.setProperty("id_user", Integer.toString(id_user));
-        try (OutputStream fis = new FileOutputStream("sesioniniciada.properties")) {
-            props.store(fis,null);  //Almacenamos en .properties
-            System.out.println("Insertado");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        // Guardamos la actualización del fichero
-        try (FileOutputStream fos = new FileOutputStream("sesioniniciada.properties")) {
-            props.store(fos, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
+    public JDialog crearMenu(BaseDatos bd, String nombre) throws Exception{
+   
         JDialog menu=null;
         
         //Se obtiene el rol del usuario, el cual esta guardado en la base de datos de Usuarios
         String sql= "SELECT rol FROM Usuarios WHERE nombre=?";
-        PreparedStatement s=c.prepareStatement(sql);
+        PreparedStatement s=bd.getConnection().prepareStatement(sql);
 
         s.setString(1,nombre);
 
@@ -324,19 +290,19 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             switch(rol){
 
                 case "Superusuario":
-                    menu=new GUI_MenuAdministrador(this,true);
+                    menu=new GUI_MenuAdministrador(this, bd);
                     break;
 
                 case "Administrador":
-                    menu=new GUI_MenuAdministrador(this,true);
+                    menu=new GUI_MenuAdministrador(this, bd);
                     break;
 
                 case "Dependiente":
-                    menu=new GUI_MenuDependiente(this,true,c);
+                    menu=new GUI_MenuDependiente(this, bd);
                     break;
                 
                 case "Cliente":
-                    menu=new GUI_MenuCliente(this,true,c);
+                    menu=new GUI_MenuCliente(this, bd);
                     break;
 
                 default:
