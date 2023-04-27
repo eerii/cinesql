@@ -40,11 +40,12 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     /**
      * Creates new form GUI_MenuCliente
      */
-    public GUI_MenuCliente(java.awt.Frame parent, BaseDatos bd) {
+    public GUI_MenuCliente(java.awt.Frame parent) {
         super(parent, true);
         initComponents();
         
-        this.bd=bd;
+        //Se guarda la base de datos a la que se hace conexion
+        this.bd=((GUI_IniciarSesion)this.getParent()).getBaseDatos();
         
         botoncomprar.setVisible(false);
         try {
@@ -640,7 +641,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(),null);
+                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

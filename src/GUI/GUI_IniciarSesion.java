@@ -11,6 +11,7 @@ import DB.BaseDatos;
  */
 public class GUI_IniciarSesion extends javax.swing.JFrame {
 
+    private BaseDatos bd;
     /**
      * Creates new form GUI_IniciarSesion
      */
@@ -194,6 +195,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         try
         {
             BaseDatos bd = new BaseDatos(nombre, clave);
+            this.bd=bd;
             
             JDialog menu=crearMenu(bd,nombre);
 
@@ -290,19 +292,19 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             switch(rol){
 
                 case "Superusuario":
-                    menu=new GUI_MenuAdministrador(this, bd);
+                    menu=new GUI_MenuAdministrador(this);
                     break;
 
                 case "Administrador":
-                    menu=new GUI_MenuAdministrador(this, bd);
+                    menu=new GUI_MenuAdministrador(this);
                     break;
 
                 case "Dependiente":
-                    menu=new GUI_MenuDependiente(this, bd);
+                    menu=new GUI_MenuDependiente(this);
                     break;
                 
                 case "Cliente":
-                    menu=new GUI_MenuCliente(this, bd);
+                    menu=new GUI_MenuCliente(this);
                     break;
 
                 default:
@@ -314,4 +316,9 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
             
         return menu;
     }
+    
+    public BaseDatos getBaseDatos(){
+        return this.bd;
+    }
+    
 }

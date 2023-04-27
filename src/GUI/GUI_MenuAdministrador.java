@@ -29,7 +29,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
     private Administrador admin;
     
     
-    public GUI_MenuAdministrador(java.awt.Frame parent, BaseDatos bd) {
+    public GUI_MenuAdministrador(java.awt.Frame parent) {
         super(parent, true);
         initComponents();
         
@@ -49,7 +49,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         //Se muestran unos datos predeterminados
         try
         {
-            this.admin = new Administrador(bd);
+            this.admin = new Administrador(((GUI_IniciarSesion)this.getParent()).getBaseDatos());
             
             //Se obtienen todos los cines      
             ResultSet cines = admin.obtenerCines();
@@ -589,7 +589,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(() -> {
-            GUI_MenuAdministrador dialog = new GUI_MenuAdministrador(new javax.swing.JFrame(), null);
+            GUI_MenuAdministrador dialog = new GUI_MenuAdministrador(new javax.swing.JFrame());
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {

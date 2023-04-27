@@ -25,11 +25,12 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     /**
      * Creates new form GUI_MenuDependiente
      */
-    public GUI_MenuDependiente(java.awt.Frame parent, BaseDatos bd) {
+    public GUI_MenuDependiente(java.awt.Frame parent) {
         super(parent, true);
         initComponents();
         
-        this.bd=bd;
+        //Se guarda la base de datos a la que se hace conexion
+        this.bd=((GUI_IniciarSesion)this.getParent()).getBaseDatos();
         
         //Tamanho adecuado para el logo
         ImageIcon imagenGrande = new ImageIcon(getClass().getResource("/GUI/logo.png"));
@@ -594,7 +595,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(() -> {
-            GUI_MenuDependiente dialog = new GUI_MenuDependiente(new javax.swing.JFrame(), null);
+            GUI_MenuDependiente dialog = new GUI_MenuDependiente(new javax.swing.JFrame());
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
