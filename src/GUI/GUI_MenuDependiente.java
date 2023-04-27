@@ -5,7 +5,6 @@
 package GUI;
 
 import DB.BaseDatos;
-import com.sun.glass.events.WindowEvent;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Image;
