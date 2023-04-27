@@ -11,6 +11,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Time;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
@@ -356,17 +358,19 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        //Cuando se acepta
+        //Cuando se acepta, se guarda la compra
         
         jLabel12.setVisible(false);
         jLabel12.setVisible(false);
         
+        //Se declaran y rellenan variables
         String cine, pelicula, correo;
         Date fecha;
         Time hora;
-        Integer numEntradas;
+        Integer numEntradas, idEspectador, idProducto, idCine, idPeli, idDependiente;
         Float precioTotal;
         Boolean esSocio;
+        int i=1,cont=0;
         
         cine=(String)jComboBox4.getSelectedItem();
         fecha=Date.valueOf(jTextField2.getText());
@@ -377,30 +381,10 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         precioTotal=Float.valueOf(jTextField3.getText());
         esSocio=jCheckBox1.isSelected();
         
-        System.out.println(cine+" "+fecha+" "+pelicula+" "+hora+" "+correo+" "+numEntradas+" "+precioTotal+" "+esSocio);
-        
         try{
             
-            //Se obtienen las entradas ya vendidas
-            PreparedStatement s=this.bd.getConnection().prepareStatement(
-                    "select count(*) " +
-                    "from proyectar p, cine c, entrada e, pelicula p2 " +
-                    "where p.id_cine =c.id_cine " +
-                    "and e.id_sala=p.id_sala and e.id_cine=p.id_cine "
-                    +"and e.id_pelicula =p.id_pelicula and e.fecha =p.fecha and e.hora =p.hora " +
-                    "and p.id_pelicula=p2.id_pelicula and p2.titulo = ? and c.nombre = ? "
-                    +"and p.fecha = ? and p.hora = ?");
-            s.setString(1, pelicula);
-            s.setString(2, cine);
-            s.setDate(3, fecha);
-            s.setTime(4, hora);
-            
-            ResultSet r=s.executeQuery();
-            r.next();
-            Integer entradasVendidas=r.getInt(1);
-            
             //Se obtienen el maximo de entradas para la proyeccion
-            s=this.bd.getConnection().prepareStatement(
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
             "select s.num_butacas, s.id_sala "
             +"from proyectar p, cine c, pelicula p2, sala s "
             +"where p.id_cine =c.id_cine "
@@ -412,25 +396,138 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             s.setDate(3,fecha);
             s.setTime(4,hora);
             
-            r=s.executeQuery();
+            ResultSet r=s.executeQuery();
             r.next();
             Integer sitiosSala=r.getInt(1);
             Integer sala=r.getInt(2);
             
-            if(sitiosSala-entradasVendidas<=0){
-                //Si no hay entradas disponibles, mensaje de error
+            //Se obtienen los id de cine, pelicula y dependiente
+            s=this.bd.getConnection().prepareStatement(
+            "SELECT id_cine FROM Cine WHERE nombre=?");
+            s.setString(1, cine);
+            r=s.executeQuery();
+            r.next();
+            idCine=r.getInt(1);
+            
+            s=this.bd.getConnection().prepareStatement(
+            "SELECT id_pelicula FROM Pelicula WHERE titulo=?");
+            s.setString(1, pelicula);
+            r=s.executeQuery();
+            r.next();
+            idPeli=r.getInt(1);
+            
+            s=this.bd.getConnection().prepareStatement(
+            "SELECT obtener_idTrabajador(?)");
+            s.setString(1, this.bd.getConnection().getMetaData().getUserName());
+            r=s.executeQuery();
+            r.next();
+            idDependiente=r.getInt(1);
+            
+            //Se obtienen los asientos de las entradas ya vendidas
+            s=this.bd.getConnection().prepareStatement(
+                    "select e.num_asiento " +
+                    "from proyectar p, cine c, entrada e, pelicula p2, sala s " +
+                    "where p.id_cine =c.id_cine " +
+                    "and e.id_sala=p.id_sala and e.id_cine=p.id_cine "
+                    + "and s.id_cine= c.id_cine and s.id_sala=p.id_sala "
+                    +"and e.id_pelicula =p.id_pelicula and e.fecha =p.fecha and e.hora =p.hora " +
+                    "and p.id_pelicula=p2.id_pelicula and p2.titulo = ? and c.nombre = ? "
+                    +"and p.fecha = ? and p.hora = ? and p.id_sala=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            s.setString(1, pelicula);
+            s.setString(2, cine);
+            s.setDate(3, fecha);
+            s.setTime(4, hora);
+            s.setInt(5,sala);
+            
+            r=s.executeQuery();
+            //Se obtiene el numero de entradas vendidas
+            r.last();
+            Integer entradasVendidas=r.getRow();
+            System.out.println("Flag 1");
+            
+            if(sitiosSala-entradasVendidas-numEntradas<=0){
+                //Si no hay entradas suficientes, mensaje de error
                 jLabel12.setVisible(true);
             }else{
                 
-                /*//Se asigna un asiento
-                s=this.bd.getConnection().prepareStatement(
-                "SELECT FROM "
-                );
-            */
+                //Se asigna un asiento
+                //Se guardan los asientos ocupados en un conjunto para iterar sobre el
+                Set<Integer> sitiosOcupados= new HashSet<>();
+                r.first();
+                while(r.next())
+                    sitiosOcupados.add(r.getInt(1));
+                
+                //Se obtiene un id para el espectador
+                if(esSocio){
+                //Se obtiene su id asignado
+                    s=this.bd.getConnection().prepareStatement(
+                    "select id_socio from socio where correo_electronico=?");
+                    s.setString(1, correo);
+                    
+                    r=s.executeQuery();
+                    idEspectador=r.getInt(1);
+                    
+                }else{
+                //Se asigna un id nuevo
+                    s=this.bd.getConnection().prepareStatement(
+                            //Se crea un nuevo espectador con un id autogenerado, que se obtiene
+                    "select insertar_Espectador()");
+                    r=s.executeQuery();
+                    idEspectador=r.getInt(1);
+                }                
+                
+                
+                while(i<sitiosSala && cont<numEntradas){
+                    i++;
+                    //Si el asiento "i" no esta ocupado
+                    if(!sitiosOcupados.contains(i)){
+                        //Se vende una entrada
+                        cont++;
+                        s=this.bd.getConnection().prepareStatement(
+                        "INSERT INTO Producto (precio) VALUES(?) RETURNING id_producto");
+                        s.setFloat(1, precioTotal/numEntradas);
+                        r=s.executeQuery();
+                        idProducto=r.getInt(1);
+                        
+                        s=this.bd.getConnection().prepareStatement(
+                        "INSERT INTO Entrada VALUES(?,?,?,?,?,?,?)");
+                        s.setInt(1,idProducto);
+                        s.setDate(2, fecha);
+                        s.setTime(3, hora);
+                        s.setInt(4, sala);
+                        s.setInt(5, idCine);
+                        s.setInt(6, idPeli);
+                        s.setInt(7, i);
+                        s.execute();
+                        
+                        s=this.bd.getConnection().prepareStatement(
+                        "insert into LineaVenta (id_producto,num_linea,cantidad) values(?,?,?);");
+                        s.setInt(1, idProducto);
+                        s.setInt(2, cont);
+                        s.setInt(3, 1);
+                        s.execute();
+                        
+                        s=this.bd.getConnection().prepareStatement(
+                        "insert into Vender (id_trabajador,id_espectador,fecha_venta,coste_total) " +
+                        "values(?,?,now(),?)");
+                        s.setInt(1, idDependiente);
+                        s.setInt(2, idEspectador);
+                        s.setFloat(3,precioTotal);
+                    }
+                }
+            
+                //Si hubo exito
+                if(cont==numEntradas){
+                    jLabel13.setVisible(true);
+                }else{
+                    throw new Exception("No se han podido asignar asientos a las entradas.");
+                }
             }            
         
         }catch(Exception e){
-            e.printStackTrace();
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
