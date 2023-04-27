@@ -537,7 +537,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         String cine, pelicula, correo;
         Date fecha;
         Time hora;
-        Integer numEntradas, idEspectador, idProducto, idCine, idPeli, idDependiente;
+        Integer numEntradas, idEspectador, idProducto, idCine, 
+                idPeli, idDependiente, idVenta;
         Float precioTotal;
         Boolean esSocio;
         int i=1,cont=0;
@@ -614,7 +615,6 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             //Se obtiene el numero de entradas vendidas
             r.last();
             Integer entradasVendidas=r.getRow();
-            System.out.println("Flag 1");
             
             if(sitiosSala-entradasVendidas-numEntradas<=0){
                 //Si no hay entradas suficientes, mensaje de error
@@ -622,6 +622,10 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             }else{
                 
                 //Se asigna un asiento
+                
+                //Se desactiva el autocommit para que se pueda hacer rollback
+                this.bd.getConnection().setAutoCommit(false);
+                
                 //Se guardan los asientos ocupados en un conjunto para iterar sobre el
                 Set<Integer> sitiosOcupados= new HashSet<>();
                 r.first();
@@ -630,36 +634,57 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 
                 //Se obtiene un id para el espectador
                 if(esSocio){
-                //Se obtiene su id asignado
+                    //Se obtiene su id asignado
                     s=this.bd.getConnection().prepareStatement(
-                    "select id_socio from socio where correo_electronico=?");
+                    "select id_socio from SociosSinContrasena where correo_electronico=?");
                     s.setString(1, correo);
-                    
                     r=s.executeQuery();
+                    r.next();
                     idEspectador=r.getInt(1);
                     
                 }else{
-                //Se asigna un id nuevo
+                    //Se asigna un id nuevo
                     s=this.bd.getConnection().prepareStatement(
                             //Se crea un nuevo espectador con un id autogenerado, que se obtiene
                     "select insertar_Espectador()");
                     r=s.executeQuery();
+                    r.next();
                     idEspectador=r.getInt(1);
-                }                
+                }          
                 
+                //Se obtiene un id para la venta
+                s=this.bd.getConnection().prepareStatement(
+                        "select max(id_venta)+1 from Vender");
+                r=s.executeQuery();
+                r.next();
+                idVenta=r.getInt(1);
                 
+                //Se crea una venta
+                s=this.bd.getConnection().prepareStatement(
+                "insert into Vender values(?,?,?,now(),?)");
+                s.setInt(1, idDependiente);
+                s.setInt(2, idEspectador);
+                s.setInt(3, idVenta);
+                s.setFloat(4,precioTotal);
+                s.execute();                
+                
+                //Se crean las filas para cada entrada
                 while(i<sitiosSala && cont<numEntradas){
                     i++;
                     //Si el asiento "i" no esta ocupado
                     if(!sitiosOcupados.contains(i)){
                         //Se vende una entrada
                         cont++;
+                        
+                        //Se crea la entrada como producto
                         s=this.bd.getConnection().prepareStatement(
-                        "INSERT INTO Producto (precio) VALUES(?) RETURNING id_producto");
+                        "INSERT INTO Producto VALUES((select max(id_producto)+1"
+                                + " from Producto),?) RETURNING id_producto;");
                         s.setFloat(1, precioTotal/numEntradas);
                         r=s.executeQuery();
+                        r.next();
                         idProducto=r.getInt(1);
-                        
+                        //Y se crea la entrada como entrada
                         s=this.bd.getConnection().prepareStatement(
                         "INSERT INTO Entrada VALUES(?,?,?,?,?,?,?)");
                         s.setInt(1,idProducto);
@@ -671,31 +696,37 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                         s.setInt(7, i);
                         s.execute();
                         
+                        //Se crea una linea de venta
                         s=this.bd.getConnection().prepareStatement(
-                        "insert into LineaVenta (id_producto,num_linea,cantidad) values(?,?,?);");
-                        s.setInt(1, idProducto);
-                        s.setInt(2, cont);
-                        s.setInt(3, 1);
+                        "insert into LineaVenta values(?,?,?,?);");
+                        s.setInt(1,idVenta);
+                        s.setInt(2, idProducto);
+                        s.setInt(3, cont);
+                        s.setInt(4, 1);
                         s.execute();
                         
-                        s=this.bd.getConnection().prepareStatement(
-                        "insert into Vender (id_trabajador,id_espectador,fecha_venta,coste_total) " +
-                        "values(?,?,now(),?)");
-                        s.setInt(1, idDependiente);
-                        s.setInt(2, idEspectador);
-                        s.setFloat(3,precioTotal);
                     }
                 }
             
                 //Si hubo exito
                 if(cont==numEntradas){
                     jLabel13.setVisible(true);
-                }else{
+                    this.bd.getConnection().setAutoCommit(true);
+                }else{                  
+                    
                     throw new Exception("No se han podido asignar asientos a las entradas.");
                 }
             }            
         
         }catch(Exception e){
+            
+            try{
+                this.bd.getConnection().setAutoCommit(true);
+                this.bd.getConnection().rollback();
+            }catch(SQLException e2){
+                System.out.println("No se pudo hacer rollback");
+            }
+            
             GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
             popup.setVisible(true);
         }
@@ -725,7 +756,6 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             s.setString(1, cine);
             s.setDate(2, fecha);
             
-                    
             ResultSet r=s.executeQuery();
             
             while(r.next()){
