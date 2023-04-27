@@ -54,7 +54,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         
         //Se guarda la base de datos a la que se hace conexion
         this.bd=((GUI_IniciarSesion)this.getParent()).getBaseDatos();
-        botoncomprar.setVisible(false);
+        botonver.setVisible(false);
         //Tamanho adecuado para el logo
         ImageIcon imagenGrande = new ImageIcon(getClass().getResource("/GUI/logo.png"));
         jLabel1.setIcon(new ImageIcon(imagenGrande.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT)));
@@ -138,7 +138,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         buttonPanel = new javax.swing.JPanel();
-        botoncomprar = new javax.swing.JButton();
+        botonver = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -413,15 +413,15 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         ));
         jScrollPane2.setViewportView(jTable1);
 
-        botoncomprar.setText("Comprar");
-        botoncomprar.addChangeListener(new javax.swing.event.ChangeListener() {
+        botonver.setText("Ver");
+        botonver.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                botoncomprarStateChanged(evt);
+                botonverStateChanged(evt);
             }
         });
-        botoncomprar.addActionListener(new java.awt.event.ActionListener() {
+        botonver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botoncomprarActionPerformed(evt);
+                botonverActionPerformed(evt);
             }
         });
 
@@ -458,7 +458,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botoncomprar))))))
+                                    .addComponent(botonver))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -472,7 +472,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                         .addGap(65, 65, 65)
                         .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(43, 43, 43)
-                        .addComponent(botoncomprar)))
+                        .addComponent(botonver)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
@@ -871,11 +871,11 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_campopeliculaActionPerformed
 
-    private void botoncomprarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_botoncomprarStateChanged
+    private void botonverStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_botonverStateChanged
         // TODO add your handling code here:
-    }//GEN-LAST:event_botoncomprarStateChanged
+    }//GEN-LAST:event_botonverStateChanged
 
-    private void botoncomprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botoncomprarActionPerformed
+    private void botonverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonverActionPerformed
         //Le pasamos la info de la fila seleccionada
         int selectedRowIndex = jTable1.getSelectedRow();
 
@@ -889,9 +889,11 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         //Escondemos la ventana actual
         this.setVisible(false);
 
-        //Creamos una nueva instancia de la ventana de compra de entradas
+        //Creamos una nueva instancia de la ventana, donde se detalla más la sesión
+        //Esta es practicamente igual a GUI_compraentradas, solo que como tal no se puede comprar entradas
+        //Sirve para consulta de los datos de la sesión
         //Le pasamos al constructor los datos que necesitaremos dentro de ella
-        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala,this.bd.getConnection());
+        GUI_vistasesion_dependiente compraEntradas = new GUI_vistasesion_dependiente(cine,titulo, fecha, hora, sala,this.bd.getConnection());
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
 
@@ -903,7 +905,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             }
         });
 
-    }//GEN-LAST:event_botoncomprarActionPerformed
+    }//GEN-LAST:event_botonverActionPerformed
 
     /**
      * @param args the command line arguments
@@ -946,7 +948,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton botoncomprar;
+    private javax.swing.JButton botonver;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JTextField campofecha;
     private javax.swing.JTextField campopelicula;
@@ -1074,17 +1076,17 @@ private void populateComboBox() throws SQLException, FileNotFoundException, IOEx
         //Solamente permitimos que se seleccione una
         if (selectedRowCount == 1) {//Cuando se selecciona
             //Marcamos como visible el botón comprar
-            botoncomprar.setVisible(true);
+            botonver.setVisible(true);
             //Marcamos de amarillo la fila seleccionada
             jTable1.setSelectionBackground(Color.YELLOW);
         } else {
             //Si se deselecciona una fila se esconde el botón
             //Y se devuelve a su color por defecto
-            botoncomprar.setVisible(false);
+            botonver.setVisible(false);
             jTable1.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         }
     }   
-});      
+            });      
     } catch (SQLException ex) {
         ex.printStackTrace();
     } finally {
