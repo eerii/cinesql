@@ -138,6 +138,10 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jTable1 = new javax.swing.JTable();
         buttonPanel = new javax.swing.JPanel();
         botonver = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTablaComida = new javax.swing.JTable();
+        jBotonVerComida = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -353,7 +357,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel9)
                                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -495,6 +499,49 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Cartelera", jPanel2);
 
+        jTablaComida.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jTablaComida);
+
+        jBotonVerComida.setText("Artículos de comida disponibles");
+        jBotonVerComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonVerComidaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+                    .addComponent(jBotonVerComida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51)
+                .addComponent(jBotonVerComida)
+                .addGap(156, 156, 156))
+        );
+
+        jTabbedPane1.addTab("Comida", jPanel3);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -517,6 +564,16 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        jLabel1.setAlignmentX(0.5F);
+
+        jLabel1.setAlignmentY(0.0F);
+
+        jLabel1.setMinimumSize(new java.awt.Dimension(71, 63));
+
+        jLabel1.setPreferredSize(new java.awt.Dimension(80, 80));
+
+        // Code adding the component to the parent container - not shown here
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -948,6 +1005,18 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private void jBotonVerComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVerComidaActionPerformed
+        // TODO add your handling code here:
+        try {
+            // En el siguiente método más abajo se realizará la operación con los datos obtenidos
+            searchComida();
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jBotonVerComidaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -995,6 +1064,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private javax.swing.JTextField campopelicula;
     private javax.swing.JCheckBox check3D;
     private javax.swing.JComboBox<String> cines;
+    private javax.swing.JButton jBotonVerComida;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
@@ -1020,9 +1090,12 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTablaComida;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
@@ -1141,6 +1214,62 @@ private void populateComboBox() throws SQLException, FileNotFoundException, IOEx
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+}
+    
+private void searchComida() throws IOException, ClassNotFoundException{
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+        //AQUI SE PODRIA ANHADIR TB LA CANTIDAD
+        String sql = "";
+        sql = "select comida.tipo, comida.tamanho, producto.precio\n" +
+" from public.comida join public.producto ON comida.id_producto = producto.id_producto;";
+
+        stmt = c.prepareStatement(sql);
+
+        rs = stmt.executeQuery();
+        //Actualizamos la tabla con los resultados
+        //Indicamos que la tabla va a ser de solo lectura
+        GUI_MenuDependiente.ReadOnlyTableModel model = new GUI_MenuDependiente.ReadOnlyTableModel();
+        //Titulamos cada columna
+        model.setColumnIdentifiers(new Object[]{"Producto","Tamaño", "Precio"/*...*/});
+        while (rs.next()) { //Recorremos las proyecciones obtenidas en el query
+            //Y los insertamos en cada fila
+
+            Object[] rowData = new Object[] {rs.getString("tipo"), rs.getString("tamanho"),  rs.getString("precio")/*...*/};
+            model.addRow(rowData);
+        }
+        jTablaComida.setModel(model);
+
+        jTablaComida.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                //Contamos el número de filas seleccionadas
+                int selectedRowCount = jTablaComida.getSelectedRowCount();
+                //Solamente permitimos que se seleccione una
+                if (selectedRowCount == 1) {//Cuando se selecciona
+                    //Marcamos de amarillo la fila seleccionada
+                    jTablaComida.setSelectionBackground(Color.YELLOW);
+                } else {
+                    //Y se devuelve a su color por defecto
+                    jTablaComida.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+                }               
+            }   
+        });  
+    } catch (SQLException ex) {
+        Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+    }  finally {
+        // Close the database resources
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
     }
 }
     
