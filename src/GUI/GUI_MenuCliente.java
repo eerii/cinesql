@@ -283,6 +283,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         });
 
         jBotonComprarConsultarComida.setText("Comprar");
+        jBotonComprarConsultarComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonComprarConsultarComidaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -667,6 +672,35 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
             Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jBotonVerArticulosComidaActionPerformed
+
+    private void jBotonComprarConsultarComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonComprarConsultarComidaActionPerformed
+        // TODO add your handling code here:
+        //Le pasamos la info de la fila seleccionada
+        int selectedRowIndex = jTablaComida.getSelectedRow();
+        
+        // Obtenemos los datos
+        String producto = jTablaComida.getValueAt(selectedRowIndex, 0).toString();
+        String cantidad = jTablaComida.getValueAt(selectedRowIndex, 1).toString();
+        String precio = jTablaComida.getValueAt(selectedRowIndex, 2).toString();
+        
+        //Escondemos la ventana actual
+        this.setVisible(false);
+        
+        //Creamos una nueva instancia de la ventana de compra de comida
+        //Le pasamos al constructor los datos que necesitaremos dentro de ella
+        GUI_compracomida compraComida = new GUI_compracomida(producto, cantidad, precio,this.bd.getConnection());
+        compraComida.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        compraComida.setVisible(true);
+
+        // Add a WindowListener to the GUI_compraentradas window
+        compraComida.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent e) {
+            // Show the previous window again when the GUI_compraentradas window is closed
+            setVisible(true);
+        }
+    });
+    }//GEN-LAST:event_jBotonComprarConsultarComidaActionPerformed
 
     /**
      * @param args the command line arguments
