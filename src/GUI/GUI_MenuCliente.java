@@ -48,7 +48,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         //Se guarda la base de datos a la que se hace conexion
         this.bd=((GUI_IniciarSesion)this.getParent()).getBaseDatos();
-        
         //Se guarda el cliente
         this.cliente = cliente;
         
@@ -293,6 +292,12 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         });
 
         jBotonComprarConsultarComida.setText("Comprar");
+        
+        jBotonComprarConsultarComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonComprarConsultarComidaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -689,6 +694,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_jBotonVerArticulosComidaActionPerformed
 
+
     private void productosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productosActionPerformed
         // TODO add your handling code here:
         try {
@@ -701,6 +707,35 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
             Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_productosActionPerformed
+    
+    private void jBotonComprarConsultarComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonComprarConsultarComidaActionPerformed
+        // TODO add your handling code here:
+        //Le pasamos la info de la fila seleccionada
+        int selectedRowIndex = jTablaComida.getSelectedRow();
+        
+        // Obtenemos los datos
+        String producto = jTablaComida.getValueAt(selectedRowIndex, 0).toString();
+        String cantidad = jTablaComida.getValueAt(selectedRowIndex, 1).toString();
+        String precio = jTablaComida.getValueAt(selectedRowIndex, 2).toString();
+        
+        //Escondemos la ventana actual
+        this.setVisible(false);
+        
+        //Creamos una nueva instancia de la ventana de compra de comida
+        //Le pasamos al constructor los datos que necesitaremos dentro de ella
+        GUI_compracomida compraComida = new GUI_compracomida(producto, cantidad, precio,this.bd.getConnection());
+        compraComida.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        compraComida.setVisible(true);
+
+        // Add a WindowListener to the GUI_compraentradas window
+        compraComida.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent e) {
+            // Show the previous window again when the GUI_compraentradas window is closed
+            setVisible(true);
+        }
+    });
+    }//GEN-LAST:event_jBotonComprarConsultarComidaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -735,6 +770,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 /*GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(), this.getCliente());
+                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -971,7 +1007,6 @@ private void searchComida() throws IOException, ClassNotFoundException{
 
     }
 }
-
 
 //Productos adquiridos
 private void obtenerEntrada() throws IOException, ClassNotFoundException{
