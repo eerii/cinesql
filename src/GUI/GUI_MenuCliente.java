@@ -87,6 +87,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         buttonPanel = new javax.swing.JPanel();
         botoncomprar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTablaComida = new javax.swing.JTable();
+        jBotonVerArticulosComida = new javax.swing.JButton();
+        jBotonComprarConsultarComida = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -96,7 +100,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jTable3 = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        nombre = new javax.swing.JTextField();
+        jNombre = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -109,10 +113,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         primApellido = new javax.swing.JTextField();
         SegApellido = new javax.swing.JTextField();
         dni = new javax.swing.JTextField();
-        correo = new javax.swing.JTextField();
-        telefono = new javax.swing.JTextField();
+        jcorreo = new javax.swing.JTextField();
+        jtelefono = new javax.swing.JTextField();
         fechaNac = new javax.swing.JTextField();
-        contrasena = new javax.swing.JPasswordField();
+        jcontrasena = new javax.swing.JPasswordField();
         jLabel5 = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
@@ -259,15 +263,53 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 
         jPanel2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jTablaComida.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+            }
+        ));
+        jScrollPane5.setViewportView(jTablaComida);
+
+        jBotonVerArticulosComida.setText("Ver artículos de comida");
+        jBotonVerArticulosComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonVerArticulosComidaActionPerformed(evt);
+            }
+        });
+
+        jBotonComprarConsultarComida.setText("Comprar");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 881, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jBotonVerArticulosComida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBotonComprarConsultarComida, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 464, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(107, 107, 107)
+                        .addComponent(jBotonComprarConsultarComida)))
+                .addGap(56, 56, 56)
+                .addComponent(jBotonVerArticulosComida)
+                .addContainerGap(158, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Consultar comida", jPanel2);
@@ -340,9 +382,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jLabel8.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel8.setText("Nombre:");
 
-        nombre.addActionListener(new java.awt.event.ActionListener() {
+        jNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nombreActionPerformed(evt);
+                jNombreActionPerformed(evt);
             }
         });
 
@@ -384,9 +426,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         });
 
         dni.setEditable(false);
+        dni.setText("no modificable");
         dni.setToolTipText("");
 
         fechaNac.setEditable(false);
+        fechaNac.setText("no modificable");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -398,7 +442,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addGap(18, 18, 18)
-                        .addComponent(nombre))
+                        .addComponent(jNombre))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addGap(18, 18, 18)
@@ -414,11 +458,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addGap(18, 18, 18)
-                        .addComponent(correo))
+                        .addComponent(jcorreo))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel13)
                         .addGap(18, 18, 18)
-                        .addComponent(telefono))
+                        .addComponent(jtelefono))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addGap(18, 18, 18)
@@ -432,7 +476,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                                 .addComponent(jButton3)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton2))
-                            .addComponent(contrasena))))
+                            .addComponent(jcontrasena))))
                 .addGap(107, 107, 107))
         );
         jPanel4Layout.setVerticalGroup(
@@ -441,7 +485,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(37, 37, 37)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -457,11 +501,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(correo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(telefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
@@ -469,7 +513,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
-                    .addComponent(contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcontrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -599,9 +643,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_botoncomprarStateChanged
 
-    private void nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreActionPerformed
+    private void jNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_nombreActionPerformed
+    }//GEN-LAST:event_jNombreActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -610,6 +654,19 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jBotonVerArticulosComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVerArticulosComidaActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        try {
+            // En el siguiente método más abajo se realizará la operación con los datos obtenidos
+            searchComida();
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jBotonVerArticulosComidaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -663,10 +720,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JTextField campopelicula;
     private javax.swing.JCheckBox check3D;
     private javax.swing.JComboBox<String> cines;
-    private javax.swing.JPasswordField contrasena;
-    private javax.swing.JTextField correo;
     private javax.swing.JTextField dni;
     private javax.swing.JTextField fechaNac;
+    private javax.swing.JButton jBotonComprarConsultarComida;
+    private javax.swing.JButton jBotonVerArticulosComida;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -685,6 +742,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField jNombre;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -693,14 +751,17 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTablaComida;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField nombre;
+    private javax.swing.JPasswordField jcontrasena;
+    private javax.swing.JTextField jcorreo;
+    private javax.swing.JTextField jtelefono;
     private javax.swing.JTextField primApellido;
-    private javax.swing.JTextField telefono;
     // End of variables declaration//GEN-END:variables
 
    
@@ -812,6 +873,108 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+}
+    
+  
+private void searchComida() throws IOException, ClassNotFoundException{
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+        //AQUI SE PODRIA ANHADIR TB LA CANTIDAD
+        String sql = "";
+        sql = "select comida.tipo, comida.tamanho, producto.precio\n" +
+" from public.comida join public.producto ON comida.id_producto = producto.id_producto;";
+
+        stmt = c.prepareStatement(sql);
+
+        rs = stmt.executeQuery();
+        //Actualizamos la tabla con los resultados
+        //Indicamos que la tabla va a ser de solo lectura
+        ReadOnlyTableModel model = new ReadOnlyTableModel();
+        //Titulamos cada columna
+        model.setColumnIdentifiers(new Object[]{"Producto","Tamaño", "Precio"/*...*/});
+        while (rs.next()) { //Recorremos las proyecciones obtenidas en el query
+            //Y los insertamos en cada fila
+
+            Object[] rowData = new Object[] {rs.getString("tipo"), rs.getString("tamanho"),  rs.getString("precio")/*...*/};
+            model.addRow(rowData);
+        }
+        jTablaComida.setModel(model);
+
+        jTablaComida.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                //Contamos el número de filas seleccionadas
+                int selectedRowCount = jTablaComida.getSelectedRowCount();
+                //Solamente permitimos que se seleccione una
+                if (selectedRowCount == 1) {//Cuando se selecciona
+                    //Marcamos como visible el botón comprar
+                    jBotonComprarConsultarComida.setVisible(true);
+                    //Marcamos de amarillo la fila seleccionada
+                    jTablaComida.setSelectionBackground(Color.YELLOW);
+                } else {
+                    //Si se deselecciona una fila se esconde el botón
+                    //Y se devuelve a su color por defecto
+                    jBotonComprarConsultarComida.setVisible(false);
+                    jTablaComida.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+                }               
+            }   
+        });  
+    } catch (SQLException ex) {
+        Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+    }  finally {
+        // Close the database resources
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+}
+
+private void editarCuenta() {
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    
+    try{
+
+        String nombre = jNombre.getText();
+        String apellido1 = primApellido.getText();
+        String apellido2 = SegApellido.getText();
+        //dni no se puede cambiar
+        String correo = jcorreo.getText();
+        String telefono = jtelefono.getText();
+        String contrasena = jcontrasena.getText();
+        
+        if(nombre.isEmpty()||apellido1.isEmpty()||apellido2.isEmpty()||correo.isEmpty()||contrasena.isEmpty()){
+            throw new Exception("Hay campos necesarios sin modificar");
+        }
+        
+        //Se hace la consulta
+        String sql = "";
+       
+        stmt = c.prepareStatement(sql);
+        
+        stmt.setString(1, nombre);
+        stmt.setString(2, apellido1);
+        stmt.setString(3, apellido2);
+        stmt.setString(4, correo);
+        stmt.setString(5, contrasena);
+        
+        stmt.execute();
+        
+        //AQUI PONER UN TODO OK O ALGO ASI
+        
+    }catch(Exception e){
+        GUI_Error popup = new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+
     }
 }
 //Para hacer la tabla de resultados de solo lectura
