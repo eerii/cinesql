@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import DB.BaseDatos;
+import DB.Cliente;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
@@ -34,16 +36,21 @@ import javax.swing.table.DefaultTableModel;
  */
 public class GUI_MenuCliente extends javax.swing.JDialog {
 
-    private Connection conexion;
+    private BaseDatos bd;
+    private Cliente cliente;
     
     /**
      * Creates new form GUI_MenuCliente
      */
-    public GUI_MenuCliente(java.awt.Frame parent, boolean modal, Connection c) {
-        super(parent, modal);
+    public GUI_MenuCliente(java.awt.Frame parent, Cliente cliente) {
+        super(parent, true);
         initComponents();
         
-        this.conexion=c;
+        //Se guarda la base de datos a la que se hace conexion
+        this.bd=((GUI_IniciarSesion)this.getParent()).getBaseDatos();
+        
+        //Se guarda el cliente
+        this.cliente = cliente;
         
         botoncomprar.setVisible(false);
         try {
@@ -58,6 +65,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
     }
 
+    public Cliente getCliente() {
+        return this.cliente;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -85,16 +96,21 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         buttonPanel = new javax.swing.JPanel();
         botoncomprar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTablaComida = new javax.swing.JTable();
+        jBotonVerArticulosComida = new javax.swing.JButton();
+        jBotonComprarConsultarComida = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        entradaComprada = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        comidaComprada = new javax.swing.JTable();
+        productos = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        nombre = new javax.swing.JTextField();
+        jNombre = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -107,10 +123,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         primApellido = new javax.swing.JTextField();
         SegApellido = new javax.swing.JTextField();
         dni = new javax.swing.JTextField();
-        correo = new javax.swing.JTextField();
-        telefono = new javax.swing.JTextField();
+        jcorreo = new javax.swing.JTextField();
+        jtelefono = new javax.swing.JTextField();
         fechaNac = new javax.swing.JTextField();
-        contrasena = new javax.swing.JPasswordField();
+        jcontrasena = new javax.swing.JPasswordField();
         jLabel5 = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
@@ -257,15 +273,53 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 
         jPanel2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jTablaComida.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+            }
+        ));
+        jScrollPane5.setViewportView(jTablaComida);
+
+        jBotonVerArticulosComida.setText("Ver artículos de comida");
+        jBotonVerArticulosComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonVerArticulosComidaActionPerformed(evt);
+            }
+        });
+
+        jBotonComprarConsultarComida.setText("Comprar");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 881, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jBotonVerArticulosComida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jBotonComprarConsultarComida, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 464, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(107, 107, 107)
+                        .addComponent(jBotonComprarConsultarComida)))
+                .addGap(56, 56, 56)
+                .addComponent(jBotonVerArticulosComida)
+                .addContainerGap(158, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Consultar comida", jPanel2);
@@ -275,7 +329,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jLabel6.setFont(new java.awt.Font("sansserif", 1, 16)); // NOI18N
         jLabel6.setText("Entradas");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        entradaComprada.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -286,12 +340,12 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 "Cine", "Película", "Proyección 3D", "Fecha", "Hora", "Cantidad", "Precio total"
             }
         ));
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(entradaComprada);
 
         jLabel7.setFont(new java.awt.Font("sansserif", 1, 16)); // NOI18N
         jLabel7.setText("Articulos de comida");
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        comidaComprada.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -302,7 +356,14 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 "Tipo", "Tamaño", "Cantidad", "Precio total"
             }
         ));
-        jScrollPane4.setViewportView(jTable3);
+        jScrollPane4.setViewportView(comidaComprada);
+
+        productos.setText("Buscar");
+        productos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -310,11 +371,13 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 825, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel6)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 825, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(productos)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 825, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel7)
+                        .addComponent(jLabel6)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 825, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -328,7 +391,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(productos)
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Productos adquiridos", jPanel3);
@@ -338,9 +403,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jLabel8.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel8.setText("Nombre:");
 
-        nombre.addActionListener(new java.awt.event.ActionListener() {
+        jNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nombreActionPerformed(evt);
+                jNombreActionPerformed(evt);
             }
         });
 
@@ -382,9 +447,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         });
 
         dni.setEditable(false);
+        dni.setText("no modificable");
         dni.setToolTipText("");
 
         fechaNac.setEditable(false);
+        fechaNac.setText("no modificable");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -396,7 +463,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addGap(18, 18, 18)
-                        .addComponent(nombre))
+                        .addComponent(jNombre))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addGap(18, 18, 18)
@@ -412,11 +479,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addGap(18, 18, 18)
-                        .addComponent(correo))
+                        .addComponent(jcorreo))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel13)
                         .addGap(18, 18, 18)
-                        .addComponent(telefono))
+                        .addComponent(jtelefono))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addGap(18, 18, 18)
@@ -430,7 +497,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                                 .addComponent(jButton3)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton2))
-                            .addComponent(contrasena))))
+                            .addComponent(jcontrasena))))
                 .addGap(107, 107, 107))
         );
         jPanel4Layout.setVerticalGroup(
@@ -439,7 +506,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(37, 37, 37)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -455,11 +522,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(correo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(telefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
@@ -467,7 +534,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
-                    .addComponent(contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcontrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -514,7 +581,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
         try{
-        this.conexion.close();
+        this.bd.getConnection().close();
         }catch(Exception e){}
         this.getParent().setVisible(true);
         ((JFrame)this.getParent()).setState(Frame.NORMAL);
@@ -522,14 +589,14 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosed
      
     //Qué ocurre cuando se selecciona el botón buscar?
+    //Se muestran en el jtable las coincidencias encontradas
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // Obtenemos los valores almacenados en los campos de búsqueda
         String searchpeli = campopelicula.getText(); //La pelicula
         String searchfechaold = campofecha.getText();    //El día
         
         //Comprobamos el formato de la fecha antes de continuar
-        if (!searchfechaold.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            // Display error message to user
+        if (!searchfechaold.matches("\\d{4}-\\d{2}-\\d{2}")) {            
             JOptionPane.showMessageDialog(null, "Por favor, introduzca la fecha con el formato yyyy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         } 
@@ -560,6 +627,8 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }//GEN-LAST:event_campopeliculaActionPerformed
 
     //Qué hace el boton comprar cuando lo pulsamos?
+    //Se cierra la ventana actual y se abre una nueva para la compra de entradas
+    //Al constructor de dicha ventana le pasamos los datos necesarios de la actual
     private void botoncomprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botoncomprarActionPerformed
         //Le pasamos la info de la fila seleccionada
         int selectedRowIndex = jTable1.getSelectedRow();
@@ -576,7 +645,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         //Creamos una nueva instancia de la ventana de compra de entradas
         //Le pasamos al constructor los datos que necesitaremos dentro de ella
-        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala,this.conexion);
+        GUI_compraentradas compraEntradas = new GUI_compraentradas(cine,titulo, fecha, hora, sala,this.bd.getConnection());
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         compraEntradas.setVisible(true);
 
@@ -595,9 +664,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_botoncomprarStateChanged
 
-    private void nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreActionPerformed
+    private void jNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_nombreActionPerformed
+    }//GEN-LAST:event_jNombreActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -606,6 +675,32 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jBotonVerArticulosComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVerArticulosComidaActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        try {
+            // En el siguiente método más abajo se realizará la operación con los datos obtenidos
+            searchComida();
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jBotonVerArticulosComidaActionPerformed
+
+    private void productosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productosActionPerformed
+        // TODO add your handling code here:
+        try {
+            // En el siguiente método más abajo se realizará la operación con los datos obtenidos
+            obtenerEntrada();
+            obtenerComida();
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_productosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -639,14 +734,14 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(), true,null);
+                /*GUI_MenuCliente dialog = new GUI_MenuCliente(new javax.swing.JFrame(), this.getCliente());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
                     }
                 });
-                dialog.setVisible(true);
+                dialog.setVisible(true);*/
             }
         });
     }
@@ -659,10 +754,12 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JTextField campopelicula;
     private javax.swing.JCheckBox check3D;
     private javax.swing.JComboBox<String> cines;
-    private javax.swing.JPasswordField contrasena;
-    private javax.swing.JTextField correo;
+    private javax.swing.JTable comidaComprada;
     private javax.swing.JTextField dni;
+    private javax.swing.JTable entradaComprada;
     private javax.swing.JTextField fechaNac;
+    private javax.swing.JButton jBotonComprarConsultarComida;
+    private javax.swing.JButton jBotonVerArticulosComida;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -681,6 +778,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField jNombre;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -689,26 +787,24 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTablaComida;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField nombre;
+    private javax.swing.JPasswordField jcontrasena;
+    private javax.swing.JTextField jcorreo;
+    private javax.swing.JTextField jtelefono;
     private javax.swing.JTextField primApellido;
-    private javax.swing.JTextField telefono;
+    private javax.swing.JButton productos;
     // End of variables declaration//GEN-END:variables
 
-    /*
-    *
-    *   METODO PARA POBLAR DE CINES EL DESPLEGABLE
-    *
-    */
-    
+   
+   //Método con el que poblamos el jcombobox con los cines de la base 
     private void populateComboBox() throws SQLException, FileNotFoundException, IOException {
         
          //Se intenta la conexion
-        Connection c= this.conexion;
+        Connection c= this.bd.getConnection();
     
         try {
         
@@ -742,17 +838,12 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }
 }
     
-     /*
-    *
-    *   METODO PARA MOSTRAR LAS COINCIDENCIAS DE LA BÚSQUEDA
-    *
-    */
     
-    //Gestión de las coincidencias de búsqueda
-    
+    //Método que se encarga de poner el la jtable
+    //Las sesiones que coinciden con los datos introducidos en el buscador
     private void searchPeliculas(String searchpeli, Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
     // Preparamos la conexión a la base de datos
-    Connection c = this.conexion;
+    Connection c = this.bd.getConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
@@ -760,10 +851,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // Preparamos la consulta
         String sql ="select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
                     "from public.pelicula " +
-                    "join public.proyectar ON pelicula.id = proyectar.id_pelicula " +
-                    "join public.cine ON proyectar.id_cine = cine.id " +
-                    "join public.sala ON proyectar.num_sala = sala.num_sala " +
-                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = ? and sala.es_3d = ?::boolean;" ;
+                    "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
+                    "join public.cine ON proyectar.id_cine = cine.id_cine " +
+                    "join public.sala ON proyectar.id_sala = sala.id_sala " +
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = ? and sala.proyeccion3d = ?::boolean;" ;
         
         
         stmt = c.prepareStatement(sql);
@@ -811,7 +902,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     } catch (SQLException ex) {
         ex.printStackTrace();
     } finally {
-        // Close the database resources
         try {
             if (rs != null) rs.close();
             if (stmt != null) stmt.close();
@@ -820,15 +910,215 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         }
     }
 }
+    
+  
+private void searchComida() throws IOException, ClassNotFoundException{
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+        //AQUI SE PODRIA ANHADIR TB LA CANTIDAD
+        String sql = "";
+        sql = "select comida.tipo, comida.tamanho, producto.precio\n" +
+" from public.comida join public.producto ON comida.id_producto = producto.id_producto;";
+
+        stmt = c.prepareStatement(sql);
+
+        rs = stmt.executeQuery();
+        //Actualizamos la tabla con los resultados
+        //Indicamos que la tabla va a ser de solo lectura
+        ReadOnlyTableModel model = new ReadOnlyTableModel();
+        //Titulamos cada columna
+        model.setColumnIdentifiers(new Object[]{"Producto","Tamaño", "Precio"/*...*/});
+        while (rs.next()) { //Recorremos las proyecciones obtenidas en el query
+            //Y los insertamos en cada fila
+
+            Object[] rowData = new Object[] {rs.getString("tipo"), rs.getString("tamanho"),  rs.getString("precio")/*...*/};
+            model.addRow(rowData);
+        }
+        jTablaComida.setModel(model);
+
+        jTablaComida.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                //Contamos el número de filas seleccionadas
+                int selectedRowCount = jTablaComida.getSelectedRowCount();
+                //Solamente permitimos que se seleccione una
+                if (selectedRowCount == 1) {//Cuando se selecciona
+                    //Marcamos como visible el botón comprar
+                    jBotonComprarConsultarComida.setVisible(true);
+                    //Marcamos de amarillo la fila seleccionada
+                    jTablaComida.setSelectionBackground(Color.YELLOW);
+                } else {
+                    //Si se deselecciona una fila se esconde el botón
+                    //Y se devuelve a su color por defecto
+                    jBotonComprarConsultarComida.setVisible(false);
+                    jTablaComida.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+                }               
+            }   
+        });  
+    } catch (SQLException ex) {
+        Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+    }  finally {
+        // Close the database resources
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+}
+
+
+//Productos adquiridos
+private void obtenerEntrada() throws IOException, ClassNotFoundException{
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stat = null;
+    ResultSet rcomida = null;
+    try {
+        String sql = "SELECT entrada_comprada(?);";
+
+        stat = c.prepareStatement(sql);
+        stat.setString(1, this.cliente.getCorreo());
+
+        rcomida = stat.executeQuery();
+        //Actualizamos la tabla con los resultados
+        //Indicamos que la tabla va a ser de solo lectura
+        ReadOnlyTableModel model = new ReadOnlyTableModel();
+        
+        //Titulamos cada columna
+        model.setColumnIdentifiers(new Object[]{"Cine","Película", "Proyección 3D", "Fecha","Hora", "Cantidad", "Precio total"/*...*/});
+        while (rcomida.next()) { //Recorremos las proyecciones obtenidas en el query
+            String result = rcomida.getString(1);
+            result = result.substring(1, result.length()-1); // Quito os parénteses da consulta
+            String[] rowData = result.split(","); // Separo os valores
+            //Y los insertamos en cada fila
+            rowData[0] = rowData[0].replaceAll("\"", ""); // Quitamos comillas
+            rowData[1] = rowData[1].replaceAll("\"", ""); // Quitamos comillas
+            if(rowData[2] == "f") {
+                rowData[2] = "No";
+            } else {
+                rowData[2] = "Si";
+            }
+            
+            model.addRow(rowData);
+            //System.out.println(rcomida.getString(1));
+        }
+        entradaComprada.setModel(model);
+        
+    } catch (SQLException ex) {
+        Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+    }  finally {
+        // Close the database resources
+        try {
+            if (rcomida != null) rcomida.close();
+            if (stat != null) stat.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+}
+
+private void obtenerComida() throws IOException, ClassNotFoundException{
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stat2 = null;
+    ResultSet rcomida2 = null;
+    try {
+        String sql2 = "SELECT comida_comprada(?);";
+
+        stat2 = c.prepareStatement(sql2);
+        stat2.setString(1, this.cliente.getCorreo());
+
+        rcomida2 = stat2.executeQuery();
+        //Actualizamos la tabla con los resultados
+        //Indicamos que la tabla va a ser de solo lectura
+        ReadOnlyTableModel model2 = new ReadOnlyTableModel();
+        
+        //Titulamos cada columna
+        model2.setColumnIdentifiers(new Object[]{"Tipo","Tamaño", "Cantidad", "Precio total"/*...*/});
+        while (rcomida2.next()) { //Recorremos las proyecciones obtenidas en el query
+            String result2 = rcomida2.getString(1);
+            result2 = result2.substring(1, result2.length()-1); // Quito os parénteses da consulta
+            String[] rowData = result2.split(","); // Separo os valores
+            //Y los insertamos en cada fila
+            rowData[0] = rowData[0].replaceAll("\"", ""); // Quitamos comillas
+            rowData[0] = rowData[0].replaceAll(" ", ""); // Quitamos espacios
+            rowData[1] = rowData[1].replaceAll("\"", ""); // Quitamos comillas
+            rowData[1] = rowData[1].replaceAll(" ", ""); // Quitamos espacios
+            
+            model2.addRow(rowData);
+            //System.out.println(rcomida.getString(1));
+        }
+        comidaComprada.setModel(model2);
+        
+    } catch (SQLException ex) {
+        Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+    }  finally {
+        // Close the database resources
+        try {
+            if (rcomida2 != null) rcomida2.close();
+            if (stat2 != null) stat2.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+}
+
+
+
+private void editarCuenta() {
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    
+    try{
+
+        String nombre = jNombre.getText();
+        String apellido1 = primApellido.getText();
+        String apellido2 = SegApellido.getText();
+        //dni no se puede cambiar
+        String correo = jcorreo.getText();
+        String telefono = jtelefono.getText();
+        String contrasena = jcontrasena.getText();
+        
+        if(nombre.isEmpty()||apellido1.isEmpty()||apellido2.isEmpty()||correo.isEmpty()||contrasena.isEmpty()){
+            throw new Exception("Hay campos necesarios sin modificar");
+        }
+        
+        //Se hace la consulta
+        String sql = "";
+       
+        stmt = c.prepareStatement(sql);
+        
+        stmt.setString(1, nombre);
+        stmt.setString(2, apellido1);
+        stmt.setString(3, apellido2);
+        stmt.setString(4, correo);
+        stmt.setString(5, contrasena);
+        
+        stmt.execute();
+        
+        //AQUI PONER UN TODO OK O ALGO ASI
+        
+    }catch(Exception e){
+        GUI_Error popup = new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+
+    }
+}
 //Para hacer la tabla de resultados de solo lectura
 public class ReadOnlyTableModel extends DefaultTableModel {
-
     @Override
-    public boolean isCellEditable(int row, int column) {
-        return false; // Make all cells read-only
+    public boolean isCellEditable(int row, int column) {    //Marcamos que las celdas no son editables
+        return false;
     }
-
-    // Override other methods as needed for your specific use case
 }
 
     

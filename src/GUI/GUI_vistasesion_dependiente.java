@@ -5,7 +5,6 @@
  */
 package GUI;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,14 +14,12 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import java.sql.PreparedStatement;
-import javax.swing.JOptionPane;
 
-
-public class GUI_compraentradas extends javax.swing.JDialog {
+public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
     
     private Connection conexion;
 
-    public GUI_compraentradas(java.awt.Frame parent, boolean modal, Connection c) {
+    public GUI_vistasesion_dependiente(java.awt.Frame parent, boolean modal, Connection c) {
         super(parent, modal);
         initComponents();
         
@@ -39,7 +36,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         
         try {
         
-            // Query para obtener el número disponible de butacas
+            // Query para obtener la capacidad
             String query = "SELECT sala.num_butacas FROM public.sala "+
                     "join public.cine "+
                     "on sala.id_cine = cine.id_cine "+
@@ -75,7 +72,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     
     //Función que busca en la base de datos y devuelve el número de butacas libres
     private String buscareLibres(String cine, String titulo, String fecha, String hora, int numsala){
-         
         
         //Se intenta la conexion
          Connection c = this.conexion;
@@ -116,7 +112,8 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                 numEnttotal = rs.getInt("count");
             }
             
-            //Query con el que obtendremos el número de entradas que ya fueron vendidas
+            
+            //Query con el que obtendremos el número de entradas que ya fueron vendidas            
             String query2= "SELECT entradas_vendidas(?, ?, ?, ?, ?)";
             statement2 = c.prepareStatement(query2);
             statement2.setString(1, cine);
@@ -156,8 +153,9 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         PreparedStatement statement = null;
         ResultSet rs = null;
     
-        try {        
-            // Query para obtener las entradas
+        try {
+        
+            // Query para obtener el precio de una entrada de la sesión
             String query = "SELECT getPrecio(?, ?, ?, ?, ?)";
             statement = c.prepareStatement(query);
             statement.setString(1,fecha);
@@ -192,7 +190,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     
     
 //Constructor principal de la ventana de compra de entradas
-    public GUI_compraentradas(String cine, String titulo, String fecha, String hora, String numsala1, Connection c) {
+    public GUI_vistasesion_dependiente(String cine, String titulo, String fecha, String hora, String numsala1, Connection c) {
         initComponents(); // Inicializamos la vista       
         
         this.conexion=c;//Se guarda la conexion que se esta usando
@@ -209,7 +207,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             //Como la capacidad de la sala se busca en un query hay que controlar el caso en que no funcione
             capacidadsala.setText(buscarCap(numsala,cine));
         } catch (IOException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GUI_vistasesion_dependiente.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         //Llenamos de valores el desplegable de número de entradas
@@ -278,8 +276,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         precioentrada = new javax.swing.JTextPane();
         jScrollPane9 = new javax.swing.JScrollPane();
         total = new javax.swing.JTextPane();
-        finalizarcompra = new javax.swing.JButton();
-        compracomida = new javax.swing.JButton();
+        botonvolver = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -336,17 +333,10 @@ public class GUI_compraentradas extends javax.swing.JDialog {
 
         jScrollPane9.setViewportView(total);
 
-        finalizarcompra.setText("Finalizar compra");
-        finalizarcompra.addActionListener(new java.awt.event.ActionListener() {
+        botonvolver.setText("Volver");
+        botonvolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                finalizarcompraActionPerformed(evt);
-            }
-        });
-
-        compracomida.setText("Añadir complementos");
-        compracomida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                compracomidaActionPerformed(evt);
+                botonvolverActionPerformed(evt);
             }
         });
 
@@ -415,9 +405,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel11)))
                         .addGap(25, 25, 25)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(compracomida, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(finalizarcompra, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(botonvolver, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
@@ -448,7 +436,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
                         .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane3)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, Short.MAX_VALUE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(37, 37, 37)
@@ -473,22 +461,19 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(compracomida)
-                                .addComponent(jLabel11)))
+                            .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(finalizarcompra)
-                                .addComponent(jLabel12))))
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Numerodeentradas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(70, 70, 70))
+                        .addComponent(Numerodeentradas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(botonvolver, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(75, 75, 75))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -516,23 +501,19 @@ public class GUI_compraentradas extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void compracomidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compracomidaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_compracomidaActionPerformed
 //Qué ocurre cuando se selecciona una opción del desplegable?
 //Simplemente tenemos que actualizar el coste total (ctetotal=numentradas*precioporentrada)
     private void NumerodeentradasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumerodeentradasActionPerformed
             // Obtiene el número de entradas seleccionado
             String selectedOptionString = (String) Numerodeentradas.getSelectedItem();
-            //Variable en la que almacenaremos el numero de entradas que se quiere comprar como int
+            //Variable en la que almacenaremos el numero de entradas que se quieren comprar como int
             int selectedOption=1;
             if (selectedOptionString != null && !selectedOptionString.isEmpty()) {
                 selectedOption = Integer.parseInt(selectedOptionString);
             }
-            // Obtiene el precio por entrada de la sesión
+            // Obtiene el precio por entrada
             String precioentradastring= precioentrada.getText();
-            //Variable en la que almacenaremos dicho precio como int
+            //Variable en la que almacenaremos el valor del precio por entrada como int
             int precioint =1;
             if (precioentradastring!= null && !precioentradastring.isEmpty()) {
                 precioint = Integer.parseInt(precioentradastring);
@@ -541,153 +522,14 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             total.setText(Integer.toString(precioint * selectedOption));
     }//GEN-LAST:event_NumerodeentradasActionPerformed
 
-//Función que se encarga de guardar la compra en la base de datos, actualizando las tablas pertinentes
-public void actualizarCompras(int numentradas, String cine, String fecha, String hora, int sala, String titulo, int coste) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException{
-    //Se intenta la conexion
-        Connection c = this.conexion;
-        PreparedStatement statement_entradas = null;
-        PreparedStatement last_lp_s= null;
-        ResultSet rs = null;
-        ResultSet rs2 = null;
-    
-        try {
-        //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
-        //El query va a devolver las primeras N entradas que encuentre en la base, siendo N el número de entradas
-        //Que quiere comprar el usuario
-        //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto        
-        String queryentradas="select get_available_entries(?, ?, ?, ?, ?, ?)";
-        try{
-            //Este statement es un poco distinto, ya que lo vamos a recorrer dos veces
-            //La primera para controlar que efectivamente hay un número de entradas disponibles suficientes
-            //Y la segunda para oficializar la compra
-            //Introducimos estos flags para poder recorrer en ambas direcciones el result set
-            statement_entradas = c.prepareStatement(queryentradas,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-        
-            statement_entradas.setString(1,cine);
-            statement_entradas.setString(2, fecha);
-            statement_entradas.setString(3, hora);
-            statement_entradas.setInt(4, sala);
-            statement_entradas.setString(5, titulo);
-            statement_entradas.setInt(6,numentradas);
-        }catch (SQLException e) {
-            
-            System.err.println("Error al encontrar entradas: " + e.getMessage());
-            c.rollback(); //Descartamos los cambios si hubo algún error
-        }
-            
-        //Guardamos el resultado en resultSet
-        rs = statement_entradas.executeQuery();
-            
-        int numencontrado=0;    //Valor con el que comprobaremos si se encontraron suficientes entradas
-        try {
-            while (rs.next()) {
-            //Vamos incrementando
-            numencontrado++;
-            }
-        } catch (SQLException e) {
-            // Handle any SQL exceptions that may occur during ResultSet iteration
-            System.err.println("Error al iterar el ResultSet: " + e.getMessage());
-        }
-           
-           //Si hay entradas suficientes volvemos a recorrer el result set para oficializar la compra
-           //Actualizando las tablas pertinentes
-           if (numencontrado == numentradas) {
-                
-                rs.beforeFirst(); // Reseteamos el puntero del result set a la primera posición para volver a recorrerlo
-                try {
 
-                //antes de nada tenemos que generar una nueva linea para esta venta
-                //No confundir con la id_venta, que es diferente para cada inserción. Aquí estamos generando una nueva num_linea,
-                //Para poder asociar todas las entradas a la misma compra
-                //Primero buscamos el valor numéricamente más grande que haya (porque son secuenciales)                
-                String last_lp="select get_last_lp()";
-                last_lp_s=c.prepareStatement(last_lp);
-                rs2 = last_lp_s.executeQuery();
-                
-                //En la siguiente variable almacenaremos la nueva id de num_linea
-                //Todas las entradas que se inserten en la base en el bucle siguiente
-                //Van a tener la misma 
-                int new_last_lp_s=0;
-                if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
-                    new_last_lp_s = rs2.getInt(1);     //Obtenemos la máxima
-                    new_last_lp_s = new_last_lp_s + 1; //creamos la nueva. Más tarde se insertará en la tabla de lineas de venta
-                }
-                c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
-                
-                //Recorremos el bucle del result set
-                //Se procesará una entrada por iteración hasta que se guarden las N entradas que quiere el usuario
-                while (rs.next()) {                
-                //Se obtienen las variables necesarias
-                int newidproducto=rs.getInt(1); //La id de la entrada que se va a procesar 
-                String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
-                
-                //Se ejecuta la funcion con estos parametros
-                //Esta va a insertar en las tablas pertinentes para oficializar en la base la nueva compra
-                PreparedStatement guardarCompra=this.conexion.prepareStatement(
-                        "select guardar_compra(?,?,?,?,?)");
-                guardarCompra.setInt(1, new_last_lp_s); //numero de linea
-                guardarCompra.setInt(2, newidproducto); //ID del producto
-                guardarCompra.setString(3,correoUsuario);   //ID del usuario comprador
-                guardarCompra.setFloat(4, coste);       //Coste del producto individual
-                guardarCompra.setInt(5,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
-                guardarCompra.execute();                //Ejecutamos el query                
-                }
-                    } catch (SQLException e) {
-                        
-                        System.err.println("Error al obtener el id_producto: " + e.getMessage());
-                        c.rollback(); 
-                    
-                        c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
-                }
-            }
-        c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
-           // Cerramos todo antes de acabar
-                        rs.close();
-                        rs2.close();
-                        last_lp_s.close();
-                        statement_entradas.close();
-         } catch (SQLException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-        }
-}
-        
-
-//Cuando el usuario le da al botón de finalizar compra
-//Se obtiene los datos de la compra, se insertan en la base de datos
-//Se cierra la ventana actual y se vuelve a la anterior (GUI_MenuCliente)
-    private void finalizarcompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finalizarcompraActionPerformed
-        //Tenemos que controlar que el numero de entradas elegidas no sobrepasa al de entradas disponibles
-        try {
-                //Obtenemos los valores de comprobación
-                int numentradas = Integer.parseInt((String) Numerodeentradas.getSelectedItem());
-                int entradasdisponibles = Integer.parseInt(entradaslibres.getText());
-                //Obtenemos los datos de la entrada necesarios para finalizar la compra
-                String cine=panelCine.getText();
-                String fecha=panelFecha.getText();
-                String hora=panelHora.getText();
-                int sala=Integer.parseInt(panelSala.getText());
-                String titulo=panelPeli.getText();
-                int coste=Integer.parseInt(precioentrada.getText());
-                if (numentradas> entradasdisponibles) { //Numero incorrecto. Se gestiona el error
-                    JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                else{      try {
-                    //Número correcto. Guardamos la compra
-                    actualizarCompras(numentradas,cine,fecha,hora,sala,titulo,coste);
-                    } catch (IOException | ClassNotFoundException | SQLException ex) {
-                        Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    //Actualizamos el número de butacas libres y volvemos a la ventana principal
-                    int newedisponibles = entradasdisponibles - numentradas;
-                    entradaslibres.setText(Integer.toString(newedisponibles));
-                    setVisible(false);
-                    dispose();
-                    this.getParent().setVisible(true);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-    }//GEN-LAST:event_finalizarcompraActionPerformed
+//Cuando el usuario le da al botón de volver
+//Simplemente vuelve a la pantalla anterior de cartelera
+    private void botonvolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonvolverActionPerformed
+        setVisible(false);
+        dispose();
+        this.getParent().setVisible(true);
+    }//GEN-LAST:event_botonvolverActionPerformed
 
     /**
      * @param args the command line arguments
@@ -706,14 +548,30 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_vistasesion_dependiente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_vistasesion_dependiente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_vistasesion_dependiente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI_compraentradas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI_vistasesion_dependiente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -734,7 +592,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                GUI_compraentradas dialog = new GUI_compraentradas(new javax.swing.JFrame(), true,null);
+                GUI_vistasesion_dependiente dialog = new GUI_vistasesion_dependiente(new javax.swing.JFrame(), true,null);
                 
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
@@ -749,10 +607,9 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> Numerodeentradas;
+    private javax.swing.JButton botonvolver;
     private javax.swing.JTextPane capacidadsala;
-    private javax.swing.JButton compracomida;
     private javax.swing.JTextPane entradaslibres;
-    private javax.swing.JButton finalizarcompra;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

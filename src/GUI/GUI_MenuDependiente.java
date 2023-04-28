@@ -4,9 +4,37 @@
  */
 package GUI;
 
+import DB.BaseDatos;
+import java.awt.Color;
 import java.awt.Frame;
+import java.awt.Image;
+import java.awt.event.WindowAdapter;
+
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -14,19 +42,52 @@ import javax.swing.JFrame;
  */
 public class GUI_MenuDependiente extends javax.swing.JDialog {
 
-    private Connection conexion;
+    private BaseDatos bd;
     
     /**
      * Creates new form GUI_MenuDependiente
      */
-    public GUI_MenuDependiente(java.awt.Frame parent, boolean modal,Connection c) {
-        super(parent, modal);
+    public GUI_MenuDependiente(java.awt.Frame parent) {
+        super(parent, true);
         initComponents();
         
-        this.conexion=c;
-        
+        //Se guarda la base de datos a la que se hace conexion
+        this.bd=((GUI_IniciarSesion)this.getParent()).getBaseDatos();
+        botonver.setVisible(false);
+        //Tamanho adecuado para el logo
+        ImageIcon imagenGrande = new ImageIcon(getClass().getResource("/GUI/logo.png"));
+        jLabel1.setIcon(new ImageIcon(imagenGrande.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT)));
+        try {
+            //Poblamos de datos el desplegable de cines
+            populateComboBox();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
         //Se centra
         this.setLocationRelativeTo(null);
+        
+        //Se esconden textos
+        jLabel10.setVisible(false);
+        jLabel12.setVisible(false);
+        jLabel13.setVisible(false);
+        
+        try{
+            //Se guardan los cines
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
+                    "SELECT nombre FROM cine");
+            
+            ResultSet r=s.executeQuery();
+            
+            while(r.next()){
+                jComboBox4.addItem(r.getString(1));
+            }
+            
+        }catch(Exception e){
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
+        }
     }
 
     /**
@@ -38,8 +99,50 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jComboBox4 = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jTextField4 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        campofecha = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        cines = new javax.swing.JComboBox<>();
+        check3D = new javax.swing.JCheckBox();
+        jLabel16 = new javax.swing.JLabel();
+        campopelicula = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        buttonPanel = new javax.swing.JPanel();
+        botonver = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTablaComida = new javax.swing.JTable();
+        jBotonVerComida = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -49,29 +152,428 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             }
         });
 
-        jTextPane1.setText("dependiente");
-        jScrollPane1.setViewportView(jTextPane1);
+        jLabel3.setText("Fecha:");
+
+        jLabel4.setText("Película:");
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Hora:");
+
+        jComboBox1.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jComboBox1PopupMenuWillBecomeVisible(evt);
+            }
+        });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jComboBox2.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                jComboBox2PopupMenuWillBecomeVisible(evt);
+            }
+        });
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Número de  entradas:");
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6" }));
+        jComboBox3.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                jComboBox3PopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+
+        jLabel7.setText("Cine:");
+
+        jLabel8.setText("Precio Total:");
+
+        jTextField3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField3KeyReleased(evt);
+            }
+        });
+
+        jButton1.setText("Aceptar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("Precio/Entrada:");
+
+        jTextField4.setEditable(false);
+        jTextField4.setToolTipText("");
+
+        jLabel10.setForeground(new java.awt.Color(153, 0, 51));
+        jLabel10.setText("El formato no es correcto");
+
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Socio:");
+
+        jLabel11.setText("Correo:");
+
+        jTextField1.setEditable(false);
+
+        jLabel12.setForeground(new java.awt.Color(153, 0, 0));
+        jLabel12.setText("No quedan entradas");
+
+        jLabel13.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel13.setText("La compra se hizo correctamente");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(107, 107, 107)
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 264, Short.MAX_VALUE))
+                            .addComponent(jTextField3)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(152, 152, 152)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel11)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jCheckBox1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextField1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(153, 153, 153)
+                                .addComponent(jLabel7)
+                                .addGap(16, 16, 16))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField2)
+                            .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addGap(22, 22, 22))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(77, 77, 77))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jLabel2))
+                        .addGap(6, 6, 6)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel13)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(25, 25, 25))
+        );
+
+        jTabbedPane1.addTab("Vender entradas", jPanel1);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jLabel14.setText("Cine");
+
+        jLabel15.setText("Fecha");
+
+        jButton2.setText("Buscar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        cines.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cines.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cinesActionPerformed(evt);
+            }
+        });
+
+        check3D.setText("Proyección 3D");
+        check3D.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                check3DActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setText("Película");
+
+        campopelicula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campopeliculaActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
+        botonver.setText("Ver");
+        botonver.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                botonverStateChanged(evt);
+            }
+        });
+        botonver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonverActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(122, 122, 122)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(check3D)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel14)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(cines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(45, 45, 45)
+                                        .addComponent(jLabel16)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(campopelicula, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(33, 33, 33)
+                                        .addComponent(jLabel15)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(campofecha, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton2))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 712, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonver))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(botonver)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(cines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(campopelicula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel15)
+                    .addComponent(campofecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(check3D)
+                .addGap(50, 50, 50))
+        );
+
+        jTabbedPane1.addTab("Cartelera", jPanel2);
+
+        jTablaComida.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(jTablaComida);
+
+        jBotonVerComida.setText("Artículos de comida disponibles");
+        jBotonVerComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonVerComidaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+                    .addComponent(jBotonVerComida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51)
+                .addComponent(jBotonVerComida)
+                .addGap(156, 156, 156))
+        );
+
+        jTabbedPane1.addTab("Comida", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
+
+        jLabel1.setAlignmentX(0.5F);
+
+        jLabel1.setAlignmentY(0.0F);
+
+        jLabel1.setMinimumSize(new java.awt.Dimension(71, 63));
+
+        jLabel1.setPreferredSize(new java.awt.Dimension(80, 80));
+
+        // Code adding the component to the parent container - not shown here
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -79,12 +581,441 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
         try{
-        this.conexion.close();
+        this.bd.getConnection().close();
         }catch(Exception e){}
         this.getParent().setVisible(true);
         ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
+//Que ocurre cuando el dependiente presiona el botón aceptar
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        //Cuando se acepta, se guarda la compra
+        
+        jLabel12.setVisible(false);
+        jLabel12.setVisible(false);
+        
+        //Se declaran y rellenan variables
+        String cine, pelicula, correo;
+        Date fecha;
+        Time hora;
+        Integer numEntradas, idEspectador, idProducto, idCine, 
+                idPeli, idDependiente, idVenta;
+        Float precioTotal;
+        Boolean esSocio;
+        int i=1,cont=0;
+        
+        cine=(String)jComboBox4.getSelectedItem();
+        fecha=Date.valueOf(jTextField2.getText());
+        pelicula=(String)jComboBox2.getSelectedItem();
+        hora=Time.valueOf((String)jComboBox1.getSelectedItem());
+        correo=jTextField1.getText();
+        numEntradas=Integer.valueOf((String)jComboBox3.getSelectedItem());
+        precioTotal=Float.valueOf(jTextField3.getText());
+        esSocio=jCheckBox1.isSelected();
+        
+        try{
+            
+            //Se obtienen el maximo de entradas para la proyeccion
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
+            "select s.num_butacas, s.id_sala "
+            +"from proyectar p, cine c, pelicula p2, sala s "
+            +"where p.id_cine =c.id_cine "
+            +"and p.id_cine=c.id_cine and p.id_sala=s.id_sala and s.id_cine=c.id_cine "
+            +"and p.id_pelicula=p2.id_pelicula and p2.titulo = ? and c.nombre = ? "
+            +"and p.fecha = ? and p.hora = ?");            
+            s.setString(1,pelicula);
+            s.setString(2,cine);
+            s.setDate(3,fecha);
+            s.setTime(4,hora);
+            
+            ResultSet r=s.executeQuery();
+            r.next();
+            Integer sitiosSala=r.getInt(1);
+            Integer sala=r.getInt(2);
+            
+            //Se obtienen los id de cine, pelicula y dependiente
+            s=this.bd.getConnection().prepareStatement(
+            "SELECT id_cine FROM Cine WHERE nombre=?");
+            s.setString(1, cine);
+            r=s.executeQuery();
+            r.next();
+            idCine=r.getInt(1);
+            
+            s=this.bd.getConnection().prepareStatement(
+            "SELECT id_pelicula FROM Pelicula WHERE titulo=?");
+            s.setString(1, pelicula);
+            r=s.executeQuery();
+            r.next();
+            idPeli=r.getInt(1);
+            
+            s=this.bd.getConnection().prepareStatement(
+            "SELECT obtener_idTrabajador(?)");
+            s.setString(1, this.bd.getConnection().getMetaData().getUserName());
+            r=s.executeQuery();
+            r.next();
+            idDependiente=r.getInt(1);
+            
+            //Se obtienen los asientos de las entradas ya vendidas
+            s=this.bd.getConnection().prepareStatement(
+                    "select e.num_asiento " +
+                    "from proyectar p, cine c, entrada e, pelicula p2, sala s " +
+                    "where p.id_cine =c.id_cine " +
+                    "and e.id_sala=p.id_sala and e.id_cine=p.id_cine "
+                    + "and s.id_cine= c.id_cine and s.id_sala=p.id_sala "
+                    +"and e.id_pelicula =p.id_pelicula and e.fecha =p.fecha and e.hora =p.hora " +
+                    "and p.id_pelicula=p2.id_pelicula and p2.titulo = ? and c.nombre = ? "
+                    +"and p.fecha = ? and p.hora = ? and p.id_sala=?",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            s.setString(1, pelicula);
+            s.setString(2, cine);
+            s.setDate(3, fecha);
+            s.setTime(4, hora);
+            s.setInt(5,sala);
+            
+            r=s.executeQuery();
+            //Se obtiene el numero de entradas vendidas
+            r.last();
+            Integer entradasVendidas=r.getRow();
+            
+            if(sitiosSala-entradasVendidas-numEntradas<=0){
+                //Si no hay entradas suficientes, mensaje de error
+                jLabel12.setVisible(true);
+            }else{
+                
+                //Se asigna un asiento
+                
+                //Se desactiva el autocommit para que se pueda hacer rollback
+                this.bd.getConnection().setAutoCommit(false);
+                
+                //Se guardan los asientos ocupados en un conjunto para iterar sobre el
+                Set<Integer> sitiosOcupados= new HashSet<>();
+                r.first();
+                while(r.next())
+                    sitiosOcupados.add(r.getInt(1));
+                
+                //Se obtiene un id para el espectador
+                if(esSocio){
+                    //Se obtiene su id asignado
+                    s=this.bd.getConnection().prepareStatement(
+                    "select id_socio from SociosSinContrasena where correo_electronico=?");
+                    s.setString(1, correo);
+                    r=s.executeQuery();
+                    r.next();
+                    idEspectador=r.getInt(1);
+                    
+                }else{
+                    //Se asigna un id nuevo
+                    s=this.bd.getConnection().prepareStatement(
+                            //Se crea un nuevo espectador con un id autogenerado, que se obtiene
+                    "select insertar_Espectador()");
+                    r=s.executeQuery();
+                    r.next();
+                    idEspectador=r.getInt(1);
+                }          
+                
+                //Se obtiene un id para la venta
+                s=this.bd.getConnection().prepareStatement(
+                        "select max(id_venta)+1 from Vender");
+                r=s.executeQuery();
+                r.next();
+                idVenta=r.getInt(1);
+                
+                //Se crea una venta
+                s=this.bd.getConnection().prepareStatement(
+                "insert into Vender values(?,?,?,now(),?)");
+                s.setInt(1, idDependiente);
+                s.setInt(2, idEspectador);
+                s.setInt(3, idVenta);
+                s.setFloat(4,precioTotal);
+                s.execute();                
+                
+                //Se crean las filas para cada entrada
+                while(i<sitiosSala && cont<numEntradas){
+                    i++;
+                    //Si el asiento "i" no esta ocupado
+                    if(!sitiosOcupados.contains(i)){
+                        //Se vende una entrada
+                        cont++;
+                        
+                        //Se crea la entrada como producto
+                        s=this.bd.getConnection().prepareStatement(
+                        "INSERT INTO Producto VALUES((select max(id_producto)+1"
+                                + " from Producto),?) RETURNING id_producto;");
+                        s.setFloat(1, precioTotal/numEntradas);
+                        r=s.executeQuery();
+                        r.next();
+                        idProducto=r.getInt(1);
+                        //Y se crea la entrada como entrada
+                        s=this.bd.getConnection().prepareStatement(
+                        "INSERT INTO Entrada VALUES(?,?,?,?,?,?,?)");
+                        s.setInt(1,idProducto);
+                        s.setDate(2, fecha);
+                        s.setTime(3, hora);
+                        s.setInt(4, sala);
+                        s.setInt(5, idCine);
+                        s.setInt(6, idPeli);
+                        s.setInt(7, i);
+                        s.execute();
+                        
+                        //Se crea una linea de venta
+                        s=this.bd.getConnection().prepareStatement(
+                        "insert into LineaVenta values(?,?,?,?);");
+                        s.setInt(1,idVenta);
+                        s.setInt(2, idProducto);
+                        s.setInt(3, cont);
+                        s.setInt(4, 1);
+                        s.execute();
+                        
+                    }
+                }
+            
+                //Si hubo exito
+                if(cont==numEntradas){
+                    jLabel13.setVisible(true);
+                    this.bd.getConnection().setAutoCommit(true);
+                }else{                  
+                    
+                    throw new Exception("No se han podido asignar asientos a las entradas.");
+                }
+            }            
+        
+        }catch(Exception e){
+            
+            try{
+                this.bd.getConnection().setAutoCommit(true);
+                this.bd.getConnection().rollback();
+            }catch(SQLException e2){
+                System.out.println("No se pudo hacer rollback");
+            }
+            
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jComboBox2PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jComboBox2PopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        //Se obtienen los titulos de peliculas del desplegable
+        
+        String cine;
+        Date fecha;
+        
+        jComboBox2.removeAllItems();   
+        jLabel10.setVisible(false);
+               
+        try{
+            
+            cine=(String)jComboBox4.getSelectedItem();
+            fecha=Date.valueOf((String)jTextField2.getText());
+
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
+                    "select p.titulo from proyectar pr, pelicula p, cine c " +
+                    "where pr.id_pelicula =p.id_pelicula " +
+                    "and pr.id_cine =c.id_cine " +
+                    "and c.nombre = ? and pr.fecha = ? ");
+            
+            s.setString(1, cine);
+            s.setDate(2, fecha);
+            
+            ResultSet r=s.executeQuery();
+            
+            while(r.next()){
+                jComboBox2.addItem(r.getString(1));
+            }
+            
+            
+        }catch(IllegalArgumentException e){
+            //Si la fecha es incorrecta
+            jLabel10.setVisible(true);
+        }catch(Exception e){
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
+        }
+    }//GEN-LAST:event_jComboBox2PopupMenuWillBecomeVisible
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBox1.isSelected()){
+            jTextField1.setEditable(true);
+        }else{
+            jTextField1.setEditable(false);
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jComboBox1PopupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jComboBox1PopupMenuWillBecomeVisible
+        // TODO add your handling code here:
+        //Se obtienen las horas de proyecciones del desplegable
+        
+        String cine, pelicula;
+        Date fecha;
+        
+        jComboBox1.removeAllItems();   
+        jLabel10.setVisible(false);
+               
+        try{
+            
+            cine=(String)jComboBox4.getSelectedItem();
+            pelicula=(String)jComboBox2.getSelectedItem();
+            fecha=Date.valueOf((String)jTextField2.getText());
+
+            PreparedStatement s=this.bd.getConnection().prepareStatement(
+                    "select pr.hora from proyectar pr, pelicula p, cine c " +
+                    "where pr.id_pelicula =p.id_pelicula " +
+                    "and pr.id_cine =c.id_cine and p.titulo=?" +
+                    "and c.nombre = ? and pr.fecha = ? ");
+            
+            s.setString(1, pelicula);
+            s.setString(2, cine);
+            s.setDate(3, fecha);
+            
+            ResultSet r=s.executeQuery();
+            
+            while(r.next()){
+                jComboBox1.addItem(r.getString(1));
+            }
+            
+            
+        }catch(IllegalArgumentException e){
+            //Si la fecha es incorrecta
+            jLabel10.setVisible(true);
+        }catch(Exception e){
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
+        }
+    }//GEN-LAST:event_jComboBox1PopupMenuWillBecomeVisible
+
+    private void jComboBox3PopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_jComboBox3PopupMenuWillBecomeInvisible
+        // TODO add your handling code here:
+        //Si se cambia el numero de entradas, se actualiza precio/entrada
+        boolean valido=true;
+        Float precioTotal= -1f;
+        Integer numEntradas=1;
+        
+        try{
+        numEntradas=Integer.valueOf((String)jComboBox3.getSelectedItem());
+        precioTotal=Float.valueOf((String)jTextField3.getText());
+        }catch(Exception e){valido=false;}
+        
+        if(valido)
+            jTextField4.setText((Float.valueOf(precioTotal/numEntradas)).toString());
+    }//GEN-LAST:event_jComboBox3PopupMenuWillBecomeInvisible
+
+    private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
+        // TODO add your handling code here:
+        //Si se cambia el precio de entradas, se actualiza precio/entrada
+        boolean valido=true;
+        Float precioTotal= -1f;
+        Integer numEntradas=1;
+        
+        try{
+        numEntradas=Integer.valueOf((String)jComboBox3.getSelectedItem());
+        precioTotal=Float.valueOf((String)jTextField3.getText());
+        }catch(Exception e){valido=false;}
+        
+        if(valido)
+            jTextField4.setText((Float.valueOf(precioTotal/numEntradas)).toString());
+    }//GEN-LAST:event_jTextField3KeyReleased
+
+    //Que ocurre cuando, en la ventana cartelera, el dependiente le da a buscar
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // Obtenemos los valores almacenados en los campos de búsqueda
+        String searchpeli = campopelicula.getText(); //La pelicula
+        String searchfechaold = campofecha.getText();    //El día
+
+        //Comprobamos el formato de la fecha antes de continuar
+        if (!searchfechaold.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            // Display error message to user
+            JOptionPane.showMessageDialog(null, "Por favor, introduzca la fecha con el formato yyyy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        //Hay que pasar el día de tipo de dato string a date para poder buscar en la base
+        java.sql.Date searchfecha = java.sql.Date.valueOf(searchfechaold);
+        String searchcine = cines.getSelectedItem().toString();   //El cine
+        boolean is3D=check3D.isSelected();  //Si se seleccionó la opción de proyección 3D o no
+        try {
+            // En el siguiente método más abajo se realizará la operación con los datos obtenidos
+            searchPeliculas(searchpeli, searchfecha, searchcine, is3D);
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void cinesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cinesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cinesActionPerformed
+
+    private void check3DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check3DActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_check3DActionPerformed
+
+    private void campopeliculaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campopeliculaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campopeliculaActionPerformed
+
+    private void botonverStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_botonverStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botonverStateChanged
+
+//Despues de buscar,cuando el dependiente selecciona una pelicula se activa el botón ver
+//Manejamos aqui qué ocurre cuando presiona ese botón
+    private void botonverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonverActionPerformed
+        //Le pasamos la info de la fila seleccionada
+        int selectedRowIndex = jTable1.getSelectedRow();
+
+        // Obtenemos los datos
+        String cine = cines.getSelectedItem().toString();
+        String titulo = jTable1.getValueAt(selectedRowIndex, 0).toString();
+        String fecha = jTable1.getValueAt(selectedRowIndex, 1).toString();
+        String hora = jTable1.getValueAt(selectedRowIndex, 2).toString();
+        String sala = jTable1.getValueAt(selectedRowIndex, 3).toString();
+
+        //Escondemos la ventana actual
+        this.setVisible(false);
+
+        //Creamos una nueva instancia de la ventana GUI_vistasesion_dependiente
+        //Esta es practicamente igual a GUI_compraentradas, solo que como tal no se puede comprar entradas
+        //Sirve para consultar datos más específicos de la sesión
+        //Le pasamos al constructor los datos que necesitaremos dentro de ella
+        GUI_vistasesion_dependiente compraEntradas = new GUI_vistasesion_dependiente(cine,titulo, fecha, hora, sala,this.bd.getConnection());
+        compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        compraEntradas.setVisible(true);
+
+        // Add a WindowListener to the GUI_compraentradas window
+        compraEntradas.addWindowListener(new WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                // Show the previous window again when the GUI_compraentradas window is closed
+                setVisible(true);
+            }
+        });
+
+    }//GEN-LAST:event_botonverActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jBotonVerComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVerComidaActionPerformed
+        // TODO add your handling code here:
+        try {
+            // En el siguiente método más abajo se realizará la operación con los datos obtenidos
+            searchComida();
+        } catch (IOException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jBotonVerComidaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -115,7 +1046,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(() -> {
-            GUI_MenuDependiente dialog = new GUI_MenuDependiente(new javax.swing.JFrame(), true,null);
+            GUI_MenuDependiente dialog = new GUI_MenuDependiente(new javax.swing.JFrame());
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
@@ -127,7 +1058,229 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton botonver;
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JTextField campofecha;
+    private javax.swing.JTextField campopelicula;
+    private javax.swing.JCheckBox check3D;
+    private javax.swing.JComboBox<String> cines;
+    private javax.swing.JButton jBotonVerComida;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox3;
+    private javax.swing.JComboBox<String> jComboBox4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTablaComida;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
+
+
+//Método que nos permite poblar la combobox con los cines de la base de datos    
+private void populateComboBox() throws SQLException, FileNotFoundException, IOException {
+        
+         //Se intenta la conexion
+        Connection c= this.bd.getConnection();
+    
+        try {
+        
+            // Creamos un statement para ejecutar la consulta de sql
+            Statement statement = c.createStatement();
+        
+            // Query para obtener los nombres de los cines
+            String query = "SELECT nombre FROM Cine";
+            //Guardamos el resultado en resultSet
+            ResultSet resultSet = statement.executeQuery(query);
+        
+            // lista para almacenar el resultado
+            List<String> listaCines = new ArrayList<>();
+        
+        // Iteramos en el resultset y guardamos cada coincidencia en la lista
+        while (resultSet.next()) {
+            String nombre = resultSet.getString("nombre");
+            listaCines.add(nombre);
+        }
+        
+        // Cerramos todo antes de acabar
+        resultSet.close();
+        statement.close();
+        
+        // Poblamos el desplegable con los nombres de la lista
+        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>(listaCines.toArray(new String[0]));
+        cines.setModel(comboBoxModel);
+        
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+}
+
+    //Gestión de las coincidencias de búsqueda
+    //Método que se encarga de buscar las proyecciones que coinciden
+    //Con las especificaciones introducidas en el buscador
+    private void searchPeliculas(String searchpeli, java.util.Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+        
+        // Preparamos la consulta
+        String sql ="select pelicula.titulo, proyectar.fecha, proyectar.hora, sala.num_sala " +
+                    "from public.pelicula " +
+                    "join public.proyectar ON pelicula.id_pelicula = proyectar.id_pelicula " +
+                    "join public.cine ON proyectar.id_cine = cine.id_cine " +
+                    "join public.sala ON proyectar.id_sala = sala.id_sala " +
+                    "where pelicula.titulo like ? and proyectar.fecha = TO_DATE(?, 'YYYY-MM-DD') and cine.nombre = ? and sala.proyeccion3d = ?::boolean;" ;
+        
+        
+        stmt = c.prepareStatement(sql);
+        stmt.setString(1, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/quede incompleto
+        stmt.setDate(2, (java.sql.Date) searchfecha);
+        stmt.setString(3,searchcine);
+        stmt.setBoolean(4,is3D);
+        
+        rs = stmt.executeQuery();
+       
+        //Actualizamos la tabla con los resultados
+        //Indicamos que la tabla va a ser de solo lectura
+        GUI_MenuDependiente.ReadOnlyTableModel model = new GUI_MenuDependiente.ReadOnlyTableModel();
+        //Titulamos cada columna
+        model.setColumnIdentifiers(new Object[]{"Título", "Fecha", "Hora", "Sala",/* ... */});
+        while (rs.next()) { //Recorremos las proyecciones obtenidas en el query
+            //Y los insertamos en cada fila
+            Object[] rowData = new Object[]{rs.getString("titulo"), rs.getString("fecha"), rs.getString("hora"), rs.getString("num_sala") /* ... */};
+            model.addRow(rowData);
+        }
+        jTable1.setModel(model);
+        
+        
+        //Con el siguiente fragmento, permitimos que cuando un usuario seleccione una fila (osea una proyección)
+        //Esta se marque de botón amarillo y a la vez se habilite el botón de ver para dicha sesión
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
+            @Override
+            public void valueChanged(ListSelectionEvent e) {    //Método que se encarga de ello
+                //Contamos el número de filas seleccionadas
+                int selectedRowCount = jTable1.getSelectedRowCount();
+                //Solamente permitimos que se seleccione una
+                if (selectedRowCount == 1) {//Cuando se selecciona
+                    //Marcamos como visible el botón comprar
+                    botonver.setVisible(true);
+                    //Marcamos de amarillo la fila seleccionada
+                    jTable1.setSelectionBackground(Color.YELLOW);
+                } else {
+                    //Si se deselecciona una fila se esconde el botón
+                    //Y se devuelve a su color por defecto
+                    botonver.setVisible(false);
+                    jTable1.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+                }
+            }   
+        });      
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    } finally {
+        // Close the database resources
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+    
+private void searchComida() throws IOException, ClassNotFoundException{
+    // Preparamos la conexión a la base de datos
+    Connection c = this.bd.getConnection();
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+        //AQUI SE PODRIA ANHADIR TB LA CANTIDAD
+        String sql = "";
+        sql = "select comida.tipo, comida.tamanho, producto.precio\n" +
+" from public.comida join public.producto ON comida.id_producto = producto.id_producto;";
+
+        stmt = c.prepareStatement(sql);
+
+        rs = stmt.executeQuery();
+        //Actualizamos la tabla con los resultados
+        //Indicamos que la tabla va a ser de solo lectura
+        GUI_MenuDependiente.ReadOnlyTableModel model = new GUI_MenuDependiente.ReadOnlyTableModel();
+        //Titulamos cada columna
+        model.setColumnIdentifiers(new Object[]{"Producto","Tamaño", "Precio"/*...*/});
+        while (rs.next()) { //Recorremos las proyecciones obtenidas en el query
+            //Y los insertamos en cada fila
+
+            Object[] rowData = new Object[] {rs.getString("tipo"), rs.getString("tamanho"),  rs.getString("precio")/*...*/};
+            model.addRow(rowData);
+        }
+        jTablaComida.setModel(model);
+
+        jTablaComida.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                //Contamos el número de filas seleccionadas
+                int selectedRowCount = jTablaComida.getSelectedRowCount();
+                //Solamente permitimos que se seleccione una
+                if (selectedRowCount == 1) {//Cuando se selecciona
+                    //Marcamos de amarillo la fila seleccionada
+                    jTablaComida.setSelectionBackground(Color.YELLOW);
+                } else {
+                    //Y se devuelve a su color por defecto
+                    jTablaComida.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+                }               
+            }   
+        });  
+    } catch (SQLException ex) {
+        Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
+    }  finally {
+        // Close the database resources
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+}
+    
+    //Para hacer la tabla de resultados de solo lectura
+public class ReadOnlyTableModel extends DefaultTableModel {
+
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return false; // Make all cells read-only
+    }
+
+    // Override other methods as needed for your specific use case
+}
 }
