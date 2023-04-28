@@ -5,8 +5,6 @@
  */
 package GUI;
 
-import java.awt.Frame;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,13 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import java.sql.PreparedStatement;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
-/**
- *
- * @author migue
- */
 public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
     
     private Connection conexion;
@@ -44,7 +36,7 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
         
         try {
         
-            // Query para obtener el número disponible de butacas
+            // Query para obtener la capacidad
             String query = "SELECT sala.num_butacas FROM public.sala "+
                     "join public.cine "+
                     "on sala.id_cine = cine.id_cine "+
@@ -80,7 +72,6 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
     
     //Función que busca en la base de datos y devuelve el número de butacas libres
     private String buscareLibres(String cine, String titulo, String fecha, String hora, int numsala){
-         
         
         //Se intenta la conexion
          Connection c = this.conexion;
@@ -122,16 +113,7 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
             }
             
             
-            //Query con el que obtendremos el número de entradas que ya fueron vendidas
-            /*String query2 = "SELECT COUNT(lineaventa.id_producto) " +
-                "FROM public.lineaventa " +
-                "JOIN public.producto ON lineaventa.id_producto=producto.id_producto " +
-                "JOIN public.entrada ON entrada.id_producto=producto.id_producto " +
-                "JOIN public.cine ON cine.id_cine=entrada.id_cine " +
-                "JOIN public.pelicula ON pelicula.id_pelicula=entrada.id_pelicula " +
-                "JOIN public.sala ON sala.id_sala=entrada.id_sala " +
-                "WHERE cine.nombre=? AND pelicula.titulo=? AND entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') AND entrada.hora=CAST(? AS TIME) AND sala.num_sala=?";
-*/
+            //Query con el que obtendremos el número de entradas que ya fueron vendidas            
             String query2= "SELECT entradas_vendidas(?, ?, ?, ?, ?)";
             statement2 = c.prepareStatement(query2);
             statement2.setString(1, cine);
@@ -173,20 +155,7 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
     
         try {
         
-            // Query para obtener las entradas
-            /*String query = "SELECT producto.precio " +
-            "FROM public.producto " +
-            "JOIN public.entrada ON entrada.id_producto=producto.id_producto " +
-            "JOIN public.proyectar ON proyectar.fecha=entrada.fecha " +  
-            "JOIN public.pelicula ON proyectar.id_pelicula=pelicula.id_pelicula " +
-            "JOIN public.sala ON sala.id_sala=entrada.id_sala " +
-            "JOIN public.cine ON cine.id_cine=entrada.id_cine " +
-            "WHERE entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') " +
-            "AND entrada.hora=CAST(? AS TIME) " +
-            "AND sala.num_sala=? " +
-            "AND cine.nombre=? " +
-            "AND pelicula.titulo=?";
-            */
+            // Query para obtener el precio de una entrada de la sesión
             String query = "SELECT getPrecio(?, ?, ?, ?, ?)";
             statement = c.prepareStatement(query);
             statement.setString(1,fecha);
@@ -467,7 +436,7 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
                         .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, Short.MAX_VALUE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(37, 37, 37)
@@ -537,14 +506,14 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
     private void NumerodeentradasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumerodeentradasActionPerformed
             // Obtiene el número de entradas seleccionado
             String selectedOptionString = (String) Numerodeentradas.getSelectedItem();
-            //Variable en la que almacenaremos el valor como int
+            //Variable en la que almacenaremos el numero de entradas que se quieren comprar como int
             int selectedOption=1;
             if (selectedOptionString != null && !selectedOptionString.isEmpty()) {
                 selectedOption = Integer.parseInt(selectedOptionString);
             }
             // Obtiene el precio por entrada
             String precioentradastring= precioentrada.getText();
-            //Variable en la que almacenaremos el valor como int
+            //Variable en la que almacenaremos el valor del precio por entrada como int
             int precioint =1;
             if (precioentradastring!= null && !precioentradastring.isEmpty()) {
                 precioint = Integer.parseInt(precioentradastring);
@@ -555,11 +524,11 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
 
 
 //Cuando el usuario le da al botón de volver
+//Simplemente vuelve a la pantalla anterior de cartelera
     private void botonvolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonvolverActionPerformed
-        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this.getRootPane().getParent());
-    frame.setVisible(true);
-    frame.setState(Frame.NORMAL);
-    dispose();
+        setVisible(false);
+        dispose();
+        this.getParent().setVisible(true);
     }//GEN-LAST:event_botonvolverActionPerformed
 
     /**

@@ -169,6 +169,11 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 jComboBox1PopupMenuWillBecomeVisible(evt);
             }
         });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         jComboBox2.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
             public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
@@ -525,7 +530,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         ((JFrame)this.getParent()).setState(Frame.NORMAL);
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
-
+//Que ocurre cuando el dependiente presiona el botón aceptar
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         //Cuando se acepta, se guarda la compra
@@ -863,6 +868,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             jTextField4.setText((Float.valueOf(precioTotal/numEntradas)).toString());
     }//GEN-LAST:event_jTextField3KeyReleased
 
+    //Que ocurre cuando, en la ventana cartelera, el dependiente le da a buscar
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // Obtenemos los valores almacenados en los campos de búsqueda
         String searchpeli = campopelicula.getText(); //La pelicula
@@ -904,6 +910,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_botonverStateChanged
 
+//Despues de buscar,cuando el dependiente selecciona una pelicula se activa el botón ver
+//Manejamos aqui qué ocurre cuando presiona ese botón
     private void botonverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonverActionPerformed
         //Le pasamos la info de la fila seleccionada
         int selectedRowIndex = jTable1.getSelectedRow();
@@ -918,9 +926,9 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         //Escondemos la ventana actual
         this.setVisible(false);
 
-        //Creamos una nueva instancia de la ventana, donde se detalla más la sesión
+        //Creamos una nueva instancia de la ventana GUI_vistasesion_dependiente
         //Esta es practicamente igual a GUI_compraentradas, solo que como tal no se puede comprar entradas
-        //Sirve para consulta de los datos de la sesión
+        //Sirve para consultar datos más específicos de la sesión
         //Le pasamos al constructor los datos que necesitaremos dentro de ella
         GUI_vistasesion_dependiente compraEntradas = new GUI_vistasesion_dependiente(cine,titulo, fecha, hora, sala,this.bd.getConnection());
         compraEntradas.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -935,6 +943,10 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         });
 
     }//GEN-LAST:event_botonverActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1019,6 +1031,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
 
+
+//Método que nos permite poblar la combobox con los cines de la base de datos    
 private void populateComboBox() throws SQLException, FileNotFoundException, IOException {
         
          //Se intenta la conexion
@@ -1057,7 +1071,8 @@ private void populateComboBox() throws SQLException, FileNotFoundException, IOEx
 }
 
     //Gestión de las coincidencias de búsqueda
-    
+    //Método que se encarga de buscar las proyecciones que coinciden
+    //Con las especificaciones introducidas en el buscador
     private void searchPeliculas(String searchpeli, java.util.Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
     // Preparamos la conexión a la base de datos
     Connection c = this.bd.getConnection();
@@ -1075,7 +1090,7 @@ private void populateComboBox() throws SQLException, FileNotFoundException, IOEx
         
         
         stmt = c.prepareStatement(sql);
-        stmt.setString(1, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/no sea correctamente escrito
+        stmt.setString(1, "%"+searchpeli+"%");  //Permitimos que el campo de película sea optativo/quede incompleto
         stmt.setDate(2, (java.sql.Date) searchfecha);
         stmt.setString(3,searchcine);
         stmt.setBoolean(4,is3D);
@@ -1096,26 +1111,26 @@ private void populateComboBox() throws SQLException, FileNotFoundException, IOEx
         
         
         //Con el siguiente fragmento, permitimos que cuando un usuario seleccione una fila (osea una proyección)
-        //Esta se marque de botón amarillo y a la vez se habilite el botón de comprar para dicha sesión
+        //Esta se marque de botón amarillo y a la vez se habilite el botón de ver para dicha sesión
         jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
-    @Override
-    public void valueChanged(ListSelectionEvent e) {    //Método que se encarga de ello
-        //Contamos el número de filas seleccionadas
-        int selectedRowCount = jTable1.getSelectedRowCount();
-        //Solamente permitimos que se seleccione una
-        if (selectedRowCount == 1) {//Cuando se selecciona
-            //Marcamos como visible el botón comprar
-            botonver.setVisible(true);
-            //Marcamos de amarillo la fila seleccionada
-            jTable1.setSelectionBackground(Color.YELLOW);
-        } else {
-            //Si se deselecciona una fila se esconde el botón
-            //Y se devuelve a su color por defecto
-            botonver.setVisible(false);
-            jTable1.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
-        }
-    }   
-            });      
+            @Override
+            public void valueChanged(ListSelectionEvent e) {    //Método que se encarga de ello
+                //Contamos el número de filas seleccionadas
+                int selectedRowCount = jTable1.getSelectedRowCount();
+                //Solamente permitimos que se seleccione una
+                if (selectedRowCount == 1) {//Cuando se selecciona
+                    //Marcamos como visible el botón comprar
+                    botonver.setVisible(true);
+                    //Marcamos de amarillo la fila seleccionada
+                    jTable1.setSelectionBackground(Color.YELLOW);
+                } else {
+                    //Si se deselecciona una fila se esconde el botón
+                    //Y se devuelve a su color por defecto
+                    botonver.setVisible(false);
+                    jTable1.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+                }
+            }   
+        });      
     } catch (SQLException ex) {
         ex.printStackTrace();
     } finally {

@@ -17,10 +17,7 @@ import javax.swing.JFrame;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author migue
- */
+
 public class GUI_compraentradas extends javax.swing.JDialog {
     
     private Connection conexion;
@@ -119,17 +116,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                 numEnttotal = rs.getInt("count");
             }
             
-            
             //Query con el que obtendremos el número de entradas que ya fueron vendidas
-            /*String query2 = "SELECT COUNT(lineaventa.id_producto) " +
-                "FROM public.lineaventa " +
-                "JOIN public.producto ON lineaventa.id_producto=producto.id_producto " +
-                "JOIN public.entrada ON entrada.id_producto=producto.id_producto " +
-                "JOIN public.cine ON cine.id_cine=entrada.id_cine " +
-                "JOIN public.pelicula ON pelicula.id_pelicula=entrada.id_pelicula " +
-                "JOIN public.sala ON sala.id_sala=entrada.id_sala " +
-                "WHERE cine.nombre=? AND pelicula.titulo=? AND entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') AND entrada.hora=CAST(? AS TIME) AND sala.num_sala=?";
-*/
             String query2= "SELECT entradas_vendidas(?, ?, ?, ?, ?)";
             statement2 = c.prepareStatement(query2);
             statement2.setString(1, cine);
@@ -169,22 +156,8 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         PreparedStatement statement = null;
         ResultSet rs = null;
     
-        try {
-        
+        try {        
             // Query para obtener las entradas
-            /*String query = "SELECT producto.precio " +
-            "FROM public.producto " +
-            "JOIN public.entrada ON entrada.id_producto=producto.id_producto " +
-            "JOIN public.proyectar ON proyectar.fecha=entrada.fecha " +  
-            "JOIN public.pelicula ON proyectar.id_pelicula=pelicula.id_pelicula " +
-            "JOIN public.sala ON sala.id_sala=entrada.id_sala " +
-            "JOIN public.cine ON cine.id_cine=entrada.id_cine " +
-            "WHERE entrada.fecha=TO_DATE(?, 'YYYY-MM-DD') " +
-            "AND entrada.hora=CAST(? AS TIME) " +
-            "AND sala.num_sala=? " +
-            "AND cine.nombre=? " +
-            "AND pelicula.titulo=?";
-            */
             String query = "SELECT getPrecio(?, ?, ?, ?, ?)";
             statement = c.prepareStatement(query);
             statement.setString(1,fecha);
@@ -552,14 +525,14 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     private void NumerodeentradasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumerodeentradasActionPerformed
             // Obtiene el número de entradas seleccionado
             String selectedOptionString = (String) Numerodeentradas.getSelectedItem();
-            //Variable en la que almacenaremos el valor como int
+            //Variable en la que almacenaremos el numero de entradas que se quiere comprar como int
             int selectedOption=1;
             if (selectedOptionString != null && !selectedOptionString.isEmpty()) {
                 selectedOption = Integer.parseInt(selectedOptionString);
             }
-            // Obtiene el precio por entrada
+            // Obtiene el precio por entrada de la sesión
             String precioentradastring= precioentrada.getText();
-            //Variable en la que almacenaremos el valor como int
+            //Variable en la que almacenaremos dicho precio como int
             int precioint =1;
             if (precioentradastring!= null && !precioentradastring.isEmpty()) {
                 precioint = Integer.parseInt(precioentradastring);
@@ -577,27 +550,11 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
         ResultSet rs = null;
         ResultSet rs2 = null;
     
-        try {        
-        
-        //Se cambió el script, ahora el cliente puede ver productos y lineas, y usar una funcion
-            
+        try {
         //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
-        //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto
-        /*String queryentradas = "SELECT e.id_producto " +
-               "FROM public.entrada e " +
-               "LEFT JOIN lineaventa lv ON e.id_producto = lv.id_producto " +
-               "JOIN public.cine ON cine.id_cine = e.id_cine " +
-               "JOIN public.pelicula ON pelicula.id_pelicula = e.id_pelicula " +
-               "join public.sala ON e.id_sala = sala.id_sala " +
-               "WHERE lv.id_producto IS NULL " +    //Para que devuelva solo las entradas que no han sido compradas
-               "AND cine.nombre = ? " +             //Restringimos para que solo obtenga las entradas libres de la sesión seleccionada
-               "AND e.fecha = TO_DATE(?, 'YYYY-MM-DD') " +
-               "AND e.hora = CAST(? AS TIME) " +
-               "AND sala.num_sala = ? " +
-               "AND pelicula.titulo = ? " +
-               "ORDER BY e.id_producto " +               //Ordenamos para que reciba las de ids consecutivas
-               "LIMIT " + numentradas + ";";    //Con limit la consulta nos devolverá tantas entradas como se escogió en el desplegable previo
-        */
+        //El query va a devolver las primeras N entradas que encuentre en la base, siendo N el número de entradas
+        //Que quiere comprar el usuario
+        //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto        
         String queryentradas="select get_available_entries(?, ?, ?, ?, ?, ?)";
         try{
             //Este statement es un poco distinto, ya que lo vamos a recorrer dos veces
@@ -620,7 +577,6 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
             
         //Guardamos el resultado en resultSet
         rs = statement_entradas.executeQuery();
-        //List<Integer> idProductos = new ArrayList<>();  //Lista en la que almacenaremos las ids de entrada obtenidas
             
         int numencontrado=0;    //Valor con el que comprobaremos si se encontraron suficientes entradas
         try {
@@ -637,83 +593,44 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
            //Actualizando las tablas pertinentes
            if (numencontrado == numentradas) {
                 
-                rs.beforeFirst(); // Reseteamos el puntero del result set para volver a recorrerlo
+                rs.beforeFirst(); // Reseteamos el puntero del result set a la primera posición para volver a recorrerlo
                 try {
 
-                //antes de nada tenemos que generar una nueva id para esta nueva linea de producto
-                //Primero buscamos la id numéricamente más grande que haya (porque las ids son secuenciales)
-                //String last_lp = "SELECT MAX(id_venta) as id_linea FROM public.lineaventa";
+                //antes de nada tenemos que generar una nueva linea para esta venta
+                //No confundir con la id_venta, que es diferente para cada inserción. Aquí estamos generando una nueva num_linea,
+                //Para poder asociar todas las entradas a la misma compra
+                //Primero buscamos el valor numéricamente más grande que haya (porque son secuenciales)                
                 String last_lp="select get_last_lp()";
                 last_lp_s=c.prepareStatement(last_lp);
                 rs2 = last_lp_s.executeQuery();
+                
+                //En la siguiente variable almacenaremos la nueva id de num_linea
+                //Todas las entradas que se inserten en la base en el bucle siguiente
+                //Van a tener la misma 
                 int new_last_lp_s=0;
                 if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
-                    new_last_lp_s = rs2.getInt(1);
-                    new_last_lp_s = new_last_lp_s + 1; //creamos la nueva id. Más tarde se insertará en la tabla de lineas
+                    new_last_lp_s = rs2.getInt(1);     //Obtenemos la máxima
+                    new_last_lp_s = new_last_lp_s + 1; //creamos la nueva. Más tarde se insertará en la tabla de lineas de venta
                 }
                 c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
-                //Recorremos el bucle del result set
-                while (rs.next()) {
-                    
-                //El cliente no tiene permiso de insertar
-                //Hay que hacer función en el DBeaver para hacer las inserciones
                 
+                //Recorremos el bucle del result set
+                //Se procesará una entrada por iteración hasta que se guarden las N entradas que quiere el usuario
+                while (rs.next()) {                
                 //Se obtienen las variables necesarias
-                int newidproducto=rs.getInt(1);
-                String correoUsuario=this.conexion.getMetaData().getUserName();
+                int newidproducto=rs.getInt(1); //La id de la entrada que se va a procesar 
+                String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
                 
                 //Se ejecuta la funcion con estos parametros
+                //Esta va a insertar en las tablas pertinentes para oficializar en la base la nueva compra
                 PreparedStatement guardarCompra=this.conexion.prepareStatement(
                         "select guardar_compra(?,?,?,?,?)");
-                guardarCompra.setInt(1, new_last_lp_s);
-                guardarCompra.setInt(2, newidproducto);
-                guardarCompra.setString(3,correoUsuario);
-                guardarCompra.setFloat(4, coste);
-                guardarCompra.setInt(5,1);
-                guardarCompra.execute();
-                
-                
-                    /*
-                    c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
-                    
-                    // Almacenamos la id de la entrada actual en esta variable
-                    int newidproducto = rs.getInt("id");
-                        //Insertamos en la nueva línea de producto
-                        //Como las entradas no son un elemento stackeable el atributo cantidad es obligatoriamente 1
-                        String sql_lp = "INSERT INTO public.lineaproducto (id, id_producto, cantidad) VALUES (?,?,1)";
-                        statement_lp = c.prepareStatement(sql_lp);    
-                        statement_lp.setInt(1,new_last_lp_s);
-                        statement_lp.setInt(2,newidproducto);
-                        //Com es una inserción y está desactivado el autocommit hay que actualizar la base
-                        statement_lp.execute();
-                        c.commit();
-                        
-                        //Ahora insertamos en vender, para asociar cada linea al espectador y al dependiente encargado
-                        //Antes vamos a buscar el id del usuario actual, que se almacena en el fichero sesioniniciada.properties
-                        //Este fue inicializado en GUI_IniciarSesion
-                        
-                        Properties props = new Properties();
-                        String idUserString="";//Variable en la que almacenaremos la id
-                        try (InputStream fis = new FileInputStream("sesioniniciada.properties")) {
-                            props.load(fis);
-                            idUserString =props.getProperty("id_user");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        //La pasamos a entero
-                        int id_user = Integer.parseInt(idUserString);
-
-                        //Insertamos
-                        String sql_vender = "INSERT INTO public.vender (id_trabajador, id_espectador, id_producto, id_linea, fecha, coste) VALUES (1, ?, ?, ?, CURRENT_DATE, ?)";
-                        statement_vender=c.prepareStatement(sql_vender);
-                        statement_vender.setInt(1,id_user); //id_espectador
-                        statement_vender.setInt(2,newidproducto);        //id_producto
-                        statement_vender.setInt(3,new_last_lp_s);        //id_linea
-                        statement_vender.setFloat(4,(float) coste);       //costetotal
-                        statement_vender.execute();
-                        c.commit(); 
-                        */
+                guardarCompra.setInt(1, new_last_lp_s); //numero de linea
+                guardarCompra.setInt(2, newidproducto); //ID del producto
+                guardarCompra.setString(3,correoUsuario);   //ID del usuario comprador
+                guardarCompra.setFloat(4, coste);       //Coste del producto individual
+                guardarCompra.setInt(5,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
+                guardarCompra.execute();                //Ejecutamos el query                
                 }
                     } catch (SQLException e) {
                         
@@ -736,6 +653,8 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
         
 
 //Cuando el usuario le da al botón de finalizar compra
+//Se obtiene los datos de la compra, se insertan en la base de datos
+//Se cierra la ventana actual y se vuelve a la anterior (GUI_MenuCliente)
     private void finalizarcompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finalizarcompraActionPerformed
         //Tenemos que controlar que el numero de entradas elegidas no sobrepasa al de entradas disponibles
         try {
@@ -753,17 +672,16 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                     JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 else{      try {
-                    //Número correcto. Actualizamos el número de butacas libres y volvemos a la ventana principal
+                    //Número correcto. Guardamos la compra
                     actualizarCompras(numentradas,cine,fecha,hora,sala,titulo,coste);
                     } catch (IOException | ClassNotFoundException | SQLException ex) {
                         Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    //Actualizamos el número de butacas libres y volvemos a la ventana principal
                     int newedisponibles = entradasdisponibles - numentradas;
                     entradaslibres.setText(Integer.toString(newedisponibles));
                     setVisible(false);
                     dispose();
-                    //GUI_MenuCliente gui = new GUI_MenuCliente(null,this.conexion);
-                    //gui.setVisible(true);
                     this.getParent().setVisible(true);
                 }
             } catch (NumberFormatException ex) {

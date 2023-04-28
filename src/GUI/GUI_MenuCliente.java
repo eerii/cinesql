@@ -524,14 +524,14 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosed
      
     //Qué ocurre cuando se selecciona el botón buscar?
+    //Se muestran en el jtable las coincidencias encontradas
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // Obtenemos los valores almacenados en los campos de búsqueda
         String searchpeli = campopelicula.getText(); //La pelicula
         String searchfechaold = campofecha.getText();    //El día
         
         //Comprobamos el formato de la fecha antes de continuar
-        if (!searchfechaold.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            // Display error message to user
+        if (!searchfechaold.matches("\\d{4}-\\d{2}-\\d{2}")) {            
             JOptionPane.showMessageDialog(null, "Por favor, introduzca la fecha con el formato yyyy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         } 
@@ -562,6 +562,8 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }//GEN-LAST:event_campopeliculaActionPerformed
 
     //Qué hace el boton comprar cuando lo pulsamos?
+    //Se cierra la ventana actual y se abre una nueva para la compra de entradas
+    //Al constructor de dicha ventana le pasamos los datos necesarios de la actual
     private void botoncomprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botoncomprarActionPerformed
         //Le pasamos la info de la fila seleccionada
         int selectedRowIndex = jTable1.getSelectedRow();
@@ -701,12 +703,8 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JTextField telefono;
     // End of variables declaration//GEN-END:variables
 
-    /*
-    *
-    *   METODO PARA POBLAR DE CINES EL DESPLEGABLE
-    *
-    */
-    
+   
+   //Método con el que poblamos el jcombobox con los cines de la base 
     private void populateComboBox() throws SQLException, FileNotFoundException, IOException {
         
          //Se intenta la conexion
@@ -744,14 +742,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }
 }
     
-     /*
-    *
-    *   METODO PARA MOSTRAR LAS COINCIDENCIAS DE LA BÚSQUEDA
-    *
-    */
     
-    //Gestión de las coincidencias de búsqueda
-    
+    //Método que se encarga de poner el la jtable
+    //Las sesiones que coinciden con los datos introducidos en el buscador
     private void searchPeliculas(String searchpeli, Date searchfecha, String searchcine, Boolean is3D) throws FileNotFoundException, IOException, ClassNotFoundException {
     // Preparamos la conexión a la base de datos
     Connection c = this.bd.getConnection();
@@ -813,7 +806,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     } catch (SQLException ex) {
         ex.printStackTrace();
     } finally {
-        // Close the database resources
         try {
             if (rs != null) rs.close();
             if (stmt != null) stmt.close();
@@ -824,13 +816,10 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 }
 //Para hacer la tabla de resultados de solo lectura
 public class ReadOnlyTableModel extends DefaultTableModel {
-
     @Override
-    public boolean isCellEditable(int row, int column) {
-        return false; // Make all cells read-only
+    public boolean isCellEditable(int row, int column) {    //Marcamos que las celdas no son editables
+        return false;
     }
-
-    // Override other methods as needed for your specific use case
 }
 
     
