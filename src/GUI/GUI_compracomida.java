@@ -5,6 +5,8 @@
  */
 package GUI;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -73,49 +75,68 @@ public class GUI_compracomida extends javax.swing.JDialog {
         initComponents(); // Inicializamos la vista       
         
         this.conexion = c;//Se guarda la conexion que se esta usando
+        int aux;
         
+        preciounidad.setEditable(false);
+        total.setEditable(false);
         //Inicializamos los cuadros de texto con los elementos recibidos
         if(nombre != null && tamanho != null){
+            jBotonBuscarComida.setVisible(false);
             panelnombre.setText(nombre);
             paneltamanho.setText(tamanho);
             panelnombre.setEditable(false);
             paneltamanho.setEditable(false);
+            
+            preciounidad.setText(precio);    
+            aux = 0;
+  
+            
         }else{
+            jBotonBuscarComida.setVisible(true);
             panelnombre.setEditable(true);
             paneltamanho.setEditable(true);
-            nombre = panelnombre.getText();
-            tamanho = paneltamanho.getText();
+            aux = 1;
+           
             
-        }
-        
-        
+            
+        } 
         //Llenamos de valores el desplegable de número de productos
-        //En este caso se permite adquirir de cada vez 1-6 productos
-        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) Numerodeproductos.getModel();
-        model.removeAllElements();
-        for (int i = 1; i <= 6; i++) {
-            model.addElement(Integer.toString(i));
-        }
-        Numerodeproductos.setSelectedItem("1");//Por defecto marcamos que se escoge solo un producto
-        
-        
-        if(precio == null){
-            preciounidad.setText(buscarPrecio(nombre, tamanho));
+            //En este caso se permite adquirir de cada vez 1-6 productos
+            DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) Numerodeproductos.getModel();
+            model.removeAllElements();
+            for (int i = 1; i <= 6; i++) {
+                model.addElement(Integer.toString(i));
+            }
+            Numerodeproductos.setSelectedItem("1");//Por defecto marcamos que se escoge solo un producto
+            if(aux == 0){
+                total.setText(preciounidad.getText());
+            }
 
-        } else  preciounidad.setText(precio);
-
-        total.setText(preciounidad.getText());
-        // Lo ponemos todo como read only (excepto si no nos pasan argumentos)
-        preciounidad.setEditable(false);
-        total.setEditable(false);
-        
-        //Otras propiedades de la ventana
-        setTitle("Compra de articulos de comida");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(false);
+            
+            //Otras propiedades de la ventana
+            setTitle("Compra de articulos de comida");
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setLocationRelativeTo(null);
+            setResizable(false);
     }
    
+    private void buscar(String nombre, String tamanho){
+        
+        //Llenamos de valores el desplegable de número de productos
+            //En este caso se permite adquirir de cada vez 1-6 productos
+            DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) Numerodeproductos.getModel();
+            model.removeAllElements();
+            for (int i = 1; i <= 6; i++) {
+                model.addElement(Integer.toString(i));
+            }    
+        
+            preciounidad.setText(buscarPrecio(nombre, tamanho));
+
+            total.setText(preciounidad.getText());
+            // Lo ponemos todo como read only (excepto si no nos pasan argumentos)
+            preciounidad.setEditable(false);
+            total.setEditable(false);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -147,6 +168,7 @@ public class GUI_compracomida extends javax.swing.JDialog {
         jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        jBotonBuscarComida = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -199,39 +221,52 @@ public class GUI_compracomida extends javax.swing.JDialog {
 
         jLabel12.setText("€");
 
+        jBotonBuscarComida.setText("Buscar articulo");
+        jBotonBuscarComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonBuscarComidaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(finalizarcompra, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(108, 108, 108))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(Numerodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(finalizarcompra, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(54, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel11)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(441, 441, 441))
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(Numerodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel12)
+                                            .addComponent(jLabel11)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(136, 136, 136)
+                                        .addComponent(jBotonBuscarComida, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addGap(108, 108, 108))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,18 +281,24 @@ public class GUI_compracomida extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Numerodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(finalizarcompra))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Numerodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6))
+                                .addGap(23, 23, 23)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(finalizarcompra))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel11)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(33, 33, 33)
+                                .addComponent(jBotonBuscarComida)
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(183, 183, 183)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -277,20 +318,19 @@ public class GUI_compracomida extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(737, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(40, 40, 40))))
+                        .addGap(6, 6, 6)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18))
+                .addGap(12, 12, 12))
         );
 
         pack();
@@ -301,12 +341,12 @@ public class GUI_compracomida extends javax.swing.JDialog {
             // Obtiene el número de entradas seleccionado
             String selectedOptionString = (String) Numerodeproductos.getSelectedItem();
             //Variable en la que almacenaremos el numero de entradas que se quiere comprar como int
-            int selectedOption=1;
+            int selectedOption = 1;
             if (selectedOptionString != null && !selectedOptionString.isEmpty()) {
                 selectedOption = Integer.parseInt(selectedOptionString);
             }
             // Obtiene el precio por entrada de la sesión
-            String precioentradastring= preciounidad.getText();
+            String precioentradastring = preciounidad.getText();
             //Variable en la que almacenaremos dicho precio como int
             int precioint =1;
             if (precioentradastring!= null && !precioentradastring.isEmpty()) {
@@ -417,11 +457,7 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
 //Se cierra la ventana actual y se vuelve a la anterior (GUI_MenuCliente)
 
     private void finalizarcompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finalizarcompraActionPerformed
-        //Tenemos que controlar que el numero de entradas elegidas no sobrepasa al de entradas disponibles
-        if(panelnombre.getText() == null || paneltamanho.getText() == null){
-                    JOptionPane.showMessageDialog(GUI_compracomida.this, "Error: No se ha selecionado un producto o un tamaño", "Error", JOptionPane.ERROR_MESSAGE);
-
-        }
+        
         try {
                 //Obtenemos los valores de comprobación
                 int numeproductos = Integer.parseInt((String) Numerodeproductos.getSelectedItem());
@@ -437,18 +473,27 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
                         Logger.getLogger(GUI_compracomida.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 setVisible(false);
-                this.getParent().setVisible(false);
                 //dispose();
                 //this.getParent().getParent().setVisible(true);
                 //((JFrame)this.getParent().getParent()).setState(Frame.NORMAL);
                 this.dispose();
                 //this.getParent().getParent().setVisible(true);
                 
+                //Escondemos la ventana actual
+            this.setVisible(false);
                 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(GUI_compracomida.this, "Error: Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_finalizarcompraActionPerformed
+
+    private void jBotonBuscarComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonBuscarComidaActionPerformed
+        // TODO add your handling code here:
+        String nombre = panelnombre.getText();
+        String tamanho = paneltamanho.getText();
+        buscar(nombre, tamanho);
+        
+    }//GEN-LAST:event_jBotonBuscarComidaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -527,6 +572,7 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> Numerodeproductos;
     private javax.swing.JButton finalizarcompra;
+    private javax.swing.JButton jBotonBuscarComida;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel3;

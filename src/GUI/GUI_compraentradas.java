@@ -549,7 +549,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                 @Override
                 public void windowClosed(WindowEvent e) {
                     // Show the previous window again when the GUI_compraentradas window is closed
-                    setVisible(true);
+                    setVisible(false);
                 }
             });
         }
