@@ -89,7 +89,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         try {
         
             // Query para obtener las entradas que se emitieron para la película
-            String query = "SELECT count(entrada.num_asiento) " +
+            /*String query = "SELECT count(entrada.num_asiento) " +
             "FROM public.entrada " +
             "JOIN public.proyectar ON proyectar.fecha=entrada.fecha " +
             "AND proyectar.hora=entrada.hora " +
@@ -112,11 +112,13 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             statement.setString(5, titulo);
             
             //Guardamos el resultado en resultSet
-            rs = statement.executeQuery();
-            int numEnttotal=0;
+            rs = statement.executeQuery();*/
+            /*int numEnttotal=0;
             if (rs.next()) {
                 numEnttotal = rs.getInt("count");
-            }
+            }*/
+            //Numero total de entradas, disponibles y compradas
+            int numEnttotal=Integer.parseInt(capacidadsala.getText());
             
             //Query con el que obtendremos el número de entradas que ya fueron vendidas
             String query2= "SELECT entradas_vendidas(?, ?, ?, ?, ?)";
@@ -137,9 +139,9 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             //Almacenamos en este string el número de entradas disponibles y lo devolvemos
             String numEntdisponibles=Integer.toString(numEnttotal-numEntvendidas);
             // Cerramos todo antes de acabar
-            rs.close();
+
             rs2.close();
-            statement.close();
+            //statement.close();
             statement2.close();
             
             return numEntdisponibles;
