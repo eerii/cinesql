@@ -520,24 +520,39 @@ public class GUI_compraentradas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void compracomidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compracomidaActionPerformed
-        // TODO add your handling code here:  
-        //Escondemos la ventana actual
-        this.setVisible(false);
-        
-        //Creamos una nueva instancia de la ventana de compra de comida
-        //Le pasamos al constructor los datos que necesitaremos dentro de ella
-        GUI_compracomida compraComida = new GUI_compracomida(null, null, null, this.conexion);
-        compraComida.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        compraComida.setVisible(true);
-
-        // Add a WindowListener to the GUI_compraentradas window
-        compraComida.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(WindowEvent e) {
-            // Show the previous window again when the GUI_compraentradas window is closed
-            setVisible(true);
+    
+        //Obtenemos los valores de comprobación
+        int numentradas = Integer.parseInt((String) Numerodeentradas.getSelectedItem());
+        int entradasdisponibles = Integer.parseInt(entradaslibres.getText());
+        //Obtenemos los datos de la entrada necesarios para finalizar la compra
+        String cine=panelCine.getText();
+        String fecha=panelFecha.getText();
+        String hora=panelHora.getText();
+        int sala=Integer.parseInt(panelSala.getText());
+        String titulo=panelPeli.getText();
+        int coste=Integer.parseInt(precioentrada.getText());
+        if (numentradas> entradasdisponibles) { //Numero incorrecto. Se gestiona el error
+            JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    });
+        else{
+            //Escondemos la ventana actual
+            this.setVisible(false);
+
+            //Creamos una nueva instancia de la ventana de compra de comida
+            //Le pasamos al constructor los datos que necesitaremos dentro de ella
+            GUI_compracomida compraComida = new GUI_compracomida(null, null, null, this.conexion);
+            compraComida.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            compraComida.setVisible(true);
+
+            // Add a WindowListener to the GUI_compraentradas window
+            compraComida.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    // Show the previous window again when the GUI_compraentradas window is closed
+                    setVisible(true);
+                }
+            });
+        }
     }//GEN-LAST:event_compracomidaActionPerformed
 //Qué ocurre cuando se selecciona una opción del desplegable?
 //Simplemente tenemos que actualizar el coste total (ctetotal=numentradas*precioporentrada)

@@ -38,10 +38,10 @@ public class GUI_compracomida extends javax.swing.JDialog {
     
         try {        
             // Query para obtener las entradas
-            String query = "SELECT getPrecio(?, ?, ?, ?, ?)";
+            String query = "SELECT getPrecioComida(?, ?)";
             statement = c.prepareStatement(query);
             statement.setString(1, producto);
-            statement.setString(2, tamanho);;
+            statement.setString(2, tamanho);
             
             //Guardamos el resultado en resultSet
             rs = statement.executeQuery();
@@ -85,6 +85,7 @@ public class GUI_compracomida extends javax.swing.JDialog {
             paneltamanho.setEditable(true);
             nombre = panelnombre.getText();
             tamanho = paneltamanho.getText();
+            
         }
         
         
@@ -97,17 +98,19 @@ public class GUI_compracomida extends javax.swing.JDialog {
         }
         Numerodeproductos.setSelectedItem("1");//Por defecto marcamos que se escoge solo un producto
         
+        
+        if(precio == null){
+            preciounidad.setText(buscarPrecio(nombre, tamanho));
+
+        } else  preciounidad.setText(precio);
+
+        total.setText(preciounidad.getText());
         // Lo ponemos todo como read only (excepto si no nos pasan argumentos)
         preciounidad.setEditable(false);
         total.setEditable(false);
         
-         if(precio != null){
-            preciounidad.setText(precio);
-        } else preciounidad.setText(buscarPrecio(nombre, tamanho));
-        total.setText(preciounidad.getText());
-        
         //Otras propiedades de la ventana
-        setTitle("Compra de entradas");
+        setTitle("Compra de articulos de comida");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -307,7 +310,7 @@ public class GUI_compracomida extends javax.swing.JDialog {
             //Variable en la que almacenaremos dicho precio como int
             int precioint =1;
             if (precioentradastring!= null && !precioentradastring.isEmpty()) {
-                precioint = Integer.parseInt(precioentradastring);
+                precioint = (int) Float.parseFloat(precioentradastring); 
             }
             //Actualizamos el coste total (numentradas*precioporentrada)
             total.setText(Integer.toString(precioint * selectedOption));
@@ -316,83 +319,68 @@ public class GUI_compracomida extends javax.swing.JDialog {
 //Función que se encarga de guardar la compra en la base de datos, actualizando las tablas pertinentes
 public void actualizarCompras(String producto, int numproductos, String cantidad, int coste) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException{
     //Se intenta la conexion
-       /* Connection c = this.conexion;
-        PreparedStatement statement_entradas = null;
-        PreparedStatement last_lp_s= null;
-        ResultSet rs = null;
-        ResultSet rs2 = null;
+    Connection c = this.conexion;
+    PreparedStatement statement_entradas = null;
+    PreparedStatement last_lp_s= null;
+    ResultSet rs = null;
+    ResultSet rs2 = null;
     
-        try {
-        //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
-        //El query va a devolver las primeras N entradas que encuentre en la base, siendo N el número de entradas
-        //Que quiere comprar el usuario
+    try {
         //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto        
-        String queryentradas="select get_available_entries(?, ?, ?, ?, ?, ?)";
+        String queryentradas = "select get_available_entriesComida(?, ?, ?)";
+
         try{
             //Este statement es un poco distinto, ya que lo vamos a recorrer dos veces
             //La primera para controlar que efectivamente hay un número de entradas disponibles suficientes
             //Y la segunda para oficializar la compra
             //Introducimos estos flags para poder recorrer en ambas direcciones el result set
             statement_entradas = c.prepareStatement(queryentradas,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-        
-            statement_entradas.setString(1,cine);
-            statement_entradas.setString(2, fecha);
-            statement_entradas.setString(3, hora);
-            statement_entradas.setInt(4, sala);
-            statement_entradas.setString(5, titulo);
-            statement_entradas.setInt(6,numentradas);
-        }catch (SQLException e) {
+            statement_entradas.setString(1, producto);
+            statement_entradas.setString(2, cantidad);
+            statement_entradas.setInt(3,numproductos);
             
-            System.err.println("Error al encontrar entradas: " + e.getMessage());
+            
+        }catch (SQLException e) {
+
+            System.err.println("Error al encontrar articulos de comida: " + e.getMessage());
             c.rollback(); //Descartamos los cambios si hubo algún error
         }
-            
+
         //Guardamos el resultado en resultSet
         rs = statement_entradas.executeQuery();
             
-        int numencontrado=0;    //Valor con el que comprobaremos si se encontraron suficientes entradas
+        
+        //volvemos a recorrer el result set para oficializar la compra
+        //Actualizando las tablas pertinentes
+                
+        rs.beforeFirst(); // Reseteamos el puntero del result set a la primera posición para volver a recorrerlo
         try {
-            while (rs.next()) {
-            //Vamos incrementando
-            numencontrado++;
-            }
-        } catch (SQLException e) {
-            // Handle any SQL exceptions that may occur during ResultSet iteration
-            System.err.println("Error al iterar el ResultSet: " + e.getMessage());
-        }
-           
-           //Si hay entradas suficientes volvemos a recorrer el result set para oficializar la compra
-           //Actualizando las tablas pertinentes
-           if (numencontrado == numentradas) {
-                
-                rs.beforeFirst(); // Reseteamos el puntero del result set a la primera posición para volver a recorrerlo
-                try {
 
-                //antes de nada tenemos que generar una nueva linea para esta venta
-                //No confundir con la id_venta, que es diferente para cada inserción. Aquí estamos generando una nueva num_linea,
-                //Para poder asociar todas las entradas a la misma compra
-                //Primero buscamos el valor numéricamente más grande que haya (porque son secuenciales)                
-                String last_lp="select get_last_lp()";
-                last_lp_s=c.prepareStatement(last_lp);
-                rs2 = last_lp_s.executeQuery();
+            //antes de nada tenemos que generar una nueva linea para esta venta
+            //No confundir con la id_venta, que es diferente para cada inserción. Aquí estamos generando una nueva num_linea,
+            //Para poder asociar todas las entradas a la misma compra
+            //Primero buscamos el valor numéricamente más grande que haya (porque son secuenciales)                
+            String last_lp = "select get_last_lp()";
+            last_lp_s=c.prepareStatement(last_lp);
+            rs2 = last_lp_s.executeQuery();
                 
-                //En la siguiente variable almacenaremos la nueva id de num_linea
-                //Todas las entradas que se inserten en la base en el bucle siguiente
-                //Van a tener la misma 
-                int new_last_lp_s=0;
-                if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
-                    new_last_lp_s = rs2.getInt(1);     //Obtenemos la máxima
-                    new_last_lp_s = new_last_lp_s + 1; //creamos la nueva. Más tarde se insertará en la tabla de lineas de venta
-                }
-                c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
-                
-                //Recorremos el bucle del result set
-                //Se procesará una entrada por iteración hasta que se guarden las N entradas que quiere el usuario
-                while (rs.next()) {                
+            //En la siguiente variable almacenaremos la nueva id de num_linea
+            //Todas las entradas que se inserten en la base en el bucle siguiente
+            //Van a tener la misma 
+            int new_last_lp_s=0;
+            if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
+                new_last_lp_s = rs2.getInt(1);     //Obtenemos la máxima
+                new_last_lp_s = new_last_lp_s + 1; //creamos la nueva. Más tarde se insertará en la tabla de lineas de venta
+            }
+            c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
+
+            //Recorremos el bucle del result set
+            //Se procesará una entrada por iteración hasta que se guarden las N entradas que quiere el usuario
+            while (rs.next()) {                
                 //Se obtienen las variables necesarias
                 int newidproducto=rs.getInt(1); //La id de la entrada que se va a procesar 
                 String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
-                
+
                 //Se ejecuta la funcion con estos parametros
                 //Esta va a insertar en las tablas pertinentes para oficializar en la base la nueva compra
                 PreparedStatement guardarCompra=this.conexion.prepareStatement(
@@ -403,24 +391,24 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
                 guardarCompra.setFloat(4, coste);       //Coste del producto individual
                 guardarCompra.setInt(5,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
                 guardarCompra.execute();                //Ejecutamos el query                
-                }
-                    } catch (SQLException e) {
-                        
-                        System.err.println("Error al obtener el id_producto: " + e.getMessage());
-                        c.rollback(); 
-                    
-                        c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
-                }
             }
+        } catch (SQLException e) {
+                        
+            System.err.println("Error al obtener del id_producto: " + e.getMessage());
+            c.rollback(); 
+
+            c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
+        }
+            
         c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
-           // Cerramos todo antes de acabar
-                        rs.close();
-                        rs2.close();
-                        last_lp_s.close();
-                        statement_entradas.close();
-         } catch (SQLException ex) {
+        // Cerramos todo antes de acabar
+        rs.close();
+        rs2.close();
+        last_lp_s.close();
+        statement_entradas.close();
+    } catch (SQLException ex) {
             Logger.getLogger(GUI_compracomida.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+    }
 }
         
 
@@ -430,6 +418,10 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
 
     private void finalizarcompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finalizarcompraActionPerformed
         //Tenemos que controlar que el numero de entradas elegidas no sobrepasa al de entradas disponibles
+        if(panelnombre.getText() == null || paneltamanho.getText() == null){
+                    JOptionPane.showMessageDialog(GUI_compracomida.this, "Error: No se ha selecionado un producto o un tamaño", "Error", JOptionPane.ERROR_MESSAGE);
+
+        }
         try {
                 //Obtenemos los valores de comprobación
                 int numeproductos = Integer.parseInt((String) Numerodeproductos.getSelectedItem());
@@ -445,8 +437,13 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
                         Logger.getLogger(GUI_compracomida.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 setVisible(false);
-                dispose();
-                this.getParent().setVisible(true);
+                this.getParent().setVisible(false);
+                //dispose();
+                //this.getParent().getParent().setVisible(true);
+                //((JFrame)this.getParent().getParent()).setState(Frame.NORMAL);
+                this.dispose();
+                //this.getParent().getParent().setVisible(true);
+                
                 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(GUI_compracomida.this, "Error: Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
