@@ -82,7 +82,7 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
     
         try {
         
-            /*// Query para obtener las entradas que se emitieron para la película
+            // Query para obtener las entradas que se emitieron para la película
             String query = "SELECT count(entrada.num_asiento) " +
             "FROM public.entrada " +
             "JOIN public.proyectar ON proyectar.fecha=entrada.fecha " +
@@ -110,8 +110,8 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
             int numEnttotal=0;
             if (rs.next()) {
                 numEnttotal = rs.getInt("count");
-            }*/
-            int numEnttotal=Integer.parseInt(capacidadsala.getText());
+            }
+            
             
             //Query con el que obtendremos el número de entradas que ya fueron vendidas            
             String query2= "SELECT entradas_vendidas(?, ?, ?, ?, ?)";
@@ -132,9 +132,9 @@ public class GUI_vistasesion_dependiente extends javax.swing.JDialog {
             //Almacenamos en este string el número de entradas disponibles y lo devolvemos
             String numEntdisponibles=Integer.toString(numEnttotal-numEntvendidas);
             // Cerramos todo antes de acabar
-            //rs.close();
+            rs.close();
             rs2.close();
-            //statement.close();
+            statement.close();
             statement2.close();
             
             return numEntdisponibles;
