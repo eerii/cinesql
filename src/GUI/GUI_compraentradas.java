@@ -569,7 +569,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
         ResultSet rs = null;
         ResultSet rs2 = null;
     
-        try {
+       
         //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
         //El query va a devolver las primeras N entradas que encuentre en la base, siendo N el número de entradas
         //Que quiere comprar el usuario
@@ -613,62 +613,75 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
            if (numencontrado == numentradas) {
                 
                 rs.beforeFirst(); // Reseteamos el puntero del result set a la primera posición para volver a recorrerlo
-                try {
+               
 
                 //antes de nada tenemos que generar una nueva linea para esta venta
                 //No confundir con la id_venta, que es diferente para cada inserción. Aquí estamos generando una nueva num_linea,
                 //Para poder asociar todas las entradas a la misma compra
                 //Primero buscamos el valor numéricamente más grande que haya (porque son secuenciales)                
-                String last_lp="select get_last_lp()";
-                last_lp_s=c.prepareStatement(last_lp);
-                rs2 = last_lp_s.executeQuery();
+                //String last_lp="select get_last_lp()";
+                //last_lp_s=c.prepareStatement(last_lp);
+                //rs2 = last_lp_s.executeQuery();
                 
                 //En la siguiente variable almacenaremos la nueva id de num_linea
                 //Todas las entradas que se inserten en la base en el bucle siguiente
                 //Van a tener la misma 
-                int new_last_lp_s=0;
-                if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
-                    new_last_lp_s = rs2.getInt(1);     //Obtenemos la máxima
-                    new_last_lp_s = new_last_lp_s + 1; //creamos la nueva. Más tarde se insertará en la tabla de lineas de venta
-                }
+                //int new_last_lp_s=0;
+                //if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
+                //    new_last_lp_s = rs2.getInt(1);     //Obtenemos la máxima
+                //    new_last_lp_s = new_last_lp_s + 1; //creamos la nueva. Más tarde se insertará en la tabla de lineas de venta
+                //}
                 c.setAutoCommit(false); //Por si falla, podremos recuperar la base a su versión previa
                 
-                //Recorremos el bucle del result set
+                
                 //Se procesará una entrada por iteración hasta que se guarden las N entradas que quiere el usuario
-                while (rs.next()) {                
+                String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
+                 // Obtiene el precio por entrada de la sesión
+                String precioentradastring= precioentrada.getText();
+                //Variable en la que almacenaremos dicho precio como int
+                int precioint =1;
+                    if (precioentradastring!= null && !precioentradastring.isEmpty()) {
+                    precioint = Integer.parseInt(precioentradastring);
+                }
+                
+                PreparedStatement guardaridVenta=this.conexion.prepareStatement(
+                        "select guardar_idVenta(?,?,?);");
+                guardaridVenta.setString(1, correoUsuario); //correo del usuario
+                guardaridVenta.setInt(2, numentradas); //num. de entradas que se compran
+                guardaridVenta.setDouble(3, precioint); //precio por entrada
+                ResultSet newidven = guardaridVenta.executeQuery();                //Ejecutamos el query                
+                int newidVenta = 0; //Variable en la que guardaremos la id de venta 
+                if (newidven.next()) {
+                        newidVenta = newidven.getInt(1); // get the integer value returned by the stored procedure
+                }
+                
+                int newnumlinea=0;
+                while (rs.next()) {
+                newnumlinea=newnumlinea+1;
                 //Se obtienen las variables necesarias
                 int newidproducto=rs.getInt(1); //La id de la entrada que se va a procesar 
-                String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
+                
                 
                 //Se ejecuta la funcion con estos parametros
                 //Esta va a insertar en las tablas pertinentes para oficializar en la base la nueva compra
                 PreparedStatement guardarCompra=this.conexion.prepareStatement(
-                        "select guardar_compra(?,?,?,?,?)");
-                guardarCompra.setInt(1, new_last_lp_s); //numero de linea
+                        "select guardar_compra(?,?,?,?)");
+                guardarCompra.setInt(1, newidVenta); //numero de linea
                 guardarCompra.setInt(2, newidproducto); //ID del producto
-                guardarCompra.setString(3,correoUsuario);   //ID del usuario comprador
-                guardarCompra.setFloat(4, coste);       //Coste del producto individual
-                guardarCompra.setInt(5,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
+                guardarCompra.setInt(3, newnumlinea);       //Coste del producto individual
+                guardarCompra.setInt(4,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
                 guardarCompra.execute();                //Ejecutamos el query                
                 }
-                    } catch (SQLException e) {
-                        
-                        System.err.println("Error al obtener el id_producto: " + e.getMessage());
-                        c.rollback(); 
-                    
-                        c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
-                }
-            }
+                    } 
+            
         c.setAutoCommit(true);  //Rehabilitamos el autocommit una vez sabemos que todo fue bien
            // Cerramos todo antes de acabar
                         rs.close();
-                        rs2.close();
-                        last_lp_s.close();
+                       
+
                         statement_entradas.close();
-         } catch (SQLException ex) {
-            Logger.getLogger(GUI_compraentradas.class.getName()).log(Level.SEVERE, null, ex);
-        }
-}
+         } 
+
         
 
 //Cuando el usuario le da al botón de finalizar compra

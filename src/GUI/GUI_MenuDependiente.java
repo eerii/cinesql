@@ -867,11 +867,14 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             pelicula=(String)jComboBox2.getSelectedItem();
             fecha=Date.valueOf((String)jTextField2.getText());
 
-            PreparedStatement s=this.bd.getConnection().prepareStatement(
-                    "select pr.hora from proyectar pr, pelicula p, cine c " +
-                    "where pr.id_pelicula =p.id_pelicula " +
-                    "and pr.id_cine =c.id_cine and p.titulo=?" +
-                    "and c.nombre = ? and pr.fecha = ? ");
+            PreparedStatement s = this.bd.getConnection().prepareStatement(
+                "SELECT pr.hora FROM proyectar pr, pelicula p, cine c " +
+                    "WHERE pr.id_pelicula = p.id_pelicula " +
+                    "AND pr.id_cine = c.id_cine " +
+                    "AND p.titulo = ? " +
+                    "AND c.nombre = ? " +
+                    "AND pr.fecha = ?");
+
             
             s.setString(1, pelicula);
             s.setString(2, cine);
