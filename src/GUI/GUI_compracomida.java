@@ -428,8 +428,8 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
                 guardarCompra.setInt(1, new_last_lp_s); //numero de linea
                 guardarCompra.setInt(2, newidproducto); //ID del producto
                 guardarCompra.setString(3,correoUsuario);   //ID del usuario comprador
-                guardarCompra.setFloat(4, coste);       //Coste del producto individual
-                guardarCompra.setInt(5,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
+                guardarCompra.setFloat(4, coste*numproductos);       //Coste del producto individual
+                guardarCompra.setInt(5,numproductos);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
                 guardarCompra.execute();                //Ejecutamos el query                
             }
         } catch (SQLException e) {

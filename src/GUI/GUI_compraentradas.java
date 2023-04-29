@@ -140,6 +140,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             String numEntdisponibles=Integer.toString(numEnttotal-numEntvendidas);
             // Cerramos todo antes de acabar
 
+            System.out.println(numEntvendidas);
             rs2.close();
             //statement.close();
             statement2.close();
@@ -658,17 +659,17 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 //Mediante esta variable que actualizamos en el bucle
                 int newnumlinea=0;
                 while (rs.next()) { //Recorremos el bucle
-                newnumlinea=newnumlinea+1;  //Actualizamos el num_linea de la entrada actual
-                int newidproducto=rs.getInt(1); //el query devuelve la id de la entrada que se va a procesar 
-                
-                //Se ejecuta la funcion de inserción
-                PreparedStatement guardarCompra=this.conexion.prepareStatement(
-                        "select guardar_compra(?,?,?,?)");
-                guardarCompra.setInt(1, newidVenta);    //numero de linea
-                guardarCompra.setInt(2, newidproducto); //ID del producto
-                guardarCompra.setInt(3, newnumlinea);   //Coste del producto individual
-                guardarCompra.setInt(4,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
-                guardarCompra.execute();                //Ejecutamos el query                
+                    newnumlinea=newnumlinea+1;  //Actualizamos el num_linea de la entrada actual
+                    int newidproducto=rs.getInt(1); //el query devuelve la id de la entrada que se va a procesar 
+
+                    //Se ejecuta la funcion de inserción
+                    PreparedStatement guardarCompra=this.conexion.prepareStatement(
+                            "select guardar_compra(?,?,?,?)");
+                    guardarCompra.setInt(1, newidVenta);    //numero de linea
+                    guardarCompra.setInt(2, newidproducto); //ID del producto
+                    guardarCompra.setInt(3, newnumlinea);   //Coste del producto individual
+                    guardarCompra.setInt(4,1);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
+                    guardarCompra.execute();                //Ejecutamos el query                
                 }
                     }
            } catch (SQLException e) {
