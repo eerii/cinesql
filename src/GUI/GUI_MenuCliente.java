@@ -52,6 +52,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         this.cliente = cliente;
         
         botoncomprar.setVisible(false);
+        jLabel16.setVisible(false);
         try {
             //Poblamos de datos el desplegable de cines
             populateComboBox();
@@ -117,15 +118,15 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        EditarCuenta = new javax.swing.JButton();
         primApellido = new javax.swing.JTextField();
         SegApellido = new javax.swing.JTextField();
         dni = new javax.swing.JTextField();
         jcorreo = new javax.swing.JTextField();
-        jtelefono = new javax.swing.JTextField();
+        jTelefono = new javax.swing.JTextField();
         fechaNac = new javax.swing.JTextField();
-        jcontrasena = new javax.swing.JPasswordField();
+        jContrasena = new javax.swing.JPasswordField();
+        jLabel16 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
 
         jLabel2.setText("jLabel2");
@@ -292,7 +293,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         });
 
         jBotonComprarConsultarComida.setText("Comprar");
-        
         jBotonComprarConsultarComida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBotonComprarConsultarComidaActionPerformed(evt);
@@ -435,19 +435,11 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         jLabel15.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel15.setText("Contraseña:");
 
-        jButton2.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jButton2.setText("Eliminar usuario");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        EditarCuenta.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        EditarCuenta.setText("Guardar cambios");
+        EditarCuenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jButton3.setText("Guardar cambios");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                EditarCuentaActionPerformed(evt);
             }
         });
 
@@ -455,54 +447,61 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         dni.setText("no modificable");
         dni.setToolTipText("");
 
+        jcorreo.setEditable(false);
+        jcorreo.setText("no modificable");
+
         fechaNac.setEditable(false);
         fechaNac.setText("no modificable");
+
+        jLabel16.setForeground(new java.awt.Color(0, 102, 0));
+        jLabel16.setText("Los cambios se han guardado correctamente");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(18, 18, 18)
-                        .addComponent(jNombre))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel16)
+                        .addGap(64, 64, 64)
+                        .addComponent(EditarCuenta))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addGap(18, 18, 18)
-                        .addComponent(primApellido))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(18, 18, 18)
-                        .addComponent(SegApellido))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addGap(18, 18, 18)
-                        .addComponent(dni))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addGap(18, 18, 18)
-                        .addComponent(jcorreo))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel13)
-                        .addGap(18, 18, 18)
-                        .addComponent(jtelefono))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel14)
-                        .addGap(18, 18, 18)
-                        .addComponent(fechaNac))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel15)
-                        .addGap(18, 18, 18)
+                        .addGap(48, 48, 48)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(0, 274, Short.MAX_VALUE)
-                                .addComponent(jButton3)
+                                .addComponent(jLabel8)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton2))
-                            .addComponent(jcontrasena))))
+                                .addComponent(jNombre))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addGap(18, 18, 18)
+                                .addComponent(primApellido))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(18, 18, 18)
+                                .addComponent(SegApellido))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel11)
+                                .addGap(18, 18, 18)
+                                .addComponent(dni))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addGap(18, 18, 18)
+                                .addComponent(jcorreo))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel13)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTelefono))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addGap(18, 18, 18)
+                                .addComponent(fechaNac, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addGap(18, 18, 18)
+                                .addComponent(jContrasena)))))
                 .addGap(107, 107, 107))
         );
         jPanel4Layout.setVerticalGroup(
@@ -531,7 +530,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(jtelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
@@ -539,12 +538,12 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
-                    .addComponent(jcontrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
+                    .addComponent(jContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(33, 33, 33)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addContainerGap(69, Short.MAX_VALUE))
+                    .addComponent(EditarCuenta)
+                    .addComponent(jLabel16))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Editar cuenta", jPanel4);
@@ -673,13 +672,61 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jNombreActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void EditarCuentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarCuentaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        
+        try{
+           
+            // Preparamos la conexión a la base de datos
+            Connection c = this.bd.getConnection();
+            PreparedStatement stmt = null;
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+            // Obtenemos los datos que han introducido
+            String nombre = jNombre.getText();
+            String apellido1 = primApellido.getText();
+            String apellido2 = SegApellido.getText();
+            String telefono = jTelefono.getText();
+            char[] contrasena = jContrasena.getPassword();
+
+            // Se obtiene el correo de la persona que ha inicidado sesion
+            String correoUsuario=c.getMetaData().getUserName();
+
+            // Comprobamos que se hayan rellenado todos los campos correctamente
+            if (nombre.isEmpty() || apellido1.isEmpty() || apellido2.isEmpty() || telefono.isEmpty() || contrasena.length<1) {
+                throw new IllegalArgumentException("Rellene todos los campos");
+            }
+            if (contrasena.length < 8) {
+                throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres");
+            }
+
+     
+            
+            stmt = c.prepareStatement("SELECT editar_cuenta(?, ?, ?, ?, ?, ?)");
+            stmt.setString(1, nombre);
+            stmt.setString(2, apellido1);
+            stmt.setString(3, apellido2);
+            stmt.setString(4, telefono);
+            stmt.setString(5, new String(contrasena));
+            stmt.setString(6, correoUsuario);
+            
+            // Ejecutamos el statement 
+            stmt.execute();
+           
+           // Hacemos que se muestre el mensaje de que han editado correctamente las cosas
+           jLabel16.setVisible(true);
+            
+
+        }
+        catch(Exception e)
+        {
+            jLabel16.setVisible(false);
+
+
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
+        }
+        
+    }//GEN-LAST:event_EditarCuentaActionPerformed
 
     private void jBotonVerArticulosComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVerArticulosComidaActionPerformed
         // TODO add your handling code here:
@@ -783,6 +830,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton EditarCuenta;
     private javax.swing.JTextField SegApellido;
     private javax.swing.JButton botoncomprar;
     private javax.swing.JPanel buttonPanel;
@@ -797,8 +845,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JButton jBotonComprarConsultarComida;
     private javax.swing.JButton jBotonVerArticulosComida;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JPasswordField jContrasena;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -806,6 +853,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -827,10 +875,9 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTablaComida;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTelefono;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JPasswordField jcontrasena;
     private javax.swing.JTextField jcorreo;
-    private javax.swing.JTextField jtelefono;
     private javax.swing.JTextField primApellido;
     private javax.swing.JButton productos;
     // End of variables declaration//GEN-END:variables
@@ -1121,8 +1168,8 @@ private void editarCuenta() {
         String apellido2 = SegApellido.getText();
         //dni no se puede cambiar
         String correo = jcorreo.getText();
-        String telefono = jtelefono.getText();
-        String contrasena = jcontrasena.getText();
+        String telefono = jTelefono.getText();
+        String contrasena = jContrasena.getText();
         
         if(nombre.isEmpty()||apellido1.isEmpty()||apellido2.isEmpty()||correo.isEmpty()||contrasena.isEmpty()){
             throw new Exception("Hay campos necesarios sin modificar");
