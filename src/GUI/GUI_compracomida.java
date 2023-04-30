@@ -424,12 +424,12 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
                 //Se ejecuta la funcion con estos parametros
                 //Esta va a insertar en las tablas pertinentes para oficializar en la base la nueva compra
                 PreparedStatement guardarCompra=this.conexion.prepareStatement(
-                        "select guardar_compra(?,?,?,?,?)");
+                        "select guardar_compra_comida(?,?,?,?,?)");
                 guardarCompra.setInt(1, new_last_lp_s); //numero de linea
                 guardarCompra.setInt(2, newidproducto); //ID del producto
                 guardarCompra.setString(3,correoUsuario);   //ID del usuario comprador
                 guardarCompra.setFloat(4, coste*numproductos);       //Coste del producto individual
-                guardarCompra.setInt(5,numproductos);              //Como las entradas no son stackeables, el atributo cantidad valdrá 1
+                guardarCompra.setInt(5,numproductos);              //Numero de elementos (la comida es stackeable)
                 guardarCompra.execute();                //Ejecutamos el query                
             }
         } catch (SQLException e) {

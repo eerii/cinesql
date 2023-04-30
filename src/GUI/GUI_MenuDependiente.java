@@ -659,8 +659,9 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             //Se obtienen los asientos de las entradas ya vendidas
             s=this.bd.getConnection().prepareStatement(
                     "select e.num_asiento " +
-                    "from proyectar p, cine c, entrada e, pelicula p2, sala s " +
+                    "from proyectar p, cine c, entrada e, pelicula p2, sala s, lineaventa lv " +
                     "where p.id_cine =c.id_cine " +
+                    "and e.id_producto=lv.id_producto "+        
                     "and e.id_sala=p.id_sala and e.id_cine=p.id_cine "
                     + "and s.id_cine= c.id_cine and s.id_sala=p.id_sala "
                     +"and e.id_pelicula =p.id_pelicula and e.fecha =p.fecha and e.hora =p.hora " +
