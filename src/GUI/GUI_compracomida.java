@@ -39,7 +39,7 @@ public class GUI_compracomida extends javax.swing.JDialog {
         ResultSet rs = null;
     
         try {        
-            // Query para obtener las entradas
+            // Query para obtener el precio
             String query = "SELECT getPrecioComida(?, ?)";
             statement = c.prepareStatement(query);
             statement.setString(1, producto);
@@ -100,7 +100,7 @@ public class GUI_compracomida extends javax.swing.JDialog {
             
             
         } 
-        //Llenamos de valores el desplegable de número de productos
+            //Llenamos de valores el desplegable de número de productos
             //En este caso se permite adquirir de cada vez 1-6 productos
             DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) Numerodeproductos.getModel();
             model.removeAllElements();
