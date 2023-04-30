@@ -73,6 +73,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jLabel10.setVisible(false);
         jLabel12.setVisible(false);
         jLabel13.setVisible(false);
+        jBotonVenderComida.setVisible(false);
+        jLabel18.setVisible(false);
         
         try{
             //Se guardan los cines
@@ -143,6 +145,9 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTablaComida = new javax.swing.JTable();
         jBotonVerComida = new javax.swing.JButton();
+        jBotonVenderComida = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -249,7 +254,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jLabel12.setText("No quedan entradas");
 
         jLabel13.setForeground(new java.awt.Color(51, 204, 0));
-        jLabel13.setText("La compra se hizo correctamente");
+        jLabel13.setText("La venta se hizo correctamente");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -520,28 +525,52 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             }
         });
 
+        jBotonVenderComida.setText("Vender");
+        jBotonVenderComida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonVenderComidaActionPerformed(evt);
+            }
+        });
+
+        jLabel18.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel18.setText("La venta fue un éxito");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(258, Short.MAX_VALUE)
+                .addComponent(jLabel17)
+                .addGap(89, 89, 89)
+                .addComponent(jBotonVenderComida, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(353, 353, 353))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
-                    .addComponent(jBotonVerComida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel18)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE)
+                        .addComponent(jBotonVerComida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jBotonVerComida)
-                .addGap(156, 156, 156))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBotonVenderComida)
+                    .addComponent(jLabel17))
+                .addGap(32, 32, 32)
+                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80))
         );
 
-        jTabbedPane1.addTab("Comida", jPanel3);
+        jTabbedPane1.addTab("Vender comida", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1027,6 +1056,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
 
     private void jBotonVerComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVerComidaActionPerformed
         // TODO add your handling code here:
+
         try {
             // En el siguiente método más abajo se realizará la operación con los datos obtenidos
             searchComida();
@@ -1036,6 +1066,98 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jBotonVerComidaActionPerformed
+
+    private void jBotonVenderComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVenderComidaActionPerformed
+        // TODO add your handling code here:
+        jLabel18.setVisible(false);
+        
+        //Se declaran y rellenan variables       
+        Integer idEspectador, idDependiente, idVenta;
+        
+        int selectedRowIndex = jTablaComida.getSelectedRow();
+        
+        //Obtenemos los datos de la fila de la tabla seleccionada 
+        String producto = jTablaComida.getValueAt(selectedRowIndex, 0).toString();
+        String tamanho = jTablaComida.getValueAt(selectedRowIndex, 1).toString();
+        String precio = jTablaComida.getValueAt(selectedRowIndex, 2).toString();
+                
+        try{
+            
+            //Se obtiene el id del trabajador
+            PreparedStatement s = this.bd.getConnection().prepareStatement(
+            "SELECT obtener_idTrabajador(?)");
+            s.setString(1, this.bd.getConnection().getMetaData().getUserName());
+            ResultSet r = s.executeQuery();
+            r.next();
+            idDependiente = r.getInt(1);
+            
+            //Se desactiva el autocommit para que se pueda hacer rollback
+            this.bd.getConnection().setAutoCommit(false);
+                
+                
+            //Se obtiene un id para el espectador (nos da igual que sea un socio o no)
+            //Se asigna un id nuevo
+            s = this.bd.getConnection().prepareStatement(
+                    //Se crea un nuevo espectador con un id autogenerado, que se obtiene
+            "select insertar_Espectador()");
+            r = s.executeQuery();
+            r.next();
+            idEspectador = r.getInt(1);
+                      
+                
+            //Se obtiene un id para la venta
+            s = this.bd.getConnection().prepareStatement(
+                    "SELECT COALESCE(MAX(id_venta), 0) + 1 from Vender");   //Coalesce devuelve 0+1 si no hay idventas en la tabla
+                                                                            //Si las hay devuelve idventamax+1
+            r = s.executeQuery();
+            r.next();
+            idVenta = r.getInt(1);
+                
+            //Se crea una venta
+            s = this.bd.getConnection().prepareStatement(
+            "insert into Vender values(?,?,?,now(),?)");
+            s.setInt(1, idDependiente);
+            s.setInt(2, idEspectador);
+            s.setInt(3, idVenta);
+            s.setFloat(4,Float.parseFloat(precio));
+            s.execute();                
+                
+            //La función get_available_entriesComida se encarga de devolver el id del producto del tamanho correspondiente
+            s = this.bd.getConnection().prepareStatement("select get_available_entriesComida(?, ?, ?)");
+
+            s.setString(1, producto);
+            s.setString(2, tamanho);
+            s.setInt(3,1); //solo se puede comprar un producto a la vez
+            r = s.executeQuery();
+            
+            r.next();
+            int comida = r.getInt(1);  //Almacenamos su id
+            
+            //Se crea una linea de venta
+            s=this.bd.getConnection().prepareStatement(
+            "insert into LineaVenta values(?,?,?,?);");
+            s.setInt(1,idVenta);
+            s.setInt(2, comida);
+            s.setInt(3, 1); //solo va a haber una linea
+            s.setInt(4, 1); //y la cantidad tb va a ser uno siempre
+            s.execute();
+            
+            //Se manda el mensaje de que todo ha ido bien
+            jLabel18.setVisible(true); 
+        
+        }catch(Exception e){
+            
+            try{
+                this.bd.getConnection().setAutoCommit(true);
+                this.bd.getConnection().rollback();
+            }catch(SQLException e2){
+                System.out.println("No se pudo hacer rollback");
+            }
+            
+            GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
+            popup.setVisible(true);
+        }
+    }//GEN-LAST:event_jBotonVenderComidaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1084,6 +1206,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private javax.swing.JTextField campopelicula;
     private javax.swing.JCheckBox check3D;
     private javax.swing.JComboBox<String> cines;
+    private javax.swing.JButton jBotonVenderComida;
     private javax.swing.JButton jBotonVerComida;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -1100,6 +1223,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1263,6 +1388,8 @@ private void searchComida() throws IOException, ClassNotFoundException{
             model.addRow(rowData);
         }
         jTablaComida.setModel(model);
+        
+
 
         jTablaComida.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
             @Override
@@ -1272,10 +1399,14 @@ private void searchComida() throws IOException, ClassNotFoundException{
                 //Solamente permitimos que se seleccione una
                 if (selectedRowCount == 1) {//Cuando se selecciona
                     //Marcamos de amarillo la fila seleccionada
+                    jLabel18.setVisible(false);
+
                     jTablaComida.setSelectionBackground(Color.YELLOW);
+                    jBotonVenderComida.setVisible(true);
                 } else {
                     //Y se devuelve a su color por defecto
                     jTablaComida.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
+                    jBotonVenderComida.setVisible(false);
                 }               
             }   
         });  
