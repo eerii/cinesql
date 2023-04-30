@@ -533,9 +533,11 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
     //Se intenta la conexion
         Connection c = this.conexion;
         PreparedStatement statement_entradas = null;
+        PreparedStatement statement_idsala=null;
         PreparedStatement last_lp_s= null;
         ResultSet rs = null;
         ResultSet rs2 = null;
+        ResultSet rs3=null;
     
        
         //En primer lugar se seleccionan las entradas que se van a asociar al usuario en la compra
@@ -543,6 +545,19 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
         //Que quiere comprar el usuario
         //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto        
         String queryentradas="select get_available_entries(?, ?, ?, ?, ?, ?)";
+        
+        String queryidsala="select sala.id_sala from sala "+
+                "join cine on cine.id_cine=sala.id_cine "+
+                "where sala.num_sala = ? "+
+                "and cine.nombre = ? ;";
+        statement_idsala=c.prepareStatement(queryidsala);
+        statement_idsala.setInt(1, sala);
+        statement_idsala.setString(2, cine);
+        rs3=statement_idsala.executeQuery();
+        rs3.next();
+        int idsala=rs3.getInt(1);
+        
+        
         try{
 
             //Preparamos el statement
@@ -552,9 +567,10 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
             statement_entradas.setString(1,cine);
             statement_entradas.setString(2, fecha);
             statement_entradas.setString(3, hora);
-            statement_entradas.setInt(4, sala);
+            statement_entradas.setInt(4, idsala);
             statement_entradas.setString(5, titulo);
             statement_entradas.setInt(6,numentradas);
+
         }catch (SQLException e) {
             
             System.err.println("Error al encontrar entradas: " + e.getMessage());

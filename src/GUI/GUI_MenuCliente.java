@@ -1064,7 +1064,7 @@ private void obtenerEntrada() throws IOException, ClassNotFoundException{
     try {
         // Consulta
         String sql = "SELECT entrada_comprada(?);";
-
+        
         stat = c.prepareStatement(sql);
         stat.setString(1, this.cliente.getCorreo());
 
