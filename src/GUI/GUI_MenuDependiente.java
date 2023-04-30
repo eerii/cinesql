@@ -629,7 +629,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             s.setString(2,cine);
             s.setDate(3,fecha);
             s.setTime(4,hora);
-            
+
             ResultSet r=s.executeQuery();
             r.next();
             Integer sitiosSala=r.getInt(1);
@@ -642,7 +642,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             r=s.executeQuery();
             r.next();
             idCine=r.getInt(1);
-            
+
             s=this.bd.getConnection().prepareStatement(
             "SELECT id_pelicula FROM Pelicula WHERE titulo=?");
             s.setString(1, pelicula);
@@ -744,7 +744,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 s.setString(5, pelicula);
                 s.setInt(6,numEntradas);
                 r=s.executeQuery();
-                
+
                 //Se crean las filas para cada entrada
                 while(i<sitiosSala && cont<numEntradas){
                     i++;
@@ -753,7 +753,6 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                         //Se vende una entrada
                         r.next();   //Seleccionamos la entrada de la iteracion actual
                         int entradaactual=r.getInt(1);  //Almacenamos su id
-                        
                         cont++;
 
                         
@@ -784,7 +783,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                         s.setInt(3, cont);
                         s.setInt(4, 1);
                         s.execute();
-                        
+                                              
                     }
                 }
             
