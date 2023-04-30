@@ -16,6 +16,7 @@ public class BaseDatos {
         conectar(user, clave);
     }
 
+    // Inicio sesion
     public void conectar(String user, char[] clave) throws Exception {
         //Se intenta la conexion
         Properties prop = new Properties();
@@ -34,6 +35,7 @@ public class BaseDatos {
         Class.forName("org.postgresql.Driver");
         
         if (user.isEmpty())
+            // Si esta vacio usamos el usuario del archivo
             c = DriverManager.getConnection(conn, prop.getProperty("user"), prop.getProperty("password"));
         else
             c = DriverManager.getConnection(conn, user, new String(clave));

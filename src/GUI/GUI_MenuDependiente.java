@@ -54,6 +54,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         //Se guarda la base de datos a la que se hace conexion
         this.bd=((GUI_IniciarSesion)this.getParent()).getBaseDatos();
         botonver.setVisible(false);
+        
         //Tamanho adecuado para el logo
         ImageIcon imagenGrande = new ImageIcon(getClass().getResource("/GUI/logo.png"));
         jLabel1.setIcon(new ImageIcon(imagenGrande.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT)));

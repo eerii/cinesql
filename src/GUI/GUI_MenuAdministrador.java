@@ -54,15 +54,17 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             //Se obtienen todos los cines      
             ResultSet cines = admin.obtenerCines();
 
+            // Almacenamos los cines
             while(cines.next()){
+                // Nombre del cine con su dirección
                 jComboBox3.addItem(cines.getString(1) + ", " + cines.getString(2));
                 //Se almacenan los pares de id y nombre mostrado para acelerar las consultas siguientes
                 Entry<Integer,String> p = new SimpleEntry<Integer,String>(cines.getInt(3),cines.getString(1)+", "+cines.getString(2));
                 idCines.add(p);
             }
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
+            // ERROR
             GUI_Error popup=new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
             popup.setVisible(true);
         }
@@ -158,6 +160,11 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTable1);
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Trabajador", "Dependiente" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jComboBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -444,9 +451,12 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_formWindowClosed
 
+    // Busqueda
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        // Obtenemos modelo de la tabla
         DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
+        //Eliminamos datos de las filas
         modelo.setRowCount(0);
         
         try
@@ -458,7 +468,8 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
                    id=idCines.get(i).getKey();
                 }
             }
-
+            
+            // Si es trabajador
             if(jComboBox2.getSelectedItem() == "Trabajador"){
                 ResultSet trabajadores= admin.obtenerTrabajadores(id);
 
@@ -471,8 +482,8 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
                     
                     modelo.addRow(fila);
                 }
-                
-            }else{
+            
+            }else{ // Si es dependiente
                 ResultSet dependientes= admin.obtenerDependientes(id);
 
                 //Cada dependiente se anhade a la tabla
@@ -490,6 +501,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         }
         catch(SQLException e)
         {
+            // Error
             GUI_Error popup= new GUI_Error((JFrame)this.getParent(),true,e.getMessage());
             popup.setVisible(true);
         }
@@ -499,6 +511,7 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox3ActionPerformed
 
+    // Registro trabajador o dependiente
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
 
@@ -519,12 +532,13 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
             esDependiente=jCheckBox2.isSelected();
 
             numIdiomas=null;
-            if(esDependiente){
+            if(esDependiente){ // Si es dependiente definimos el número de idiomas marcado
                 numIdiomas=Integer.valueOf(jTextField5.getText());
             }
             correo=jTextField6.getText();
             clave=jPasswordField1.getPassword();
-
+            
+            // Creamos al nuevo trabajador
             admin.nuevoTrabajador(nombre, apellido1, apellido2, correo, dni, telefono, clave, numIdiomas, experiencia, esDependiente);
             
             jLabel15.setVisible(true);
@@ -559,6 +573,10 @@ public class GUI_MenuAdministrador extends javax.swing.JDialog {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
 
     /**
      * @param args the command line arguments

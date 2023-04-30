@@ -73,6 +73,7 @@ public class Administrador {
         query.setBoolean(8, experiencia);
         query.setString(9, new String(clave));
 
+        // Ejecutamos
         query.execute();
 
         // Si tenemos un dependiente, tambien se inserta en Dependiente

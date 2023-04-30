@@ -53,6 +53,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
         
         botoncomprar.setVisible(false);
         jLabel16.setVisible(false);
+        
         try {
             //Poblamos de datos el desplegable de cines
             populateComboBox();
@@ -336,10 +337,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 
         entradaComprada.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Cine", "Película", "Proyección 3D", "Fecha", "Hora", "Cantidad", "Precio total"
@@ -352,10 +350,7 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 
         comidaComprada.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Tipo", "Tamaño", "Cantidad", "Precio total"
@@ -730,7 +725,6 @@ public class GUI_MenuCliente extends javax.swing.JDialog {
 
     private void jBotonVerArticulosComidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonVerArticulosComidaActionPerformed
         // TODO add your handling code here:
-        // TODO add your handling code here:
         try {
             // En el siguiente método más abajo se realizará la operación con los datos obtenidos
             searchComida();
@@ -1001,28 +995,33 @@ private void searchComida() throws IOException, ClassNotFoundException{
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-        //AQUI SE PODRIA ANHADIR TB LA CANTIDAD
+        // Preparamos la consulta
         String sql = "";
         sql = "select comida.tipo, comida.tamanho, producto.precio\n" +
 " from public.comida join public.producto ON comida.id_producto = producto.id_producto;";
-
         stmt = c.prepareStatement(sql);
 
+        // Ejecutamos
         rs = stmt.executeQuery();
+        
         //Actualizamos la tabla con los resultados
         //Indicamos que la tabla va a ser de solo lectura
         ReadOnlyTableModel model = new ReadOnlyTableModel();
+        
         //Titulamos cada columna
         model.setColumnIdentifiers(new Object[]{"Producto","Tamaño", "Precio"/*...*/});
         while (rs.next()) { //Recorremos las proyecciones obtenidas en el query
             //Y los insertamos en cada fila
-
             Object[] rowData = new Object[] {rs.getString("tipo"), rs.getString("tamanho"),  rs.getString("precio")/*...*/};
             model.addRow(rowData);
         }
+        
+        // Establecemos modelo de la tabla
         jTablaComida.setModel(model);
 
+        // Detectaremos si el usuario marca algún elemento de la tabla
         jTablaComida.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  //Generamos el nuevo listener de la acción de click
+            
             @Override
             public void valueChanged(ListSelectionEvent lse) {
                 //Contamos el número de filas seleccionadas
@@ -1061,19 +1060,24 @@ private void obtenerEntrada() throws IOException, ClassNotFoundException{
     Connection c = this.bd.getConnection();
     PreparedStatement stat = null;
     ResultSet rcomida = null;
+    
     try {
+        // Consulta
         String sql = "SELECT entrada_comprada(?);";
 
         stat = c.prepareStatement(sql);
         stat.setString(1, this.cliente.getCorreo());
 
+        // Ejecutamos
         rcomida = stat.executeQuery();
+        
         //Actualizamos la tabla con los resultados
         //Indicamos que la tabla va a ser de solo lectura
         ReadOnlyTableModel model = new ReadOnlyTableModel();
         
         //Titulamos cada columna
         model.setColumnIdentifiers(new Object[]{"Cine","Película", "Proyección 3D", "Fecha","Hora", "Cantidad", "Precio total"/*...*/});
+        
         while (rcomida.next()) { //Recorremos las proyecciones obtenidas en el query
             String result = rcomida.getString(1);
             result = result.substring(1, result.length()-1); // Quito os parénteses da consulta
@@ -1088,9 +1092,11 @@ private void obtenerEntrada() throws IOException, ClassNotFoundException{
             }
             
             model.addRow(rowData);
-            //System.out.println(rcomida.getString(1));
         }
         entradaComprada.setModel(model);
+        
+        // Cerramos conexión
+        c.close();
         
     } catch (SQLException ex) {
         Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);

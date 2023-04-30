@@ -193,18 +193,22 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
         nombre=campoNombre.getText();
         clave=campoContrasena.getPassword();
         
-        try
-        {
+        
+        try {
+            // Creamos una instancia de la base de datos segun el nombre y la contraseña
             BaseDatos bd = new BaseDatos(nombre, clave);
             this.bd=bd;
             
+            // Generamos el menu que vamos usar segun el rol del usuario
             JDialog menu=crearMenu(bd,nombre);
 
+            // Minimizamos la ventana principal
             this.setState(Frame.ICONIFIED);
+            // Mostramos la ventana de menu
             menu.setVisible(true);
         }
-        catch(Exception e)
-        {    
+        catch(Exception e) {
+            // Error se algo sae mal
             GUI_Error popup=new GUI_Error(this,true,e.getMessage());
             popup.setVisible(true);
         }
@@ -272,21 +276,26 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
     private javax.swing.JTextPane jTextPane4;
     // End of variables declaration//GEN-END:variables
 
+    // Creamos menu segun el rol del usuario
     public JDialog crearMenu(BaseDatos bd, String nombre) throws Exception{
    
+        // Inicializamos
         JDialog menu=null;
         
         //Se obtiene el rol del usuario, el cual esta guardado en la base de datos de Usuarios
         String sql= "SELECT rol FROM Usuarios WHERE nombre=?";
+        //Usamos la conexión a la base de datos para preparar la consulta
         PreparedStatement s=bd.getConnection().prepareStatement(sql);
 
         s.setString(1,nombre);
 
+        // Realizamos la consulta
         ResultSet resultado=s.executeQuery();
 
         //Si el resultado no es vacío
         if(resultado.next()){
             
+            //Obtenemos el rol
             String rol=resultado.getString("rol");
   
             //Según el rol
@@ -305,6 +314,7 @@ public class GUI_IniciarSesion extends javax.swing.JFrame {
                     break;
                 
                 case "Cliente":
+                    // Generamos el socio
                     Cliente socio = new Cliente(nombre);
                     menu=new GUI_MenuCliente(this, socio);
                     break;
