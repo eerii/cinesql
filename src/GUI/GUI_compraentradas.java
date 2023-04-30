@@ -545,10 +545,9 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
         //Almacenaremos su id de producto para luego insertarlos en una nueva línea de producto        
         String queryentradas="select get_available_entries(?, ?, ?, ?, ?, ?)";
         try{
-            //Este statement es un poco distinto, ya que lo vamos a recorrer dos veces
-            //La primera para controlar que efectivamente hay un número de entradas disponibles suficientes
-            //Y la segunda para oficializar la compra
-            //Introducimos estos flags para poder recorrer en ambas direcciones el result set
+
+            //Preparamos el statement
+            //Vamos a recorrer el resultset 2 veces. Permitimos que se pueda recorrer en ambos sentidos con estos flags
             statement_entradas = c.prepareStatement(queryentradas,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
         
             statement_entradas.setString(1,cine);

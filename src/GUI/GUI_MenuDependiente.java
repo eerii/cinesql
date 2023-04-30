@@ -678,7 +678,6 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             //Se obtiene el numero de entradas vendidas
             r.last();
             Integer entradasVendidas=r.getRow();
-            
             if(sitiosSala-entradasVendidas-numEntradas<=0){
                 //Si no hay entradas suficientes, mensaje de error
                 jLabel12.setVisible(true);
@@ -717,7 +716,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 
                 //Se obtiene un id para la venta
                 s=this.bd.getConnection().prepareStatement(
-                        "select max(id_venta)+1 from Vender");
+                        "SELECT COALESCE(MAX(id_venta), 0) + 1 from Vender");   //Coalesce devuelve 0+1 si no hay idventas en la tabla
+                                                                                //Si las hay devuelve idventamax+1
                 r=s.executeQuery();
                 r.next();
                 idVenta=r.getInt(1);
@@ -731,16 +731,32 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 s.setFloat(4,precioTotal);
                 s.execute();                
                 
+                
+                //Tal y como fue implementado el script de creación, con el trigger se autogeneran todas las entradas de todas las
+                //Proyecciones disponibles, por lo que simplemente hay que obtener las primeras entradas de la tabla entradas que
+                //No fueron vendidas. La función get_available_entries se encarga de ello
+                s=this.bd.getConnection().prepareStatement("select get_available_entries(?, ?, ?, ?, ?, ?)");
+                s.setString(1,cine);
+                s.setString(2, fecha.toString());   //La función trabaja con strings
+                s.setString(3, hora.toString());
+                s.setInt(4, sala);
+                s.setString(5, pelicula);
+                s.setInt(6,numEntradas);
+                r=s.executeQuery();
+                
                 //Se crean las filas para cada entrada
                 while(i<sitiosSala && cont<numEntradas){
                     i++;
                     //Si el asiento "i" no esta ocupado
                     if(!sitiosOcupados.contains(i)){
                         //Se vende una entrada
-                        cont++;
+                        r.next();   //Seleccionamos la entrada de la iteracion actual
+                        int entradaactual=r.getInt(1);  //Almacenamos su id
                         
-                        //Se crea la entrada como producto
-                        s=this.bd.getConnection().prepareStatement(
+                        cont++;
+
+                        
+                        /*s=this.bd.getConnection().prepareStatement(
                         "INSERT INTO Producto VALUES((select max(id_producto)+1"
                                 + " from Producto),?) RETURNING id_producto;");
                         s.setFloat(1, precioTotal/numEntradas);
@@ -758,12 +774,12 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                         s.setInt(6, idPeli);
                         s.setInt(7, i);
                         s.execute();
-                        
+                        */
                         //Se crea una linea de venta
                         s=this.bd.getConnection().prepareStatement(
                         "insert into LineaVenta values(?,?,?,?);");
                         s.setInt(1,idVenta);
-                        s.setInt(2, idProducto);
+                        s.setInt(2, entradaactual);
                         s.setInt(3, cont);
                         s.setInt(4, 1);
                         s.execute();
