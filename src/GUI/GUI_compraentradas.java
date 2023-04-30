@@ -140,7 +140,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             String numEntdisponibles=Integer.toString(numEnttotal-numEntvendidas);
             // Cerramos todo antes de acabar
 
-            System.out.println(numEntvendidas);
             rs2.close();
             //statement.close();
             statement2.close();
@@ -175,9 +174,9 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             rs = statement.executeQuery();
             String ePrecio;
             if (rs.next()) {
-                int numEnt = rs.getInt(1);
+                double numEnt = rs.getDouble(1);
                 //Casteamos a string
-                ePrecio = Integer.toString(numEnt);
+                ePrecio = Double.toString(numEnt);
             }else{
                 ePrecio="";
             }
@@ -521,16 +520,16 @@ public class GUI_compraentradas extends javax.swing.JDialog {
             // Obtiene el precio por entrada de la sesión
             String precioentradastring= precioentrada.getText();
             //Variable en la que almacenaremos dicho precio como int
-            int precioint =1;
+            double precioint =1;
             if (precioentradastring!= null && !precioentradastring.isEmpty()) {
-                precioint = Integer.parseInt(precioentradastring);
+                precioint = Double.parseDouble(precioentradastring);
             }
             //Actualizamos el coste total (numentradas*precioporentrada)
-            total.setText(Integer.toString(precioint * selectedOption));
+            total.setText(Double.toString(precioint * selectedOption));
     }//GEN-LAST:event_NumerodeentradasActionPerformed
 
 //Función que se encarga de guardar la compra en la base de datos, actualizando las tablas pertinentes
-public void actualizarCompras(int numentradas, String cine, String fecha, String hora, int sala, String titulo, int coste) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException{
+public void actualizarCompras(int numentradas, String cine, String fecha, String hora, int sala, String titulo, double coste) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException{
     //Se intenta la conexion
         Connection c = this.conexion;
         PreparedStatement statement_entradas = null;
@@ -571,7 +570,6 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
             //Vamos incrementando
             numencontrado++;
             }
-        
            
            //Si hay entradas suficientes volvemos a recorrer el result set para oficializar la compra
            //Actualizando las tablas pertinentes
@@ -584,9 +582,9 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
                 String precioentradastring= precioentrada.getText();    //El precio de cada entrada
                 //Variable en la que almacenaremos dicho precio como int
-                int precioint =1;
+                double preciototal =1;
                     if (precioentradastring!= null && !precioentradastring.isEmpty()) {
-                    precioint = Integer.parseInt(precioentradastring);
+                    preciototal = Double.parseDouble(precioentradastring);
                 }
                 
                 //Primero vamos a crear la nueva venta en la tabla vender. Solamente es una inserción ya que todas las entradas comparten id de venta
@@ -596,8 +594,9 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                         "select guardar_idVenta(?,?,?);");
                 guardaridVenta.setString(1, correoUsuario); //correo del usuario
                 guardaridVenta.setInt(2, numentradas); //num. de entradas que se compran
-                guardaridVenta.setDouble(3, precioint); //precio por entrada
-                ResultSet newidven = guardaridVenta.executeQuery();                //Ejecutamos el query                
+                guardaridVenta.setDouble(3, preciototal); //precio por entrada
+                ResultSet newidven = guardaridVenta.executeQuery();                //Ejecutamos el query
+                
                 int newidVenta = 0; //La función sql devuelve la nueva idVenta de esta compra. La guardaremos en esta variable
                 if (newidven.next()) {
                         newidVenta = newidven.getInt(1); // get the integer value returned by the stored procedure
@@ -650,7 +649,7 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
                 String hora=panelHora.getText();
                 int sala=Integer.parseInt(panelSala.getText());
                 String titulo=panelPeli.getText();
-                int coste=Integer.parseInt(precioentrada.getText());
+                double coste=Double.parseDouble(precioentrada.getText());
                 if (numentradas> entradasdisponibles) { //Numero incorrecto. Se gestiona el error
                     JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
                 }

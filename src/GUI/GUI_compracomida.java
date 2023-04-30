@@ -447,7 +447,7 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
                 //Se ejecuta la funcion con estos parametros
                 //Esta va a insertar en las tablas pertinentes para oficializar en la base la nueva compra
                 PreparedStatement guardarCompra=this.conexion.prepareStatement(
-                        "select guardar_compra_comida(?,?,?)");
+                        "select guardar_compra(?,?,1,?)");
                 guardarCompra.setInt(1, newidVenta); //id de la venta
                 guardarCompra.setInt(2, newidproducto); //ID del producto
                 guardarCompra.setInt(3,numproductos);              //Numero de elementos (la comida es stackeable)
