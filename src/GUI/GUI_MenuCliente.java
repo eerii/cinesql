@@ -1096,7 +1096,7 @@ private void obtenerEntrada() throws IOException, ClassNotFoundException{
         entradaComprada.setModel(model);
         
         // Cerramos conexión
-        c.close();
+
         
     } catch (SQLException ex) {
         Logger.getLogger(GUI_MenuCliente.class.getName()).log(Level.SEVERE, null, ex);

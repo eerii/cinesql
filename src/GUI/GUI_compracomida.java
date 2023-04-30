@@ -361,7 +361,7 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
     //Se intenta la conexion
     Connection c = this.conexion;
     PreparedStatement statement_entradas = null;
-    PreparedStatement last_lp_s= null;
+    PreparedStatement newidventa= null;
     ResultSet rs = null;
     ResultSet rs2 = null;
     
@@ -388,7 +388,10 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
 
         //Guardamos el resultado en resultSet
         rs = statement_entradas.executeQuery();
-            
+        int newidproducto=0;
+        if (rs.next()) {
+                        newidproducto=rs.getInt(1); //La id del producto que se va a procesar 
+                }    
         
         //volvemos a recorrer el result set para oficializar la compra
         //Actualizando las tablas pertinentes
@@ -400,12 +403,32 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
             //No confundir con la id_venta, que es diferente para cada inserción. Aquí estamos generando una nueva num_linea,
             //Para poder asociar todas las entradas a la misma compra
             //Primero buscamos el valor numéricamente más grande que haya (porque son secuenciales)                
-            String last_lp = "select get_last_lp()";
-            last_lp_s=c.prepareStatement(last_lp);
-            rs2 = last_lp_s.executeQuery();
-                
+            //String last_lp = "select get_last_lp()";
+            //Guardamos en variables algunos datos que necesitaremos pasar a las funciones
+            String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
+            String precio1=preciounidad.getText(); //Coste de cada elemento de la compra
+            double precioint = Integer.parseInt(precio1);
+            int numprods = Integer.parseInt((String) Numerodeproductos.getSelectedItem());
+            
+            String query="select guardar_idVenta(?,?,?);";
+            newidventa=c.prepareStatement(query);
+            newidventa.setString(1, correoUsuario); //correo del usuario
+            newidventa.setInt(2, numprods); //num. de prods que se compran
+            newidventa.setDouble(3, precioint); //precio por prod
+            
+            rs2 = newidventa.executeQuery();
+             
+            int newidVenta = 0; //La función sql devuelve la nueva idVenta de esta compra. La guardaremos en esta variable
+                if (rs2.next()) {
+                        newidVenta = rs2.getInt(1); // get the integer value returned by the stored procedure
+                }
             //En la siguiente variable almacenaremos la nueva id de num_linea
             //Todas las entradas que se inserten en la base en el bucle siguiente
+            //Como de cada compra solo podemos comprar un tipo de producto stackeable
+            //Solamente vamos a necesitar 1 linea de cada vez
+            int newnumlinea=1;
+            /*if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
+*/
             //Van a tener la misma 
             int new_last_lp_s=0;
             if (rs2.next()) { // Aseguramos que haya un resultado en el result set antes de intentar obtenerlo
@@ -418,18 +441,17 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
             //Se procesará una entrada por iteración hasta que se guarden las N entradas que quiere el usuario
             while (rs.next()) {                
                 //Se obtienen las variables necesarias
-                int newidproducto=rs.getInt(1); //La id de la entrada que se va a procesar 
-                String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
+                //int newidproducto=rs.getInt(1); //La id de la entrada que se va a procesar 
+                //String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
 
                 //Se ejecuta la funcion con estos parametros
                 //Esta va a insertar en las tablas pertinentes para oficializar en la base la nueva compra
                 PreparedStatement guardarCompra=this.conexion.prepareStatement(
-                        "select guardar_compra_comida(?,?,?,?,?)");
-                guardarCompra.setInt(1, new_last_lp_s); //numero de linea
+                        "select guardar_compra_comida(?,?,?)");
+                guardarCompra.setInt(1, newidVenta); //id de la venta
                 guardarCompra.setInt(2, newidproducto); //ID del producto
-                guardarCompra.setString(3,correoUsuario);   //ID del usuario comprador
-                guardarCompra.setFloat(4, coste*numproductos);       //Coste del producto individual
-                guardarCompra.setInt(5,numproductos);              //Numero de elementos (la comida es stackeable)
+                guardarCompra.setInt(3,numproductos);              //Numero de elementos (la comida es stackeable)
+                
                 guardarCompra.execute();                //Ejecutamos el query                
             }
         } catch (SQLException e) {
@@ -444,7 +466,7 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
         // Cerramos todo antes de acabar
         rs.close();
         rs2.close();
-        last_lp_s.close();
+
         statement_entradas.close();
     } catch (SQLException ex) {
             Logger.getLogger(GUI_compracomida.class.getName()).log(Level.SEVERE, null, ex);
