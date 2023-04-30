@@ -348,16 +348,16 @@ public class GUI_compracomida extends javax.swing.JDialog {
             // Obtiene el precio por entrada de la sesión
             String precioentradastring = preciounidad.getText();
             //Variable en la que almacenaremos dicho precio como int
-            int precioint =1;
+            double precioint =1;
             if (precioentradastring!= null && !precioentradastring.isEmpty()) {
-                precioint = (int) Float.parseFloat(precioentradastring); 
+                precioint = Double.parseDouble(precioentradastring); 
             }
             //Actualizamos el coste total (numentradas*precioporentrada)
-            total.setText(Integer.toString(precioint * selectedOption));
+            total.setText(Double.toString(precioint * selectedOption));
     }//GEN-LAST:event_NumerodeproductosActionPerformed
 
 //Función que se encarga de guardar la compra en la base de datos, actualizando las tablas pertinentes
-public void actualizarCompras(String producto, int numproductos, String cantidad, int coste) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException{
+public void actualizarCompras(String producto, int numproductos, String cantidad, double coste) throws FileNotFoundException, IOException, ClassNotFoundException, SQLException{
     //Se intenta la conexion
     Connection c = this.conexion;
     PreparedStatement statement_entradas = null;
@@ -407,7 +407,7 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
             //Guardamos en variables algunos datos que necesitaremos pasar a las funciones
             String correoUsuario=this.conexion.getMetaData().getUserName(); //El correo (identificador) del usuario que compra
             String precio1=preciounidad.getText(); //Coste de cada elemento de la compra
-            double precioint = Integer.parseInt(precio1);
+            double precioint = Double.parseDouble(precio1);
             int numprods = Integer.parseInt((String) Numerodeproductos.getSelectedItem());
             
             String query="select guardar_idVenta(?,?,?);";
@@ -486,7 +486,7 @@ public void actualizarCompras(String producto, int numproductos, String cantidad
                 //Obtenemos los datos de la entrada necesarios para finalizar la compra
                 String tamanho=paneltamanho.getText();
                 String producto =panelnombre.getText();
-                int coste = Integer.parseInt(preciounidad.getText());
+                double coste = Double.parseDouble(preciounidad.getText());
                 
                 try {
                     //Número correcto. Guardamos la compra
