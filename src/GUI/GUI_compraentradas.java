@@ -284,7 +284,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         jScrollPane9 = new javax.swing.JScrollPane();
         total = new javax.swing.JTextPane();
         finalizarcompra = new javax.swing.JButton();
-        compracomida = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -303,7 +302,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/logo.png"))); // NOI18N
         jLabel5.setAlignmentX(0.5F);
         jLabel5.setAlignmentY(0.0F);
         jLabel5.setMinimumSize(new java.awt.Dimension(71, 63));
@@ -345,13 +343,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
         finalizarcompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 finalizarcompraActionPerformed(evt);
-            }
-        });
-
-        compracomida.setText("Añadir complementos");
-        compracomida.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                compracomidaActionPerformed(evt);
             }
         });
 
@@ -420,9 +411,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel11)))
                         .addGap(25, 25, 25)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(compracomida, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(finalizarcompra, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(finalizarcompra, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
@@ -453,7 +442,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
                         .addGap(16, 16, 16)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane3)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(37, 37, 37)
@@ -478,9 +467,7 @@ public class GUI_compraentradas extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(compracomida)
-                                .addComponent(jLabel11)))
+                            .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -521,42 +508,6 @@ public class GUI_compraentradas extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void compracomidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compracomidaActionPerformed
-    
-        //Obtenemos los valores de comprobación
-        int numentradas = Integer.parseInt((String) Numerodeentradas.getSelectedItem());
-        int entradasdisponibles = Integer.parseInt(entradaslibres.getText());
-        //Obtenemos los datos de la entrada necesarios para finalizar la compra
-        String cine=panelCine.getText();
-        String fecha=panelFecha.getText();
-        String hora=panelHora.getText();
-        int sala=Integer.parseInt(panelSala.getText());
-        String titulo=panelPeli.getText();
-        int coste=Integer.parseInt(precioentrada.getText());
-        if (numentradas> entradasdisponibles) { //Numero incorrecto. Se gestiona el error
-            JOptionPane.showMessageDialog(GUI_compraentradas.this, "Error: Se seleccionaron más entradas de las disponibles", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        else{
-            //Escondemos la ventana actual
-            this.setVisible(false);
-
-            //Creamos una nueva instancia de la ventana de compra de comida
-            //Le pasamos al constructor los datos que necesitaremos dentro de ella
-            GUI_compracomida compraComida = new GUI_compracomida(null, null, null, this.conexion);
-            compraComida.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            compraComida.setVisible(true);
-
-            // Add a WindowListener to the GUI_compraentradas window
-            compraComida.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    // Show the previous window again when the GUI_compraentradas window is closed
-                    setVisible(false);
-                }
-            });
-        }
-    }//GEN-LAST:event_compracomidaActionPerformed
 //Qué ocurre cuando se selecciona una opción del desplegable?
 //Simplemente tenemos que actualizar el coste total (ctetotal=numentradas*precioporentrada)
     private void NumerodeentradasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumerodeentradasActionPerformed
@@ -783,7 +734,6 @@ public void actualizarCompras(int numentradas, String cine, String fecha, String
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> Numerodeentradas;
     private javax.swing.JTextPane capacidadsala;
-    private javax.swing.JButton compracomida;
     private javax.swing.JTextPane entradaslibres;
     private javax.swing.JButton finalizarcompra;
     private javax.swing.JLabel jLabel1;
