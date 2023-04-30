@@ -679,7 +679,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             //Se obtiene el numero de entradas vendidas
             r.last();
             Integer entradasVendidas=r.getRow();
-            if(sitiosSala-entradasVendidas-numEntradas<=0){
+            if(sitiosSala-entradasVendidas-numEntradas<0){
                 //Si no hay entradas suficientes, mensaje de error
                 jLabel12.setVisible(true);
             }else{
