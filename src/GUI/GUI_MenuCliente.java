@@ -1085,7 +1085,7 @@ private void obtenerEntrada() throws IOException, ClassNotFoundException{
             //Y los insertamos en cada fila
             rowData[0] = rowData[0].replaceAll("\"", ""); // Quitamos comillas
             rowData[1] = rowData[1].replaceAll("\"", ""); // Quitamos comillas
-            if(rowData[2] == "f") {
+            if(rowData[2].equals("f")) {
                 rowData[2] = "No";
             } else {
                 rowData[2] = "Si";
