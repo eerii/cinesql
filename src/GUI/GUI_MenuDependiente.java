@@ -1135,6 +1135,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             
             //Se crea una linea de venta
             s=this.bd.getConnection().prepareStatement(
+            s = this.bd.getConnection().prepareStatement(
             "insert into LineaVenta values(?,?,?,?);");
             s.setInt(1,idVenta);
             s.setInt(2, comida);
@@ -1145,6 +1146,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             //Se manda el mensaje de que todo ha ido bien
             jLabel18.setVisible(true); 
         
+            this.bd.getConnection().setAutoCommit(true);
+
         }catch(Exception e){
             
             try{
