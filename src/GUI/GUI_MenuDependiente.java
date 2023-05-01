@@ -76,6 +76,15 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jBotonVenderComida.setVisible(false);
         jLabel18.setVisible(false);
         
+        //Rellenamos de valores entre 1 y 6 el combobox del numero de productos
+        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) Numerodeproductos.getModel();
+        model.removeAllElements();
+        for (int i = 1; i <= 6; i++) {
+            model.addElement(Integer.toString(i));
+        }
+        Numerodeproductos.setSelectedItem("1");//Por defecto marcamos que se escoge solo una entrada
+        
+        
         try{
             //Se guardan los cines
             PreparedStatement s=this.bd.getConnection().prepareStatement(
@@ -148,6 +157,8 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jBotonVenderComida = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
+        Numerodeproductos = new javax.swing.JComboBox<>();
+        jLabel19 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -535,24 +546,40 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         jLabel18.setForeground(new java.awt.Color(51, 204, 0));
         jLabel18.setText("La venta fue un éxito");
 
+        Numerodeproductos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Numerodeproductos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NumerodeproductosActionPerformed(evt);
+            }
+        });
+
+        jLabel19.setText("Número de productos");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(258, Short.MAX_VALUE)
-                .addComponent(jLabel17)
-                .addGap(89, 89, 89)
-                .addComponent(jBotonVenderComida, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(353, 353, 353))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel18)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 248, Short.MAX_VALUE)
+                                .addComponent(jLabel17))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Numerodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(380, 380, 380)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jBotonVenderComida, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE)
                         .addComponent(jBotonVerComida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -562,10 +589,13 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jBotonVerComida)
                 .addGap(27, 27, 27)
+                .addComponent(jLabel17)
+                .addGap(21, 21, 21)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBotonVenderComida)
-                    .addComponent(jLabel17))
-                .addGap(32, 32, 32)
+                    .addComponent(Numerodeproductos, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(80, 80, 80))
         );
@@ -1080,6 +1110,9 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
         String producto = jTablaComida.getValueAt(selectedRowIndex, 0).toString();
         String tamanho = jTablaComida.getValueAt(selectedRowIndex, 1).toString();
         String precio = jTablaComida.getValueAt(selectedRowIndex, 2).toString();
+        String cant1=  (String)Numerodeproductos.getSelectedItem();
+        
+        int cantidad= Integer.parseInt(cant1);
                 
         try{
             
@@ -1119,7 +1152,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             s.setInt(1, idDependiente);
             s.setInt(2, idEspectador);
             s.setInt(3, idVenta);
-            s.setFloat(4,Float.parseFloat(precio));
+            s.setFloat(4,Float.parseFloat(precio)*cantidad);    //El precio 
             s.execute();                
                 
             //La función get_available_entriesComida se encarga de devolver el id del producto del tamanho correspondiente
@@ -1135,12 +1168,11 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             
             //Se crea una linea de venta
             s=this.bd.getConnection().prepareStatement(
-            s = this.bd.getConnection().prepareStatement(
             "insert into LineaVenta values(?,?,?,?);");
             s.setInt(1,idVenta);
             s.setInt(2, comida);
             s.setInt(3, 1); //solo va a haber una linea
-            s.setInt(4, 1); //y la cantidad tb va a ser uno siempre
+            s.setInt(4, cantidad); //y la cantidad tb va a ser uno siempre
             s.execute();
             
             //Se manda el mensaje de que todo ha ido bien
@@ -1161,6 +1193,10 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
             popup.setVisible(true);
         }
     }//GEN-LAST:event_jBotonVenderComidaActionPerformed
+
+    private void NumerodeproductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NumerodeproductosActionPerformed
+  
+    }//GEN-LAST:event_NumerodeproductosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1203,6 +1239,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> Numerodeproductos;
     private javax.swing.JButton botonver;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JTextField campofecha;
@@ -1228,6 +1265,7 @@ public class GUI_MenuDependiente extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
